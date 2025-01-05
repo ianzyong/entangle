@@ -112,7 +112,7 @@ export const GAMEDATA = {
                 indices: [[0,4],[1,3],[2,0],[2,9]]
             },
             {
-                indices: [[2,3],[3,2]]
+                indices: [[2,3],[3,2],[1,0]]
             },
             {
                 indices: [[2,5],[3,3],[5,0]]
@@ -137,7 +137,7 @@ export const GAMEDATA = {
     5: {
         words: ["FOREST","AGAINST","DELIST","DIVEST","BOOST","MODEST","HONEST","BOULEVARD"],
         enumerations: ["(6)","(7)","(6)","(6)","(5)","(6)","(6)","(9)"],
-        clues: ["Wood... or one in front?","Touching... or another one?","Remove... or one with Reubens?","Strip... or one with bars?","Plug... or a scary one?","Decent... or a fashionable one?","True... or one for sharpening?","Wide road"],
+        clues: ["Woods... or one in front?","Touching... or another one?","Remove... or one with Reubens?","Strip... or one with bars?","Plug... or a scary one?","Decent... or a fashionable one?","Truthful... or one for sharpening?","Wide road"],
         themeClue: ["\x22Retweets retracted, resent regularly... make way!\x22"],
         themeAnswer: ["STREET"],
         sharedLetters: [
