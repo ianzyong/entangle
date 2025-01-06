@@ -9,7 +9,7 @@ if (window.location.href.includes("?")) {
     puzzleNumber = Number(window.location.href.match(/(?<=puzzle=)[0-9]+/)[0]);
 }
 
-console.log(puzzleNumber);
+//console.log("Puzzle " + puzzleNumber);
 
 const WORDS = GAMEDATA[puzzleNumber].words
 const ENUMERATIONS = GAMEDATA[puzzleNumber].enumerations
@@ -58,6 +58,7 @@ for (let i = 0; i < node_memberships.length; i++) {
 
 var num_nodes = current_node;
 var numChecks = 0;
+var numHints = 0;
 
 function Node(id, value, containsFirstLetter, containsRepeat, nodeIndicesOfParentWords, adjNodeIndices) {
     this.id = id;
@@ -125,7 +126,7 @@ for (let i = 0; i < nodes.length; i++) {
 
 dagre.layout(g);
 
-console.log(g);
+//console.log(g);
 
 function bezier(t, p0, p1, p2, p3) {
     var cX = 3 * (p1.x - p0.x),
@@ -143,6 +144,8 @@ function bezier(t, p0, p1, p2, p3) {
 }
 
 let color_list = ["#A4A8D1", "#EF626C", "#E2C391", "#52FFB8", "#66C7F4","#D156CB"]
+
+let lines = [];
 
 function initBoard() {
     let title = document.getElementById("title");
@@ -243,6 +246,7 @@ function initBoard() {
 
     // create an svg element and add to board
     let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.id = "main-svg";
     svg.setAttribute("width", boardWidth);
     svg.setAttribute("height", boardHeight);
     svg.style.position = "absolute";
@@ -253,11 +257,19 @@ function initBoard() {
 
     // create a line element connecting each pair of adjacent nodes without repeats
     for (let i = 0; i < nodes.length; i++) {
-        let thisNodeLines = [];
+        //let thisNodeLines = [];
         for (let j = 0; j < nodes[i].adjNodeIndices.length; j++) {
-            if (nodes[i].adjNodeIndices[j] == nodes[i].id) {
+            //thisNodeLines.push(line);
+            let terminals = [nodes[i].id, nodes[nodes[i].adjNodeIndices[j]].id];
+            // if the node is adjacent to itself or if the terminal nodes already exist in the lines array
+            if (nodes[i].adjNodeIndices[j] == nodes[i].id || getLines(terminals[0], terminals[1])) {
+                //console.log(getLines(terminals[0], terminals[1]))
                 continue;
             }
+
+            // get parent indices of the current node
+            let parentIndices = Object.keys(nodes[i].nodeIndicesOfParentWords);
+
             let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
             line.setAttribute("x1", g.node(nodes[i].id).x + xOffset + 20);
             line.setAttribute("y1", g.node(nodes[i].id).y + yOffset + 20);
@@ -265,10 +277,13 @@ function initBoard() {
             line.setAttribute("y2", g.node(nodes[nodes[i].adjNodeIndices[j]].id).y + yOffset + 20);
             line.setAttribute("stroke", "#2e2e2e");
             line.setAttribute("stroke-width", "1px");
+            line.parentWords = parentIndices;
+            line.terminals = [nodes[i].id, nodes[nodes[i].adjNodeIndices[j]].id];
             svg.appendChild(line);
-            thisNodeLines.push(line);
+            lines.push(line);
+            
         }
-        nodes[i].lines = thisNodeLines;
+        //nodes[i].lines = thisNodeLines;
     }
     
 
@@ -315,9 +330,11 @@ function cycleWord(lce) {
 
         last_position = null;
 
-        for (let nodeIndex of lce.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-            nodes[nodeIndex].element.classList.remove("highlighted-box");
-        }
+        toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
+
+        // for (let nodeIndex of lce.node.nodeIndicesOfParentWords[lastSelectedWord]) {
+        //     nodes[nodeIndex].element.classList.remove("highlighted-box");
+        // }
 
         if(!lce.classList.contains("filled-box")) {
             lce.style.removeProperty("border-color")
@@ -356,10 +373,12 @@ function cycleWord(lce) {
         //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
         // add highlighted-box class to elements in the selected word
         //console.log(lce.node.nodeIndicesOfParentWords);
-        for (let nodeIndex of lce.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-            nodes[nodeIndex].element.classList.add("highlighted-box");
-        }
+        // for (let nodeIndex of lce.node.nodeIndicesOfParentWords[lastSelectedWord]) {
+        //     nodes[nodeIndex].element.classList.add("highlighted-box");
+        // }
         
+        toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
+
     }
 }
 
@@ -403,7 +422,7 @@ function updateMinimap(sameWord) {
 }
 
 document.addEventListener('click', function(event) {
-    if (!(event.target.textContent == "Check") && (event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
+    if ((event.target.id == "mini-map" || event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
         return
     }
 
@@ -465,9 +484,10 @@ document.addEventListener('click', function(event) {
     if (lastClickedElement && lastClickedNode && lastClickedElement.classList.contains("letter-box") ) {
         // remove selected-box class and remove highlighting from last word
         lastClickedElement.classList.remove("selected-box");
-        for (let nodeIndex of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-            nodes[nodeIndex].element.classList.remove("highlighted-box");
-        }
+        // for (let nodeIndex of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]) {
+        //     nodes[nodeIndex].element.classList.remove("highlighted-box");
+        // }
+        toggleHighlight(lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]);
     }
     // if the clicked element is a letter-box
     if (event.target.classList.contains("letter-box")) {
@@ -485,9 +505,13 @@ document.addEventListener('click', function(event) {
         }
         
         // add highlighted-box class to elements in the selected word
-        for (let nodeIndex of lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]) {
-            nodes[nodeIndex].element.classList.add("highlighted-box");
-        }
+        // for (let nodeIndex of lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]) {
+        //     nodes[nodeIndex].element.classList.add("highlighted-box");
+        // }
+        
+        //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
+
+        toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
 
         // add highlighted-line class to lines connecting nodes in the selected word
         // console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
@@ -522,6 +546,56 @@ document.addEventListener('click', function(event) {
     lastClickedElement = event.target;
     updateMinimap();
 });
+
+function toggleHighlight(nodeIndices) {
+    //console.log(nodeIndices);
+    for (let i = 0; i < nodeIndices.length; i++) {
+        // if the current node index is contained in nodeindices thus far
+        if (!nodeIndices.slice(0,i).includes(nodeIndices[i])) {
+            nodes[nodeIndices[i]].element.classList.toggle("highlighted-box");
+        }
+    }
+    
+    // if there are any elements with the highlighted-line class
+    // if (document.getElementsByClassName("highlighted-line").length) {
+    //     // remove all elements with the highlighted-line class
+    //     // get main-svg
+    //     let mainSvg = document.getElementById("main-svg");
+    //     let highlightedLines = mainSvg.getElementsByClassName("highlighted-line");
+    //     while (highlightedLines.length) {
+    //         highlightedLines[0].remove();
+    //     }
+    // }
+    // append lines between highlighted nodes to document
+    // for (let i = 0; i < nodeIndices.length - 1; i++) {
+    //     let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    //     line.setAttribute("x1", parseInt(nodes[nodeIndices[i]].element.style.left)+20+"px");
+    //     line.setAttribute("y1", parseInt(nodes[nodeIndices[i]].element.style.top)+20+"px");
+    //     line.setAttribute("x2", parseInt(nodes[nodeIndices[i+1]].element.style.left)+20+"px");
+    //     line.setAttribute("y2", parseInt(nodes[nodeIndices[i+1]].element.style.top)+20+"px");
+    //     line.classList.add("highlighted-line");
+    //     document.getElementById("main-svg").appendChild(line);
+    // }
+
+    // get lines belonging to the nodes in nodeIndices
+    //containedLines = [];
+    // for (let i = 0; i < nodeIndices.length-1; i++) {
+    //     // find the line in lines that has the current terminals
+    //     let result = getLines(nodeIndices[i],nodeIndices[i+1])
+    //     result.classList.toggle("highlighted-line")
+    //     //console.log([nodeIndices[i],nodeIndices[i+1]])
+
+    //     //containedLines.push(line);
+    // }
+
+    // toggle highlighted-line class for lines that are shared between nodes
+    // for (let i = 1; i < containedLines.length; i++) {
+    //     for (let j = 0; j < containedLines[i].length; j++) {
+    //         lines[i][j].classList.toggle("highlighted-line");
+    //     }
+    // }
+
+}
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -569,18 +643,24 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
     if (key === "Check") {
         let allCorrect = true;
+        //console.log(nodes);
+        let elementsToHint = [];
         for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].element.textContent) {
                 if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toLowerCase()) {
-                    nodes[i].element.textContent = "";
-                    nodes[i].element.classList.remove("filled-box");
+                    // nodes[i].element.textContent = "";
+                    nodes[i].element.style.color = "#f87a7a";
+
+                    //nodes[i].element.classList.remove("filled-box");
                     nodes[i].element.style.removeProperty("border-color")
                     animateCSS(nodes[i].element, 'headShake');
                     // set the lines of the node back to default color
-                    for (let j = 0; j < nodes[i].lines.length; j++) {
-                        nodes[i].lines[j].style.stroke = "#2e2e2e";
-                    }
+                    //console.log(nodes[i]);
+                    colorLines(nodes[i].id, nodes[i].adjNodeIndices, true);
                     allCorrect = false;
+                } 
+                else {
+                    elementsToHint.push(nodes[i].element);
                 }
             } else {
                 allCorrect = false;
@@ -599,7 +679,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             }
 
             // numHints is the number of elements with the hinted-box class
-            let numHints = document.getElementsByClassName("hinted-box").length
+            // let numHints = document.getElementsByClassName("hinted-box").length
 
             //quip based on number of hints used
             let quips = ["perfect!","well done!", "not too shabby.","pretty good.","not bad.","satisfactory.","good effort.","well, there's always next time."]
@@ -607,9 +687,27 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             let quipNumber = numHints + numChecks >= quips.length ? quips.length-1 : numHints + numChecks;
             let hintText = numHints == 1 ? " hint" : " hints";
             let checkText = numChecks == 1 ? " check." : " checks.";
+
+
+            for (let i = 0; i < nodes.length; i++) {
+                if (quipNumber == 0) {
+                    // set all boxes to a golden color
+                    //nodes[i].element.style.color = "#fcd786";
+                }
+                nodes[i].element.classList.add("unfillable-box");
+            }
+
+            let selectedBox = document.querySelector(".selected-box");
+            if (selectedBox) {
+                selectedBox.classList.remove("selected-box");
+            }
+
             alert("entangle #" + puzzleNumber + "\n" + THEMECLUE + " — " + THEMEANSWER + "\nsolved with " + numHints + hintText + " and " + numChecks + checkText + "\n" + quips[quipNumber]);
             animateCascade(nodeElements, 'flip', 50);
         } else {
+            for (let i = 0; i < elementsToHint.length; i++) {
+                elementsToHint[i].classList.add("hinted-box");
+            }
             let selectedBox = document.querySelector(".selected-box");
             if (selectedBox) {
                 selectedBox.classList.remove("selected-box");
@@ -622,12 +720,14 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
         // get the selected-box element
         let selectedBox = document.querySelector(".selected-box");
         // if there is a selected-box element
-        if (selectedBox && selectedBox.classList.contains("letter-box")) {
+        if (selectedBox && selectedBox.classList.contains("letter-box") && !selectedBox.classList.contains("unfillable-box")) {
             selectedBox.textContent = selectedBox.node.value;
+            selectedBox.style.color = "#d1d1d1";
             selectedBox.classList.add("filled-box");
             selectedBox.classList.add("hinted-box");
             lastClickedElement.style.borderColor = getBorderColor(lastClickedElement);
             updateMinimap(false);
+            numHints++;
         }
     } 
     else {
@@ -641,13 +741,16 @@ function blendColors(colors) {
     let r = 0;
     let g = 0;
     let b = 0;
-    console.log(colors);
+
     for (let i = 0; i < colors.length; i++) {
+        //console.log(colors[i]);
         // if color is a hex string
         if (colors[i].substring(0,1) == "#") {
-            r += parseInt(colors[i].substring(1,3), 16);
-            g += parseInt(colors[i].substring(3,5), 16);
-            b += parseInt(colors[i].substring(5,7), 16);
+            //console.log(colors[i])
+            r += parseInt(colors[i].substring(1,3).toUpperCase(), 16);
+            g += parseInt(colors[i].substring(3,5).toUpperCase(), 16);
+            b += parseInt(colors[i].substring(5,7).toUpperCase(), 16);
+            
         } else if (colors[i].substring(0,3) == "rgb") {
             let rgb = colors[i].match(/\d+/g);
             r += parseInt(rgb[0]);
@@ -655,29 +758,42 @@ function blendColors(colors) {
             b += parseInt(rgb[2]);
         }
     }
-    //console.log(r, g, b);
+    //console.log(r)
+    
     r = Math.round(r / colors.length);
     g = Math.round(g / colors.length);
     b = Math.round(b / colors.length);
-    return "#" + r.toString(16) + g.toString(16) + b.toString(16);
+
+    return "#" + r.toString(16).toUpperCase() + g.toString(16).toUpperCase() + b.toString(16).toUpperCase();
 }
 
 function darkenRGB(rgb) {
-    let darkened = [];
-    let rgbArray = rgb.match(/\d+/g);
-    for (let i = 0; i < rgbArray.length; i++) {
-        darkened.push(Math.round(parseInt(rgbArray[i]) * 0.5));
+    // if hex convert to rgb
+    if (rgb.substring(0,1) == "#") {
+        let r = parseInt(rgb.substring(1,3), 16);
+        let g = parseInt(rgb.substring(3,5), 16);
+        let b = parseInt(rgb.substring(5,7), 16);
+        return "rgb(" + Math.round(r * 0.5) + "," + Math.round(g * 0.5) + "," + Math.round(b * 0.5) + ")";
+    } else {
+        let darkened = [];
+        let rgbArray = rgb.match(/\d+/g);
+        for (let i = 0; i < rgbArray.length; i++) {
+            darkened.push(Math.round(parseInt(rgbArray[i]) * 0.5));
+        }
     }
     return "rgb(" + darkened.join(",") + ")";
 }
 
-function getBorderColor (element) {
+function getBorderColor(element) {
     let col = "#d1d1d1";
+    
     if (Object.keys(element.node.nodeIndicesOfParentWords).length>1) {
         let colors = [];
+
         for (let i = 0; i < Object.keys(element.node.nodeIndicesOfParentWords).length; i++) {
             colors.push(color_list[(Object.keys(element.node.nodeIndicesOfParentWords)[i])%color_list.length]);
         }
+        
         col = blendColors(colors);
     } else {
         col = color_list[(Object.keys(lastClickedElement.node.nodeIndicesOfParentWords)[0])%color_list.length];
@@ -685,22 +801,96 @@ function getBorderColor (element) {
     return col;
 }
 
+// function toggleLineColor(position, nodeIndices) {
+//     if (position === 0) {
+//         let result = lines.find(line => line.terminals[0] == nodeIndices[position] && line.terminals[1] == nodeIndices[position+1]);
+
+//         console.log([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)])
+//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)]);
+        
+//     } else if (position === nodeIndices.length - 1) {
+//         let result = lines.find(line => line.terminals[0] == nodeIndices[position-1] && line.terminals[1] == nodeIndices[position]);
+//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position-1]].element), getBorderColor(nodes[nodeIndices[position]].element)]);
+//     } else {
+//         let result = lines.find(line => line.terminals[0] == nodeIndices[position] && line.terminals[1] == nodeIndices[position+1]);
+//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)]);
+        
+//         result = lines.find(line => line.terminals[0] == nodeIndices[position-1] && line.terminals[1] == nodeIndices[position]);
+//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position-1]].element), getBorderColor(nodes[nodeIndices[position]].element)]);   
+//     }
+// }
+
+function getLines(terminal1,terminal2) {
+    return lines.find((line => line.terminals[0] == terminal1 && line.terminals[1] == terminal2) || (line.terminals[0] == terminal2 && line.terminals[1] == terminal1));
+}
+
+function colorLines(currentNode, adjNodes, clear) {
+    
+    // get lines that have the current node as a terminal
+    for (let i = 0; i < adjNodes.length; i++) {
+        let line = getLines(currentNode, adjNodes[i]);
+        if (clear) {
+            line.style.removeProperty('stroke');
+        } else {
+            // get color of current node
+            line.style.stroke = darkenRGB(getBorderColor(nodes[currentNode].element));
+        }
+    }
+    // let result = null;
+    // if (position < nodeIndices.length - 1) {
+    //     result = getLines(nodeIndices[position],nodeIndices[position+1]);
+    //     result.style.stroke = getBorderColor(nodes[nodeIndices[position]].element)
+    //     console.log(result.style.stroke)
+    //     //result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)]);
+        
+    // }
+    
+    // if (position > 0) {
+    //     result = getLines(nodeIndices[position],nodeIndices[position-1]);
+    //     result.style.stroke = getBorderColor(nodes[nodeIndices[position-1]].element)
+    //     //result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position-1]].element)]);
+    //     //result.style.stroke = getBorderColor(nodes[nodeIndices[position-1]].element)
+    // }
+}
+
 function insertLetter (pressedKey) {
     pressedKey = pressedKey.toLowerCase()
     if (lastClickedElement == null) {
         return
     }
-    if (lastClickedElement.classList.contains("letter-box") && !lastClickedElement.classList.contains("hinted-box")) {
+    if (lastClickedElement.classList.contains("letter-box") && !lastClickedElement.classList.contains("hinted-box") && !lastClickedElement.classList.contains("unfillable-box")) {
+        lastClickedElement.style.color = "#d1d1d1";
+        lastClickedElement.style.removeProperty("color");
         lastClickedElement.textContent = pressedKey;
         lastClickedElement.classList.add("filled-box");
         lastClickedElement.style.borderColor = getBorderColor(lastClickedElement);
-        // set the lines of the node to the same color but darker
-        console.log(lastClickedElement.style.borderColor)
-        for (let i = 0; i < lastClickedElement.node.lines.length; i++) { 
-            //console.log(blendColors(lastClickedElement.style.borderColor, "#FFFFFF"))
-            lastClickedElement.node.lines[i].style.stroke = darkenRGB(lastClickedElement.style.borderColor);
-            lastClickedElement.node.lines[i].style["stroke-dasharray"] = 0;
-        }
+
+        // get nodes of last selected word
+        //let nodeIndices = lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord];
+        // get position of id of last selected element in nodeIndices
+        //let position = nodeIndices.indexOf(lastClickedElement.node.id);
+
+        // get adjacent nodes of last clicked element
+        let adjNodes = lastClickedElement.node.adjNodeIndices;
+        let currentNode = lastClickedElement.node.id;
+        
+        colorLines(currentNode, adjNodes, false);
+        
+        // for (let i = 0; i < nodeIndices.length-1; i++) {
+        //     // find the line in lines that has the terminals [i,j]
+        //     let result = lines.find(line => line.terminals[0] == nodeIndices[i] && line.terminals[1] == nodeIndices[i+1]);
+        //     result.classList.toggle("highlighted-line")
+        //     result.style.stroke = blendColors(nodes[i].element.style.borderColor, nodes[i+1].element.style.borderColor);
+        //     //result.style.stroke = lastClickedElement.style.borderColor;
+        //     //containedLines.push(line);
+        // }
+        
+        // for (let i = 0; i < lastClickedElement.node.lines.length; i++) { 
+        //     //console.log(blendColors(lastClickedElement.style.borderColor, "#FFFFFF"))
+        //     //lastClickedElement.node.lines[i].style.stroke = darkenRGB(lastClickedElement.style.borderColor);
+        //     lastClickedElement.node.lines[i].style.stroke = lastClickedElement.style.borderColor;
+        //     lastClickedElement.node.lines[i].style["stroke-dasharray"] = 0;
+        // }
     }
     cycleLetter(pressedKey, lastClickedElement);
 }
@@ -709,16 +899,29 @@ function deleteLetter () {
     if (lastClickedElement == null) {
         return
     }
-    if (lastClickedElement.classList.contains("letter-box") && !lastClickedElement.classList.contains("hinted-box")) {
+    if (lastClickedElement.classList.contains("letter-box") && !lastClickedElement.classList.contains("hinted-box") && !lastClickedElement.classList.contains("unfillable-box")) {
 
         lastClickedElement.textContent = ""
         lastClickedElement.classList.remove("filled-box")
         lastClickedElement.style.removeProperty("border-color")
         //lastClickedElement.classList.remove("selected-box")
-        // set the lines of the node back to default color
-        for (let i = 0; i < lastClickedElement.node.lines.length; i++) {
-            lastClickedElement.node.lines[i].style.stroke = "#2e2e2e";
-        }
+        // remove stroke attribute from element.style
+        // for (let i = 0; i < lastClickedElement.node.lines.length; i++) {
+        //     //lastClickedElement.node.lines[i].style.stroke = "#2e2e2e";
+        //     lastClickedElement.node.lines[i].style.stroke = "";
+        // }
+        let nodeIndices = lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord];
+        // find the position of the last clicked element in nodeIndices
+        let position = nodeIndices.indexOf(lastClickedElement.node.id);
+
+        colorLines(lastClickedElement.node.id, lastClickedElement.node.adjNodeIndices, true);
+
+        // for (let i = 0; i < nodeIndices.length-1; i++) {
+        //     // find the line in lines that has the terminals [i,j]
+        //     let result = lines.find(line => line.terminals[0] == nodeIndices[i] && line.terminals[1] == nodeIndices[i+1]);
+        //     result.style.removeProperty('stroke');
+        //     //containedLines.push(line);
+        // }
 
     }
     cycleLetter("Backspace", lastClickedElement)

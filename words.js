@@ -1,7 +1,7 @@
 export const GAMEDATA = {
     1: {
         words: ["DAISY","AZALEA","RIVER","IRIS","HYDRANGEA","CARNATION"],
-        enumerations: ["(5a)","(6)","(5b)","(4)","(9a)","(9b)"],
+        enumerations: ["(5)","(6)","(5)","(4)","(9)","(9)"],
         clues: ["Jay Gatsby's love","Rhododendron relative","Water under the bridge","Eye part","\x22Water vessel\x22 in Greek","China, as it is the largest producer?"],
         themeClue: ["\x22Devour again to return mature\x22"],
         themeAnswer: ["FLOWER"],
@@ -26,12 +26,15 @@ export const GAMEDATA = {
             },
             {
                 indices: [[2,4],[4,3],[5,2]]
+            },
+            {
+                indices: [[4,5],[5,3]]
             }
         ]
     },
     2: {
         words: ["PANTS","EXHAUSTED","SCARF","FEDORA","SOCK","SKIRT","COAT"],
-        enumerations: ["(5a)","(8)","(5b)","(6)","(4a)","(5c)","(4b)"],
+        enumerations: ["(5)","(8)","(5)","(6)","(4)","(5)","(4)"],
         clues: ["Huffs and puffs","Beat","Gobble, with \x22down\x22","Iron TV explorer?","Hit","Go around","Cover"],
         themeClue: ["\x22Given under oath, beheaded, and shot\x22"],
         themeAnswer: ["WORN"],
@@ -67,7 +70,7 @@ export const GAMEDATA = {
     },
     3: {
         words: ["MOTOROLA","BLACKBERRY","APPLE","NOKIA","SAMSUNG","ACIDIC"],
-        enumerations: ["(8)","(10)","(5a)","(5b)","(7)","(6)"],
+        enumerations: ["(8)","(10)","(5)","(5)","(7)","(6)"],
         clues: ["Razr maker","It's red when it's green","American pie","Carless?","Galaxy creator","Sharp-tasting"],
         themeClue: ["\x22Ring up rice noodle soup with next half off\x22"],
         themeAnswer: ["PHONE"],
@@ -104,7 +107,7 @@ export const GAMEDATA = {
     4: {
         words: ["POINT","MINT","THUMBPRINT","COMPLAINT","SQUINT","PLAN","SAINT"],
         enumerations: ["(5)","(4)","(10)","(9)","(6)","(4)","(5)"],
-        clues: ["Object without dimensions","Coin","Hand's first impression?","Grievance","Peer","Mean","Godsend?"],
+        clues: ["Object without dimensions","Like new","Hand's first impression?","Grievance","Peer","Blueprint","Godsend?"],
         themeClue: ["\x22Tinned bananas give hope\x22"],
         themeAnswer: ["INTEND"],
         sharedLetters: [
@@ -137,7 +140,7 @@ export const GAMEDATA = {
     5: {
         words: ["FOREST","AGAINST","DELIST","DIVEST","BOOST","MODEST","HONEST","BOULEVARD"],
         enumerations: ["(6)","(7)","(6)","(6)","(5)","(6)","(6)","(9)"],
-        clues: ["Woods... or one in front?","Touching... or another one?","Remove... or one with Reubens?","Strip... or one with bars?","Plug... or a scary one?","Decent... or a fashionable one?","Truthful... or one for sharpening?","Wide road"],
+        clues: ["Woods... or one in front?","Touching... or another one?","Remove... or one with Reubens?","Strip... or one with bars?","Plug... or a scary one?","Decent... or one with statisticians?","Truthful... or one for sharpening?","Wide road"],
         themeClue: ["\x22Retweets retracted, resent regularly... make way!\x22"],
         themeAnswer: ["STREET"],
         sharedLetters: [
