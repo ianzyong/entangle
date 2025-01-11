@@ -69,9 +69,9 @@ export const GAMEDATA = {
         ]
     },
     3: {
-        words: ["MOTOROLA","BLACKBERRY","APPLE","NOKIA","SAMSUNG","ACIDIC"],
-        enumerations: ["(8)","(10)","(5)","(5)","(7)","(6)"],
-        clues: ["Razr maker","It's red when it's green","American pie","Carless?","Galaxy creator","Sharp-tasting"],
+        words: ["MOTOROLA","BLACKBERRY","APPLE","NOKIA","SAMSUNG","ACIDIC","GOOGLE"],
+        enumerations: ["(8)","(10)","(5)","(5)","(7)","(6)","(6)"],
+        clues: ["Razr maker","It's red when it's green","American pie","Carless?","Galaxy creator","Sharp-tasting","Search online, maybe"],
         themeClue: ["\x22Ring up rice noodle soup with next half off\x22"],
         themeAnswer: ["PHONE"],
         sharedLetters: [
@@ -101,6 +101,12 @@ export const GAMEDATA = {
             },
             {
                 indices: [[4,1],[5,0]]
+            },
+            {
+                indices: [[6,1],[0,3]]
+            },
+            {
+                indices: [[6,5],[1,6]]
             }
         ]
     },
@@ -170,6 +176,48 @@ export const GAMEDATA = {
             },
             {
                 indices: [[7,4],[2,1]]
+            }
+        ]
+    },
+    6: {
+        words: ["FRICTION","CILIANMURPHY","HEAT","SUNBURN","POISONIVY","HIKING","VIRUS"],
+        enumerations: ["(8)","(6,6)","(4)","(7)","(6,3)","(6)","(5)"],
+        clues: ["Sanding force","After Oppenheimer, maybe he's not one anymore?","Warm","Beach-goer's affliction","Gotham City eco-terrorist","Increasing (a price)","Like the cold"],
+        themeClue: ["\x22Bristle burst bubble\x22"],
+        themeAnswer: ["BLISTER"],
+        sharedLetters: [
+            {
+                indices: [[0,2],[1,1]]
+            },
+            {
+                indices: [[0,3],[1,0]]
+            },
+            {
+                indices: [[0,4],[2,3]]
+            },
+            {
+                indices: [[2,0],[5,0]]
+            },
+            { 
+                indices: [[5,4],[1,5],[3,2],[3,6]]
+            },
+            {
+                indices: [[6,1],[4,2],[4,6]]
+            },
+            {
+                indices: [[4,7],[6,0]]
+            },
+            {
+                indices: [[1,3],[5,1]]
+            },
+            {
+                indices: [[4,1],[4,4]]
+            },
+            {
+                indices: [[1,8],[6,2]]
+            },
+            {
+                indices: [[1,7],[6,3],[3,1]]
             }
         ]
     }

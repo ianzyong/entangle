@@ -73,6 +73,8 @@ function Node(id, value, containsFirstLetter, containsRepeat, nodeIndicesOfParen
 // use data in WORDS and node_memberships to create nodes
 var nodes = [];
 
+var firstLetterNodeIndices = [];
+
 for (let current_node_index = 0; current_node_index < num_nodes; current_node_index++) {
     let containsFirstLetter = [false, []];
     let containsRepeat = false;
@@ -90,6 +92,7 @@ for (let current_node_index = 0; current_node_index < num_nodes; current_node_in
                 if (j == 0) {
                     containsFirstLetter[0] = true;
                     containsFirstLetter[1].push(i);
+                    firstLetterNodeIndices.push([current_node_index,i]);
                     adjNodeIndices.push(node_memberships[i][j + 1]);
                 } else if (j == node_memberships[i].length - 1) {
                     adjNodeIndices.push(node_memberships[i][j - 1]);
@@ -103,6 +106,11 @@ for (let current_node_index = 0; current_node_index < num_nodes; current_node_in
     let node = new Node(current_node_index, value, containsFirstLetter, containsRepeat, nodeIndicesOfParentWords, adjNodeIndices);
     nodes.push(node);
 }
+
+// sort firstLetterNodeIndices by the second element of each subarray
+firstLetterNodeIndices.sort((a,b) => a[1] - b[1]);
+// remove the second element of each subarray
+firstLetterNodeIndices = firstLetterNodeIndices.map(x => x[0]);
 
 // create nodes in dagre
 var g = new dagre.graphlib.Graph();
@@ -382,6 +390,37 @@ function cycleWord(lce) {
     }
 }
 
+function cycleWordList(lce) {
+
+    let nextWordIndex = 0;
+
+    if (lce === null || lce === undefined) {
+        nextWordIndex = 0
+
+    } else if (lce.classList.contains("letter-box")) {
+        lce.classList.remove("selected-box");
+        toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
+
+        let wordIndex = lastSelectedWord;
+        nextWordIndex = (wordIndex+1) % WORDS.length;
+
+    } else {
+        nextWordIndex = 0
+    }
+
+    lastClickedNode = nodes[firstLetterNodeIndices[nextWordIndex]];
+    lastSelectedWord = nextWordIndex;
+    lastClickedElement = lastClickedNode.element;
+    lastClickedElement.classList.add("selected-box");
+
+    clue.textContent = CLUES[lastSelectedWord] + " ";
+    clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+    clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+
+    last_position = 0;
+    toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
+}
+
 let clue = document.getElementById("clue");
 let clueEnum = document.getElementById("clue-enum");
 
@@ -412,7 +451,11 @@ function updateMinimap(sameWord) {
             // remove position styles
             element.style.position = "relative";
             element.style.left = "0px";
-            element.style.top = "0px";
+            if (element.classList.contains("repeated-box")) {
+                element.style.top = "-2.5px";
+            } else {
+                element.style.top = "0px";
+            }
             element.classList.add("mini-box");
             // element.classList.add("animate__animated");
             // element.classList.add("animate__pulse");
@@ -934,17 +977,13 @@ function cycleLetter(pressedKey, lce) {
     if (lce.classList.contains("letter-box")) {
 
         lce.classList.remove("selected-box")
-        
-        //console.log(lce.node)
 
         // select next letter
         let node_indices = lce.node.nodeIndicesOfParentWords[lastSelectedWord];
-        //console.log(node_indices);
         let current_position = node_indices.indexOf(lce.node.id);
         if (last_position !== null) {
             current_position = last_position;
         }
-        //console.log(current_position);
         let nextNode = null;
         
         let next_position = null;
@@ -1020,7 +1059,15 @@ document.addEventListener("keydown", (e) => {
     }
 
     if (pressedKey === "Enter") {
+        e.preventDefault();
         cycleWord(lastClickedElement)
+        updateMinimap(false);
+        return
+    }
+
+    if (pressedKey === "Tab") {
+        e.preventDefault();
+        cycleWordList(lastClickedElement);
         updateMinimap(false);
         return
     }
