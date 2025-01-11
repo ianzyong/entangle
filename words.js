@@ -219,7 +219,8 @@ export const GAMEDATA = {
             {
                 indices: [[1,7],[6,3],[3,1]]
             }
-        ]
+        ],
+        textSettings: {1: [6,17,"i"]}
     }
 }
 

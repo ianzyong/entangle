@@ -16,6 +16,9 @@ const THEMECLUE = GAMEDATA[puzzleNumber].themeClue
 const THEMEANSWER = GAMEDATA[puzzleNumber].themeAnswer
 const SHAREDLETTERS = GAMEDATA[puzzleNumber].sharedLetters
 
+// get textSettings if it exists
+const TEXTSETTINGS = GAMEDATA[puzzleNumber].textSettings ? GAMEDATA[puzzleNumber].textSettings : {};
+
 var node_memberships = WORDS.slice();
 // split each element in node_memberships into individual letters
 for (let i = 0; i < node_memberships.length; i++) {
@@ -344,7 +347,7 @@ function cycleWord(lce) {
         //     nodes[nodeIndex].element.classList.remove("highlighted-box");
         // }
 
-        if(!lce.classList.contains("filled-box")) {
+        if(!lce.classList.contains("filled-box") && !lce.classList.contains("first-letter-box")) {
             lce.style.removeProperty("border-color")
         }
 
@@ -369,10 +372,20 @@ function cycleWord(lce) {
             }
             
         }
-
-        clue.textContent = CLUES[lastSelectedWord] + " ";
-        clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
-        clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+        
+        // if text settings includes the current word as a key
+        if (lastSelectedWord in TEXTSETTINGS) {
+            let startInd = TEXTSETTINGS[lastSelectedWord][0];
+            let endInd = TEXTSETTINGS[lastSelectedWord][1];
+            let tag = TEXTSETTINGS[lastSelectedWord][2];
+            
+            // insert tag at startInd and endInd
+            clue.innerHTML = CLUES[lastSelectedWord].substring(0,startInd) + "<" + tag + ">" + CLUES[lastSelectedWord].substring(startInd,endInd) + "</" + tag + ">" + CLUES[lastSelectedWord].substring(endInd) + " ";
+        } else {
+            clue.textContent = CLUES[lastSelectedWord] + " ";
+            clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+            clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+        }
 
         //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
         // add highlighted-box class to elements in the selected word
@@ -409,12 +422,28 @@ function cycleWordList(lce) {
     lastClickedElement = lastClickedNode.element;
     lastClickedElement.classList.add("selected-box");
 
-    clue.textContent = CLUES[lastSelectedWord] + " ";
-    clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
-    clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+    // if text settings includes the current word as a key
+    if (lastSelectedWord in TEXTSETTINGS) {
+        let startInd = TEXTSETTINGS[lastSelectedWord][0];
+        let endInd = TEXTSETTINGS[lastSelectedWord][1];
+        let tag = TEXTSETTINGS[lastSelectedWord][2];
+        
+        // insert tag at startInd and endInd
+        clue.innerHTML = CLUES[lastSelectedWord].substring(0,startInd) + "<" + tag + ">" + CLUES[lastSelectedWord].substring(startInd,endInd) + "</" + tag + ">" + CLUES[lastSelectedWord].substring(endInd) + " ";
+    } else {
+        clue.textContent = CLUES[lastSelectedWord] + " ";
+        clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+        clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+    }
 
     last_position = 0;
     toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
+
+    if (lastClickedElement.getBoundingClientRect().top > 0 && lastClickedElement.getBoundingClientRect().bottom <= (window.innerHeight || document.documentElement.clientHeight)) {
+        return
+    } else {
+        lastClickedElement.scrollIntoView({behavior: "smooth"});
+    }
 }
 
 let clue = document.getElementById("clue");
@@ -566,9 +595,19 @@ document.addEventListener('click', function(event) {
         //     }
         // }
 
-        clue.textContent = CLUES[lastSelectedWord] + " ";
-        clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
-        clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+        // if text settings includes the current word as a key
+        if (lastSelectedWord in TEXTSETTINGS) {
+            let startInd = TEXTSETTINGS[lastSelectedWord][0];
+            let endInd = TEXTSETTINGS[lastSelectedWord][1];
+            let tag = TEXTSETTINGS[lastSelectedWord][2];
+            
+            // insert tag at startInd and endInd
+            clue.innerHTML = CLUES[lastSelectedWord].substring(0,startInd) + "<" + tag + ">" + CLUES[lastSelectedWord].substring(startInd,endInd) + "</" + tag + ">" + CLUES[lastSelectedWord].substring(endInd) + " ";
+        } else {
+            clue.textContent = CLUES[lastSelectedWord] + " ";
+            clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+            clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
+        }
     } else {
         clue.textContent = "";
         clueEnum.textContent = "";
@@ -686,7 +725,9 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                     nodes[i].element.style.color = "#f87a7a";
 
                     //nodes[i].element.classList.remove("filled-box");
-                    nodes[i].element.style.removeProperty("border-color")
+                    if (!(nodes[i].containsFirstLetter[0])) {
+                        nodes[i].element.style.removeProperty("border-color")
+                    }
                     animateCSS(nodes[i].element, 'headShake');
                     // set the lines of the node back to default color
                     colorLines(nodes[i].id, nodes[i].adjNodeIndices, true);
