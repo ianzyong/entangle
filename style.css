@@ -75,7 +75,7 @@ button {
     border-radius: 3px;
     margin: 2px;
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     height: 2rem;
     width: 2rem;
     position: relative;
@@ -87,6 +87,10 @@ button {
     transition: all 0.4s ease-in-out;
     user-select: none;
 }
+
+/* .first-letter-box {
+    background: radial-gradient(#151515, #262626);
+} */
 
 .letter-box:hover {
     border-color:#959595;

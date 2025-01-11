@@ -9,8 +9,6 @@ if (window.location.href.includes("?")) {
     puzzleNumber = Number(window.location.href.match(/(?<=puzzle=)[0-9]+/)[0]);
 }
 
-//console.log("Puzzle " + puzzleNumber);
-
 const WORDS = GAMEDATA[puzzleNumber].words
 const ENUMERATIONS = GAMEDATA[puzzleNumber].enumerations
 const CLUES = GAMEDATA[puzzleNumber].clues
@@ -134,8 +132,6 @@ for (let i = 0; i < nodes.length; i++) {
 
 dagre.layout(g);
 
-//console.log(g);
-
 function bezier(t, p0, p1, p2, p3) {
     var cX = 3 * (p1.x - p0.x),
         bX = 3 * (p2.x - p1.x) - cX,
@@ -191,6 +187,7 @@ function initBoard() {
         element.node = nodes[i];
 
         if (nodes[i].containsFirstLetter[0]) {
+            element.classList.add("first-letter-box");
             // create a text element above the element with the enumeration
             let enumerations = document.createElement("div");
             //enumeration.textContent += ENUMERATIONS[nodes[i].containsFirstLetter[1]];
@@ -202,6 +199,8 @@ function initBoard() {
             enumerations.classList.add("enumerations");
             board.appendChild(enumerations);
 
+            let enum_color = "#ffffff";
+            
             // for each value in containsFirstLetter, add the enumeration
             for (let j = 0; j < nodes[i].containsFirstLetter[1].length; j++) {
                 let enumeration = document.createElement("span");
@@ -210,9 +209,11 @@ function initBoard() {
                     enumeration.textContent += " ";
                 }
                 enumeration.textContent += ENUMERATIONS[nodes[i].containsFirstLetter[1][j]];
-                enumeration.style.color = color_list[(nodes[i].containsFirstLetter[1][j])%color_list.length];
+                enum_color = color_list[(nodes[i].containsFirstLetter[1][j])%color_list.length];
+                enumeration.style.color = enum_color;
                 enumerations.appendChild(enumeration);
             }
+            element.style.borderColor = getBorderColor(element);
         }
 
         // if the node has multiple parent words
@@ -271,7 +272,6 @@ function initBoard() {
             let terminals = [nodes[i].id, nodes[nodes[i].adjNodeIndices[j]].id];
             // if the node is adjacent to itself or if the terminal nodes already exist in the lines array
             if (nodes[i].adjNodeIndices[j] == nodes[i].id || getLines(terminals[0], terminals[1])) {
-                //console.log(getLines(terminals[0], terminals[1]))
                 continue;
             }
 
@@ -353,8 +353,6 @@ function cycleWord(lce) {
         for (const property in lce.node.nodeIndicesOfParentWords) {
             memberOf.push(property);
         }
-        
-        //console.log(memberOf);
 
         let testWord = lastSelectedWord;
         
@@ -375,8 +373,6 @@ function cycleWord(lce) {
         clue.textContent = CLUES[lastSelectedWord] + " ";
         clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
         clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
-
-        //console.log(testWord + " -> " + lastSelectedWord);
 
         //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
         // add highlighted-box class to elements in the selected word
@@ -446,7 +442,6 @@ function updateMinimap(sameWord) {
         
         // create a copy of each node in the selected word, retaining classes
         for (let nodeIndex of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-            //console.log(nodes[nodeIndex].element);
             let element = nodes[nodeIndex].element.cloneNode(true);
             // remove position styles
             element.style.position = "relative";
@@ -551,8 +546,6 @@ document.addEventListener('click', function(event) {
         // for (let nodeIndex of lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]) {
         //     nodes[nodeIndex].element.classList.add("highlighted-box");
         // }
-        
-        //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
 
         toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
 
@@ -591,7 +584,6 @@ document.addEventListener('click', function(event) {
 });
 
 function toggleHighlight(nodeIndices) {
-    //console.log(nodeIndices);
     for (let i = 0; i < nodeIndices.length; i++) {
         // if the current node index is contained in nodeindices thus far
         if (!nodeIndices.slice(0,i).includes(nodeIndices[i])) {
@@ -686,7 +678,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
     if (key === "Check") {
         let allCorrect = true;
-        //console.log(nodes);
         let elementsToHint = [];
         for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].element.textContent) {
@@ -698,7 +689,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                     nodes[i].element.style.removeProperty("border-color")
                     animateCSS(nodes[i].element, 'headShake');
                     // set the lines of the node back to default color
-                    //console.log(nodes[i]);
                     colorLines(nodes[i].id, nodes[i].adjNodeIndices, true);
                     allCorrect = false;
                 } 
@@ -786,10 +776,8 @@ function blendColors(colors) {
     let b = 0;
 
     for (let i = 0; i < colors.length; i++) {
-        //console.log(colors[i]);
         // if color is a hex string
         if (colors[i].substring(0,1) == "#") {
-            //console.log(colors[i])
             r += parseInt(colors[i].substring(1,3).toUpperCase(), 16);
             g += parseInt(colors[i].substring(3,5).toUpperCase(), 16);
             b += parseInt(colors[i].substring(5,7).toUpperCase(), 16);
@@ -801,7 +789,6 @@ function blendColors(colors) {
             b += parseInt(rgb[2]);
         }
     }
-    //console.log(r)
     
     r = Math.round(r / colors.length);
     g = Math.round(g / colors.length);
@@ -839,7 +826,7 @@ function getBorderColor(element) {
         
         col = blendColors(colors);
     } else {
-        col = color_list[(Object.keys(lastClickedElement.node.nodeIndicesOfParentWords)[0])%color_list.length];
+        col = color_list[(Object.keys(element.node.nodeIndicesOfParentWords)[0])%color_list.length];
     }
     return col;
 }
@@ -946,7 +933,9 @@ function deleteLetter () {
 
         lastClickedElement.textContent = ""
         lastClickedElement.classList.remove("filled-box")
-        lastClickedElement.style.removeProperty("border-color")
+        if (!(lastClickedElement.classList.contains("first-letter-box"))) {
+            lastClickedElement.style.removeProperty("border-color")
+        }
         //lastClickedElement.classList.remove("selected-box")
         // remove stroke attribute from element.style
         // for (let i = 0; i < lastClickedElement.node.lines.length; i++) {
@@ -1034,7 +1023,6 @@ function cycleLetter(pressedKey, lce) {
 
         last_position = next_position;
 
-        //console.log(lce.node.id + " -> " + nextNode);
         // select next element
         lastClickedElement = nodes[nextNode].element;
         // add selected-box class to the element
