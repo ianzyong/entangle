@@ -383,9 +383,9 @@ function cycleWord(lce) {
             clue.innerHTML = CLUES[lastSelectedWord].substring(0,startInd) + "<" + tag + ">" + CLUES[lastSelectedWord].substring(startInd,endInd) + "</" + tag + ">" + CLUES[lastSelectedWord].substring(endInd) + " ";
         } else {
             clue.textContent = CLUES[lastSelectedWord] + " ";
-            clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
-            clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
         }
+        clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+        clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
 
         //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
         // add highlighted-box class to elements in the selected word
@@ -432,9 +432,9 @@ function cycleWordList(lce) {
         clue.innerHTML = CLUES[lastSelectedWord].substring(0,startInd) + "<" + tag + ">" + CLUES[lastSelectedWord].substring(startInd,endInd) + "</" + tag + ">" + CLUES[lastSelectedWord].substring(endInd) + " ";
     } else {
         clue.textContent = CLUES[lastSelectedWord] + " ";
-        clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
-        clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
     }
+    clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+    clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
 
     last_position = 0;
     toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
@@ -605,9 +605,9 @@ document.addEventListener('click', function(event) {
             clue.innerHTML = CLUES[lastSelectedWord].substring(0,startInd) + "<" + tag + ">" + CLUES[lastSelectedWord].substring(startInd,endInd) + "</" + tag + ">" + CLUES[lastSelectedWord].substring(endInd) + " ";
         } else {
             clue.textContent = CLUES[lastSelectedWord] + " ";
-            clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
-            clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
         }
+        clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
+        clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
     } else {
         clue.textContent = "";
         clueEnum.textContent = "";
