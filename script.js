@@ -154,6 +154,8 @@ let color_list = ["#A4A8D1", "#EF626C", "#E2C391", "#52FFB8", "#66C7F4","#D156CB
 
 let lines = [];
 
+let progressPane = document.getElementById("progress-pane");
+
 function initBoard() {
     let title = document.getElementById("title");
     title.textContent = "entangle #" + puzzleNumber;
@@ -234,6 +236,20 @@ function initBoard() {
         nodes[i].element = element;
     }
 
+    // populate the progress pane
+    for (let i = 0; i < ENUMERATIONS.length; i++) {
+        let entry = document.createElement("div");
+        entry.classList.add("entry");
+        //entry.style.color = color_list[i%color_list.length];
+        progressPane.appendChild(entry);
+        let enumSpan = document.createElement("span");
+        enumSpan.textContent = ENUMERATIONS[i];
+        entry.appendChild(enumSpan);
+        let wordSpan = document.createElement("span");
+        wordSpan.classList.add("entry-word");
+        entry.appendChild(wordSpan);
+    }
+
     // get maximum y value from nodes
     let maxY = 0;
     for (let i = 0; i < nodes.length; i++) {
@@ -299,15 +315,20 @@ function initBoard() {
     
 
     let controlPane = document.getElementById("control-pane");
+    // set width to a multiple of the number of letters in the longest word
+    let maxLetters = Math.max(...WORDS.map(x => x.length));
+    console.log(maxLetters);
+    let blockWidth = 55;
+    controlPane.style.minWidth = maxLetters * blockWidth + "px";
 
     // get body element
     let body = document.getElementsByTagName("body")[0];
     // set body style
     body.style.minHeight = boardHeight + "px";
-    body.style.minWidth = boardWidth + controlPane.offsetWidth + "px";
+    body.style.minWidth = boardWidth + maxLetters * blockWidth + "px";
 
     let mainDivider = document.getElementById("main-divider");
-    mainDivider.style.maxWidth = boardWidth + controlPane.offsetWidth + "px";
+    mainDivider.style.maxWidth = boardWidth + maxLetters * blockWidth + "px";
 
     //controlPanel.style.height = maxY + "px";
 
@@ -488,9 +509,64 @@ function updateMinimap(sameWord) {
     }
 }
 
+function updateProgress() {
+    if (lastSelectedWord !== null && lastClickedElement.classList.contains("letter-box")) {
+        
+        // for each word
+        for (let wordIndex = 0; wordIndex < WORDS.length; wordIndex++) {
+            // get child element of progressPane corresponding to the current word
+            let entry = progressPane.children[wordIndex];
+            let currentEnum = entry.children[0];
+            let currentWord = entry.children[1];
+            // get the text content from the nodes belonging to the current word
+            let currentWordText = "";
+            for (let nodeIndex of node_memberships[wordIndex]) {
+                if (nodes[nodeIndex].element.textContent) {
+                    currentWordText += nodes[nodeIndex].element.textContent;
+                } else {
+                    currentWordText += "_";
+                }
+            }
+            // if the enumeration contains a comma, add a space at the locations in thte enumeration
+            if (currentEnum.textContent.includes(",")) {
+                let spaceIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseInt(x));
+                for (let i = 0; i < spaceIndices.length-1; i++) {
+                    currentWordText = currentWordText.slice(0,spaceIndices[i]) + " " + currentWordText.slice(spaceIndices[i]);
+                }
+            }
+
+            // if (currentWord.textContent != currentWordText) {
+            //     animateCSS(entry, 'pulse');
+            // }
+            
+            currentWord.textContent = currentWordText;
+            currentWord.style.color = color_list[(wordIndex)%color_list.length];
+            // if currentWordText is not empty, color the text
+            if (!(currentWordText).includes("_")) {
+                currentEnum.style.color = color_list[(wordIndex)%color_list.length];
+            } else {
+                // remove color style
+                currentEnum.style.color = "";
+            }
+        }
+    }
+}
+
 document.addEventListener('click', function(event) {
     if ((event.target.id == "mini-map" || event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
         return
+    }
+
+    if (event.target.id === "help-button") {
+        alert(
+`- every puzzle has a theme
+- click nodes to select
+- the first letter of each word is marked with an enumeration
+- arrow keys navigate within a word and "enter" cycles through any intersecting words
+- "tab" cycles through the word list
+- hit "check" on the keyboard when you're done
+- hit "hint" on the keyboard to reveal the selected letter`
+        );
     }
 
     if (event.target.parentElement.id == "mini-map") {
@@ -620,6 +696,7 @@ document.addEventListener('click', function(event) {
 
     lastClickedElement = event.target;
     updateMinimap();
+    updateProgress();
 });
 
 function toggleHighlight(nodeIndices) {
@@ -801,6 +878,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             selectedBox.classList.add("hinted-box");
             lastClickedElement.style.borderColor = getBorderColor(lastClickedElement);
             updateMinimap(false);
+            updateProgress();
             numHints++;
         }
     } 
@@ -1084,6 +1162,7 @@ document.addEventListener("keydown", (e) => {
     if (pressedKey === "Backspace") {
         deleteLetter()
         updateMinimap(true);
+        updateProgress();
         return
     }
 
@@ -1091,6 +1170,7 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault();
         cycleWord(lastClickedElement)
         updateMinimap(false);
+        updateProgress();
         return
     }
 
@@ -1098,6 +1178,7 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault();
         cycleWordList(lastClickedElement);
         updateMinimap(false);
+        updateProgress();
         return
     }
 
@@ -1106,6 +1187,7 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault();
         cycleLetter(pressedKey, lastClickedElement)
         updateMinimap(true);
+        updateProgress();
         return
     }
 
@@ -1117,6 +1199,7 @@ document.addEventListener("keydown", (e) => {
     }
 
     updateMinimap(false);
+    updateProgress();
 
 })
 
