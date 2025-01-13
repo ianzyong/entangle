@@ -317,14 +317,16 @@ function initBoard() {
     let controlPane = document.getElementById("control-pane");
     // set width to a multiple of the number of letters in the longest word
     let maxLetters = Math.max(...WORDS.map(x => x.length));
-    console.log(maxLetters);
     let blockWidth = 55;
     controlPane.style.minWidth = maxLetters * blockWidth + "px";
+
+    // get viewport height
+    let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 
     // get body element
     let body = document.getElementsByTagName("body")[0];
     // set body style
-    body.style.minHeight = boardHeight + "px";
+    body.style.minHeight = boardHeight + controlPane.offsetHeight + "px";
     body.style.minWidth = boardWidth + maxLetters * blockWidth + "px";
 
     let mainDivider = document.getElementById("main-divider");
@@ -978,6 +980,10 @@ function colorLines(currentNode, adjNodes, clear) {
     // get lines that have the current node as a terminal
     for (let i = 0; i < adjNodes.length; i++) {
         let line = getLines(currentNode, adjNodes[i]);
+        // skip undefined values
+        if (line == undefined) {
+            continue;
+        }
         if (clear) {
             line.style.removeProperty('stroke');
         } else {
@@ -1139,8 +1145,14 @@ function cycleLetter(pressedKey, lce) {
         }
 
         nextNode = node_indices[next_position];
-
+        
         last_position = next_position;
+
+        // if the new node has the same id as the current node
+        if (nextNode === lce.node.id) {
+            cycleLetter(pressedKey, nodes[nextNode].element);
+            return;
+        }
 
         // select next element
         lastClickedElement = nodes[nextNode].element;

@@ -147,7 +147,7 @@ export const GAMEDATA = {
         words: ["FOREST","AGAINST","DELIST","DIVEST","BOOST","MODEST","HONEST","BOULEVARD"],
         enumerations: ["(6)","(7)","(6)","(6)","(5)","(6)","(6)","(9)"],
         clues: ["Woods... or one in front?","Touching... or another one?","Remove... or one with Reubens?","Strip... or one with bars?","Plug... or a scary one?","Decent... or one with statisticians?","Truthful... or one for sharpening?","Wide road"],
-        themeClue: ["\x22Retweets retracted, resent regularly... make way!\x22"],
+        themeClue: ["\x22Retweets retracted, resent\nregularly... make way!\x22"],
         themeAnswer: ["STREET"],
         sharedLetters: [
             {
@@ -221,6 +221,93 @@ export const GAMEDATA = {
             }
         ],
         textSettings: {1: [6,17,"i"]}
+    },
+    7: {
+        words: ["AHEAD","ABACK","SEPARATE","ABREAST","AFOOT","ALIVER"],
+        enumerations: ["(5)","(5)","(8)","(7)","(5)","(6)"],
+        clues: ["Winning","(Taken) by surprise","Break up","Well-informed (of)","Underway","More bustling, maybe"],
+        themeClue: ["\x22Isolated H.S. class with paintbrushes?\x22"],
+        themeAnswer: ["APART"],
+        sharedLetters: [
+            {
+                indices: [[0,2],[3,3],[5,4]]
+            },
+            {
+                indices: [[0,0],[0,3]]
+            },
+            {
+                indices: [[2,6],[3,6],[4,4]]
+            },
+            {
+                indices: [[5,0],[2,3],[4,0],[2,5]]
+            },
+            {
+                indices: [[3,4],[3,0]]
+            },
+            { 
+                indices: [[1,1],[3,1]]
+            },
+            { 
+                indices: [[1,0],[1,2]]
+            },
+            { 
+                indices: [[2,0],[3,5]]
+            },
+            { 
+                indices: [[3,2],[5,5]]
+            },
+            { 
+                indices: [[2,1],[2,7]]
+            }
+        ]
+    },
+    8: {
+        words: ["ORANGE","OPINE","ORATIONS","OATMEAL","SHORTAGE","OMISSIONS","OMEN"],
+        enumerations: ["(6)","(5)","(8)","(7)","(8)","(9)","(4)"],
+        clues: ["Color... without versatility?","Express a viewpoint... without a fresh scent?","Speeches... without provisions?","Hot cereal... with nobody there to eat it?","Brief era?","Deletions... without assignments?","Sign... without sirs?"],
+        themeClue: ["\x22Want henchman to leave enemy borders\x22"],
+        themeAnswer: ["LACK"],
+        sharedLetters: [
+            {
+                indices: [[0,1],[2,1]]
+            },
+            {
+                indices: [[0,2],[2,2],[3,1],[4,5]]
+            },
+            {
+                indices: [[1,3],[2,6]]
+            },
+            {
+                indices: [[2,7],[4,0]]
+            },
+            { 
+                indices: [[5,0],[6,0]]
+            },
+            { 
+                indices: [[5,1],[6,1]]
+            },
+            { 
+                indices: [[2,3],[3,2],[4,4]]
+            },
+            { 
+                indices: [[3,4],[1,4]]
+            },
+            {
+                indices: [[1,2],[5,2],[5,5]]
+            },
+            {
+                indices: [[5,3],[5,4]]
+            },
+            {
+                indices: [[4,6],[0,4]]
+            },
+            {
+                indices: [[4,7],[0,5]]
+            }
+            // {
+            //     indices: [[4,2],[5,6]]
+            // }
+        ]
     }
 }
 
