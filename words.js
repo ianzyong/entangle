@@ -1,4 +1,119 @@
 export const GAMEDATA = {
+    "-1": {
+        // [FREFGHTER, METAFCTION, FGMENT, UNDEFNED, INFNITE, BENEFT, FXING]
+        words: [[["F1"],["R"],["E"],["F1"],["G"],["H"],["T"],["E"],["R"]],[["M"],["E"],["T"],["A"],["F1"],["C"],["T"],["I"],["O"],["N"]],[["F1"],["G"],["M"],["E"],["N"],["T"]],[["U"],["N"],["D"],["E"],["F1"],["N"],["E"],["D"]],[["I"],["N"],["F1"],["N"],["I"],["T"],["E"]],[["B"],["E"],["N"],["E"],["F1"],["T"]],[["F1"],["X"],["I"],["N"],["G"]]],
+        enumerations: ["(9)","(10)","(6)","(8)","(7)","(6)","(5)"],
+        clues: ["Steve Buscemi's stint in the 80s","Self-conscious literary form","It's from your imagination","...","Boundless","Perk","Repairing Formula One intersection?"],
+        themeClue: ["\x22Bushel, peck to carry... assistance?\x22"],
+        themeAnswer: ["HELP"],
+        sharedLetters: [
+            {
+                indices: [[0,0],[0,3],[4,2]]
+            },
+            {
+                indices: [[0,1],[0,8]]
+            },
+            {
+                indices: [[0,2],[0,7]]
+            },
+            {
+                indices: [[1,2],[1,6],[2,5],[5,5],[4,5],[0,6]]
+            },
+            {
+                indices: [[1,0],[2,2]]
+            },
+            {
+                indices: [[1,1],[2,3],[4,6]]
+            },
+            {
+                indices: [[3,1],[3,5],[5,2]]
+            },
+            {
+                indices: [[2,0],[1,4],[5,4]]
+            },
+            {
+                indices: [[5,1],[5,3],[3,3],[3,6]]
+            },
+            {
+                indices: [[4,0],[4,4]]
+            },
+            {
+                indices: [[4,1],[4,3]]
+            },
+            {
+                indices: [[3,2],[3,7]]
+            },
+            {
+                indices: [[6,2],[1,7]]
+            },
+            {
+                indices: [[6,3],[1,9]]
+            },
+            {
+                indices: [[6,4],[0,4]]
+            }
+        ]
+    },
+    0: {
+        words: ["8675309","ROUTE66","101DALMATIANS","TAIPEI101","ANESTHETIC","1","57VARIETIES","MAROON5"],
+        enumerations: ["(7)","(5,2)","(3,10)","(6,3)","(10)","(1)","(2,9)","(6,1)"],
+        clues: ["Jenny's contact","Get your kicks on...","Cruella de Vil's haul","Taiwan\'s tallest skyscraper","Administered before surgery","The loneliest one","Heinz slogan","They've got \x22Moves Like Jagger\x22"],
+        themeClue: ["\x22Figure from brown shade follows knight\x22"],
+        themeAnswer: ["NUMBER"],
+        sharedLetters: [
+            {
+                indices: [[0,1],[1,5],[1,6]]
+            },
+            {
+                indices: [[0,5],[2,1],[3,7]]
+            },
+            {
+                indices: [[2,0],[3,8]]
+            },
+            {
+                indices: [[2,2],[3,6]]
+            },
+            {
+                indices: [[2,10],[4,0]]
+            },
+            {
+                indices: [[3,2],[3,5],[4,8]]
+            },
+            {
+                indices: [[2,12],[4,3]]
+            },
+            {
+                indices: [[2,11],[4,1]]
+            },
+            {
+                indices: [[4,4],[4,7],[3,0]]
+            },
+            {
+                indices: [[0,3],[6,0]]
+            },
+            {
+                indices: [[0,2],[6,1]]
+            }, 
+            {
+                indices: [[1,0],[6,4],[7,2]]
+            },
+            {
+                indices: [[1,3],[6,7]]
+            },
+            {
+                indices: [[1,4],[6,6]]
+            },
+            {
+                indices: [[6,3],[7,1]]
+            },
+            {
+                indices: [[7,3],[1,1]]
+            },
+            {
+                indices: [[0,3],[7,6]]
+            }
+        ]
+    },
     1: {
         words: ["DAISY","AZALEA","RIVER","IRIS","HYDRANGEA","CARNATION"],
         enumerations: ["(5)","(6)","(5)","(4)","(9)","(9)"],

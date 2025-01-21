@@ -1,12 +1,29 @@
 import { GAMEDATA } from "./words.js";
 
 // get last key in GAMEDATA
-let puzzleNumber = Number(Object.keys(GAMEDATA).length);
+// sort as integers
+let sortedKeys = Object.keys(GAMEDATA).sort((a,b) => parseInt(a) - parseInt(b));
+let puzzleNumber = Number(sortedKeys[sortedKeys.length-1]);
+let maxPuzzleNumber = puzzleNumber;
 
-// if there is no query string
+// if there is a query string
 if (window.location.href.includes("?")) {
     // get the puzzle number from the query string
-    puzzleNumber = Number(window.location.href.match(/(?<=puzzle=)[0-9]+/)[0]);
+    puzzleNumber = Number(window.location.href.match(/(?<=puzzle=)-?\d+/));
+}
+
+// if GAMEDATA does not have puzzle number
+if (!(puzzleNumber in GAMEDATA)) {
+    puzzleNumber = 0;
+}
+
+if (puzzleNumber < 1) {
+    let tl = document.getElementById("title")
+    tl.style["text-shadow"] = "9px 9px #41FF00";
+    tl.style["animation"] = "color-change 20s ease-in-out infinite";
+    let hb = document.getElementById("hint-button");
+    // hide button
+    hb.style.display = "none";
 }
 
 const WORDS = GAMEDATA[puzzleNumber].words
@@ -20,9 +37,18 @@ const SHAREDLETTERS = GAMEDATA[puzzleNumber].sharedLetters
 const TEXTSETTINGS = GAMEDATA[puzzleNumber].textSettings ? GAMEDATA[puzzleNumber].textSettings : {};
 
 var node_memberships = WORDS.slice();
+// if any element of WORDS is an array
+if (WORDS.some(x => Array.isArray(x))) {
+    for (let i = 0; i < WORDS.length; i++) {
+        node_memberships[i] = WORDS[i].slice();
+    }
+}
+
 // split each element in node_memberships into individual letters
 for (let i = 0; i < node_memberships.length; i++) {
-    node_memberships[i] = node_memberships[i].split("");
+    if (typeof node_memberships[i] === 'string') {
+        node_memberships[i] = node_memberships[i].split("");
+    }
 }
 
 // for each letter in each word
@@ -32,7 +58,6 @@ for (let i = 0; i < node_memberships.length; i++) {
     for (let j = 0; j < node_memberships[i].length; j++) {
         // check if the current index is the first pair of any object in SHAREDLETTERS
         skip = false;
-        
         for (let k = 0; k < SHAREDLETTERS.length; k++) {
             for (let l = 0; l < SHAREDLETTERS[k].indices.length; l++) {
                 if (SHAREDLETTERS[k].indices[l][0] == i && SHAREDLETTERS[k].indices[l][1] == j) {
@@ -288,6 +313,9 @@ function initBoard() {
         //let thisNodeLines = [];
         for (let j = 0; j < nodes[i].adjNodeIndices.length; j++) {
             //thisNodeLines.push(line);
+            if (!nodes[i].adjNodeIndices[j]) {
+                continue;
+            }
             let terminals = [nodes[i].id, nodes[nodes[i].adjNodeIndices[j]].id];
             // if the node is adjacent to itself or if the terminal nodes already exist in the lines array
             if (nodes[i].adjNodeIndices[j] == nodes[i].id || getLines(terminals[0], terminals[1])) {
@@ -555,12 +583,13 @@ function updateProgress() {
 }
 
 document.addEventListener('click', function(event) {
-    if ((event.target.id == "mini-map" || event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
+    if ((event.target.lang == "en" || event.target.id == "mini-map" || event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
         return
     }
 
     if (event.target.id === "help-button") {
-        alert(
+        if (puzzleNumber > 0) {
+            alert(
 `- every puzzle has a theme
 - click nodes to select
 - the first letter of each word is marked with an enumeration
@@ -568,7 +597,13 @@ document.addEventListener('click', function(event) {
 - "tab" cycles through the word list
 - hit "check" on the keyboard when you're done
 - hit "hint" on the keyboard to reveal the selected letter`
-        );
+                        );
+        } else {
+            alert(
+`All keys are now available.`
+);
+        }
+        
     }
 
     if (event.target.parentElement.id == "mini-map") {
@@ -612,7 +647,7 @@ document.addEventListener('click', function(event) {
 
     if (event.target.id == "next") {
         let new_num = puzzleNumber+1;
-        if (new_num > Object.keys(GAMEDATA).length) {
+        if (new_num > maxPuzzleNumber) {
             return
         } else {
             updateUrl(new_num);
@@ -799,7 +834,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
         let elementsToHint = [];
         for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].element.textContent) {
-                if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toLowerCase()) {
+                if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toString().toLowerCase()) {
                     // nodes[i].element.textContent = "";
                     nodes[i].element.style.color = "#f87a7a";
 
@@ -1050,7 +1085,7 @@ function insertLetter (pressedKey) {
     cycleLetter(pressedKey, lastClickedElement);
 }
 
-function deleteLetter () {
+function deleteLetter (pressedKey) {
     if (lastClickedElement == null) {
         return
     }
@@ -1081,7 +1116,7 @@ function deleteLetter () {
         // }
 
     }
-    cycleLetter("Backspace", lastClickedElement)
+    cycleLetter(pressedKey, lastClickedElement)
 }
 
 let last_position = null;
@@ -1089,6 +1124,10 @@ let last_position = null;
 function cycleLetter(pressedKey, lce) {
 
     if (lce.classList.contains("letter-box")) {
+
+        if (pressedKey === "Delete") {
+            return;
+        }
 
         lce.classList.remove("selected-box")
 
@@ -1149,7 +1188,7 @@ function cycleLetter(pressedKey, lce) {
         last_position = next_position;
 
         // if the new node has the same id as the current node
-        if (nextNode === lce.node.id) {
+        if (nextNode === lce.node.id && node_indices.length > 1) {
             cycleLetter(pressedKey, nodes[nextNode].element);
             return;
         }
@@ -1171,8 +1210,8 @@ function cycleLetter(pressedKey, lce) {
 document.addEventListener("keydown", (e) => {
 
     let pressedKey = String(e.key)
-    if (pressedKey === "Backspace") {
-        deleteLetter()
+    if ((pressedKey === "Backspace") || (pressedKey === "Delete")) {
+        deleteLetter(pressedKey)
         updateMinimap(true);
         updateProgress();
         return
@@ -1203,7 +1242,17 @@ document.addEventListener("keydown", (e) => {
         return
     }
 
-    let found = pressedKey.match(/[a-z]/gi)
+    let found = null;
+    if (puzzleNumber > 0) {
+        found = (pressedKey.match(/[a-z]/gi) && pressedKey.length === 1)
+    } else {
+        if (pressedKey[0] === "F") {
+            e.preventDefault();
+        }
+        found = (pressedKey != "Shift")
+    }
+
+    
     if (!found || found.length > 1) {
         return
     } else {
