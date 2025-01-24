@@ -568,6 +568,12 @@ function updateProgress() {
             // if (currentWord.textContent != currentWordText) {
             //     animateCSS(entry, 'pulse');
             // }
+
+            if (puzzleNumber === -2 && wordIndex != WORDS.length-1 && !(currentWordText).includes("_")) {
+                console.log(currentWordText);
+                let currentClueSplit = CLUES[wordIndex].split(" ");
+                currentWordText = currentWordText + " ≈ " + currentClueSplit[currentClueSplit.length - 1];
+            }
             
             currentWord.textContent = currentWordText;
             currentWord.style.color = color_list[(wordIndex)%color_list.length];
@@ -598,6 +604,10 @@ document.addEventListener('click', function(event) {
 - hit "check" on the keyboard when you're done
 - hit "hint" on the keyboard to reveal the selected letter`
                         );
+        } else if (puzzleNumber === -2) {
+            alert(
+`Assume D, E, N, S, I, T, and Y are measured in radians.`
+);
         } else {
             alert(
 `All keys are now available.`
