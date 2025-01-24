@@ -1,4 +1,37 @@
 export const GAMEDATA = {
+    "-2": {
+        words: ["COSY","STAND","TITANS","COTS","SECT","INSECT","TETANY","3141592"],
+        enumerations: ["(4)","(5)","(6)","(4)","(4)","(6)","(6)","(7)"],
+        clues: ["British tea accessory... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 70.08335","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -21.95076","Involuntary contraction of muscles... or about -19.66536", "DENSITY of private eye?"],
+        themeClue: ["\x22Work force salve\x22"],
+        themeAnswer: ["FUNCTION"],
+        sharedLetters: [
+            {
+                indices: [[1,3],[2,4],[5,1]]
+            },
+            {
+                indices: [[2,5],[5,2]]
+            },
+            {
+                indices: [[2,0],[2,2],[4,3],[5,5],[6,0],[6,2]]
+            },
+            {
+                indices: [[1,2],[2,3]]
+            },
+            {
+                indices: [[0,2],[1,0]]
+            },
+            {
+                indices: [[3,3],[4,0]]
+            },
+            {
+                indices: [[3,0],[4,2],[5,4]]
+            },
+            {
+                indices: [[0,3],[6,5]]
+            }
+        ]
+    },
     "-1": {
         // [FREFGHTER, METAFCTION, FGMENT, UNDEFNED, INFNITE, BENEFT, FXING]
         words: [[["F1"],["R"],["E"],["F1"],["G"],["H"],["T"],["E"],["R"]],[["M"],["E"],["T"],["A"],["F1"],["C"],["T"],["I"],["O"],["N"]],[["F1"],["G"],["M"],["E"],["N"],["T"]],[["U"],["N"],["D"],["E"],["F1"],["N"],["E"],["D"]],[["I"],["N"],["F1"],["N"],["I"],["T"],["E"]],[["B"],["E"],["N"],["E"],["F1"],["T"]],[["F1"],["X"],["I"],["N"],["G"]]],
