@@ -456,6 +456,45 @@ export const GAMEDATA = {
             //     indices: [[4,2],[5,6]]
             // }
         ]
+    },
+    9: {
+        words: ["PARROT","DUCK","PLATYPUS","KIWI","INVOICE","EGRET","TOUCAN"],
+        enumerations: ["(6)","(4)","(8)","(4)","(7)","(5)","(6)"],
+        clues: ["Copy","Drake, e.g.","Egg-laying mammal","Green fruit","Statement","Nearly regret?","Sam on a cereal box"],
+        themeClue: ["\x22Bravo, sick act!\x22"],
+        themeAnswer: ["BILL"],
+        sharedLetters: [
+            {
+                indices: [[0,2],[0,3],[5,2]]
+            },
+            {
+                indices: [[3,1],[3,3],[4,4]]
+            },
+            {
+                indices: [[4,6],[5,0],[5,3]]
+            },
+            {
+                indices: [[0,5],[5,4]]
+            },
+            {
+                indices: [[2,3],[6,0]]
+            },
+            {
+                indices: [[4,5],[6,3]]
+            },
+            {
+                indices: [[3,0],[1,3]]
+            },
+            {
+                indices: [[1,1],[2,6]]
+            },
+            {
+                indices: [[4,1],[6,5]]
+            },
+            {
+                indices: [[2,0],[2,5]]
+            }
+        ]
     }
 }
 
