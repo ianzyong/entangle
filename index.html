@@ -31,7 +31,7 @@
                     <p>every puzzle has a theme.</p>
                 </section>
                 <section>
-                    <h2 class="puzzle-name" id="help-name"><u>"Slightly open</u> a container" <span id="name-answer"> = AJAR </span></h2>
+                    <h2 class="puzzle-name" id="help-name"><u>"Slightly open</u> a container" <span class="name-answer"> = AJAR </span></h2>
                     <p>the name of the puzzle <a href="https://archive.nytimes.com/www.nytimes.com/premium/xword/cryptics.html" target="_blank">encodes the theme.</a></p>
                 </section>
                 <section>
@@ -61,7 +61,7 @@
                     <p>first, <b>click</b> any node to select it and its parent word.</p>
                     <p>then, use the <b>arrow keys</b> to navigate within the word.</p>
                     <p>use the <b>keyboard</b> to insert symbols.</p>
-                    <p>press <b>"enter"</b> while an <i>intersecting node</i> is selected to toggle words.</p>
+                    <p>press <b>"enter"</b> while an <i>intersecting node</i> is selected<br>to toggle between words.</p>
                     <p>press <b>"tab"</b> to cycle through the word list.</p>
                 </section>
                 <section>
@@ -76,6 +76,7 @@
                     <p>- - -</p>
                 </section>
                 <section>
+                    <p>and remember:</p>
                     <p>obfuscation is beauty, but</p>
                     <p>clarity is paramount.</p>
                 </section>
@@ -96,14 +97,21 @@
     </div>
 
     <div id="results-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h1>RESULTS</h1>
-            <p id="results-puzzle-info"></p>
-            <p>Checks: <span id="checks"></span></p>
-            <p>Hints: <span id="hints"></span></p>
-            <p id="quip"></p>
-            <button class="keyboard-button">COPY RESULTS</button>
+        <div class="modal-content" id="results-modal-content">
+            <p><span class="close">&times;</span></p>
+            <div class="help-node-flex">
+                <div class="dummy-box"><p>E</p></div>
+            </div>
+            <div id = custom-modal-text>
+                <span class="entangle"><p id="results-title"></p></span>
+                <section>
+                    <p><span class="puzzle-name" id="full-subtitle"><span id="results-subtitle"></span><span class="name-answer" id="results-name-answer"></span></span></p>
+                    <p id="results-text"></p>
+                </section>
+                <section>
+                    <button class="keyboard-button" id="copy-results">COPY RESULTS</button>
+                </section>
+            </div>
         </div>
     </div>
 

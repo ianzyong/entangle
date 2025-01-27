@@ -36,6 +36,8 @@ const SHAREDLETTERS = GAMEDATA[puzzleNumber].sharedLetters
 // get textSettings if it exists
 const TEXTSETTINGS = GAMEDATA[puzzleNumber].textSettings ? GAMEDATA[puzzleNumber].textSettings : {};
 
+let animationPlayed = false;
+
 var node_memberships = WORDS.slice();
 // if any element of WORDS is an array
 if (WORDS.some(x => Array.isArray(x))) {
@@ -468,7 +470,20 @@ function cycleWordList(lce) {
         nextWordIndex = 0
     }
 
-    lastClickedNode = nodes[firstLetterNodeIndices[nextWordIndex]];
+    // get nodes belonging to nextWordIndex
+    let nextWordNodes = nodes[firstLetterNodeIndices[nextWordIndex]].nodeIndicesOfParentWords[nextWordIndex];
+    // if all nodes are filled
+    if (nextWordNodes.every(x => nodes[x].element.classList.contains("filled-box"))) {
+        last_position = 0;
+        lastClickedNode = nodes[nextWordNodes[0]];
+    } else {
+        // get the first node that is not filled
+        let nextWordNodeIndex = nextWordNodes.find(x => !nodes[x].element.classList.contains("filled-box"));
+        lastClickedNode = nodes[nextWordNodeIndex];
+        last_position = nextWordNodes.indexOf(nextWordNodeIndex);
+    }
+
+    //lastClickedNode = nodes[firstLetterNodeIndices[nextWordIndex]];
     lastSelectedWord = nextWordIndex;
     lastClickedElement = lastClickedNode.element;
     lastClickedElement.classList.add("selected-box");
@@ -592,7 +607,7 @@ var helpModal = document.getElementById("help-modal");
 var resultsModal = document.getElementById("results-modal");
 
 document.addEventListener('click', function(event) {
-    if ((event.target.lang == "en" || event.target.id == "mini-map" || event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
+    if ((event.target.lang == "en" || event.target.id == "mini-map" || (event.target.classList.contains("keyboard-button") && event.target.parentElement.parentElement.id === "keyboard-cont") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
         return
     }
 
@@ -603,8 +618,9 @@ document.addEventListener('click', function(event) {
 
     if (event.target.id === "help-button") {
         let customModalText = document.getElementById("custom-modal-text");
+        helpModal.style.display = "block";
+        helpModal.scrollTop = 0;
         if (puzzleNumber > 0) {
-            helpModal.style.display = "block";
 //             alert(
 // `- every puzzle has a theme
 // - click nodes to select
@@ -615,27 +631,43 @@ document.addEventListener('click', function(event) {
 // - hit "hint" on the keyboard to reveal the selected letter`
 //                         );
         } else if (puzzleNumber === -2) {
-            customModalText.textContent = "Assume D, E, N, S, I, T, and Y are measured in radians.";
+            customModalText.innerText = "Assume D, E, N, S, I, T, and Y are measured in radians.";
             customModalText.style.color = "#b2b2b2";
             customModalText.style.textAlign = "center";
             customModalText.style.margin = "40px auto";
             customModalText.style["letter-spacing"] = "0.2rem";
-            helpModal.style.display = "block";
 //             alert(
 // `Assume D, E, N, S, I, T, and Y are measured in radians.`
 // );
         } else {
-            customModalText.textContent = "All keys are now available.";
+            customModalText.innerText = "All keys are now available.";
             customModalText.style.color = "#b2b2b2";
             customModalText.style.textAlign = "center";
             customModalText.style.margin = "40px auto";
             customModalText.style["letter-spacing"] = "0.2rem";
-            helpModal.style.display = "block";
 //             alert(
 // `All keys are now available.`
 // );
         }
-        
+
+    }
+    if (event.target.id === "copy-results") {
+        let resultsText = document.getElementById("results-text");
+        let rankings = ["👑","🎖️","🏵️","⚜️","🍀","🔰","💠","🥀"]
+        // get numerals from results text
+        let numerals = resultsText.textContent.split(".")[0].split(" ").filter(x => !isNaN(x));
+        let sum = numerals.reduce((a,b) => parseInt(a) + parseInt(b), 0);
+        if (sum >= rankings.length) {
+            sum = rankings.length-1;
+        }
+        let copyText =
+`entangle #${puzzleNumber}
+${THEMECLUE}
+${resultsText.textContent.split(".")[0]}. ${rankings[sum]}
+https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
+        navigator.clipboard.writeText(copyText)
+        // change text of button
+        event.target.textContent = "COPIED!";
     }
 
     if (event.target.parentElement.id == "mini-map") {
@@ -887,6 +919,13 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             }
         }
         if (allCorrect) {
+            if (lastClickedElement && lastClickedElement.classList.contains("letter-box")) {
+                toggleHighlight(lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]);
+            }
+            lastClickedElement = null;
+            lastSelectedWord = null;
+            clue.textContent = "";
+            clueEnum.textContent = "";
             let nodeElements = [];
             for (let i = 0; i < nodes.length; i++) {
                 nodeElements.push(nodes[i].element)
@@ -897,6 +936,10 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             while (miniMap.firstChild) {
                 miniMap.removeChild(miniMap.firstChild);
             }
+
+            // get copy results button
+            let copyResults = document.getElementById("copy-results");
+            copyResults.textContent = "COPY RESULTS";
 
             // numHints is the number of elements with the hinted-box class
             // let numHints = document.getElementsByClassName("hinted-box").length
@@ -922,16 +965,46 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                 selectedBox.classList.remove("selected-box");
             }
 
-            alert("entangle #" + puzzleNumber + "\n" + THEMECLUE + " — " + THEMEANSWER + "\nsolved with " + numHints + hintText + " and " + numChecks + checkText + "\n" + quips[quipNumber]);
-            animateCascade(nodeElements, 'flip', 50);
+            //alert("entangle #" + puzzleNumber + "\n" + THEMECLUE + " — " + THEMEANSWER + "\nsolved with " + numHints + hintText + " and " + numChecks + checkText + "\n" + quips[quipNumber]);
+            
+            // set results text
+            let resultsTitle = document.getElementById("results-title");
+            let resultsSubtitle = document.getElementById("results-subtitle");
+            let resultsText = document.getElementById("results-text");
+            let resultsNameAnswer = document.getElementById("results-name-answer");
+            let fullSubtitle = document.getElementById("full-subtitle");
+            let resultsModalContent = document.getElementById("results-modal-content");
+
+            resultsTitle.innerText = "entangle #" + puzzleNumber;
+            resultsSubtitle.innerText = THEMECLUE;
+            resultsNameAnswer.innerText = " — " + THEMEANSWER;
+            resultsText.innerText = "solved with " + numHints + hintText + " and " + numChecks + checkText + "\r\n" + quips[quipNumber];
+
+            let resultsDelay = 50*nodeElements.length+1000;
+            if (!animationPlayed) {
+                animateCascade(nodeElements, 'flip', 50);
+                animationPlayed = true;
+            } else {
+                resultsDelay = 0;
+            }
+
+            
+            
+            const displayResults = () => {
+                resultsModal.style.display = "block";
+                // set min-width of results-modal
+                resultsModalContent.style["minWidth"] = fullSubtitle.getBoundingClientRect().width + 20 + "px";
+            };
+            setTimeout(displayResults,resultsDelay);
+            
         } else {
             for (let i = 0; i < elementsToHint.length; i++) {
                 elementsToHint[i].classList.add("hinted-box");
             }
-            let selectedBox = document.querySelector(".selected-box");
-            if (selectedBox) {
-                selectedBox.classList.remove("selected-box");
-            }
+            // let selectedBox = document.querySelector(".selected-box");
+            // if (selectedBox) {
+            //     selectedBox.classList.remove("selected-box");
+            // }
             numChecks++;
         }
         updateMinimap(false);
