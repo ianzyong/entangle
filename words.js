@@ -413,7 +413,7 @@ export const GAMEDATA = {
         words: ["ORANGE","OPINE","ORATIONS","OATMEAL","SHORTAGE","OMISSIONS","OMEN"],
         enumerations: ["(6)","(5)","(8)","(7)","(8)","(9)","(4)"],
         clues: ["Color... without versatility?","Express a viewpoint... without a fresh scent?","Speeches... without provisions?","Hot cereal... with nobody there to eat it?","Brief era?","Deletions... without assignments?","Sign... without sirs?"],
-        themeClue: ["\x22Want henchman to leave enemy borders\x22"],
+        themeClue: ["\x22Want henchman to leave enemy's borders\x22"],
         themeAnswer: ["LACK"],
         sharedLetters: [
             {

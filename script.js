@@ -22,8 +22,8 @@ if (puzzleNumber < 1) {
     tl.style["text-shadow"] = "9px 9px #41FF00";
     tl.style["animation"] = "color-change 20s ease-in-out infinite";
     let hb = document.getElementById("hint-button");
-    // hide button
-    hb.style.display = "none";
+    // grey out button
+    hb.classList.add("disabled");
 }
 
 const WORDS = GAMEDATA[puzzleNumber].words
@@ -179,13 +179,13 @@ let color_list = ["#A4A8D1", "#EF626C", "#E2C391", "#52FFB8", "#66C7F4","#D156CB
 
 let lines = [];
 
-let progressPane = document.getElementById("progress-pane");
+let wordsPane = document.getElementById("words-pane");
 
 function initBoard() {
     let title = document.getElementById("title");
     title.textContent = "entangle #" + puzzleNumber;
 
-    let puzzleName = document.getElementById("puzzle-name");
+    let puzzleName = document.getElementById("main-puzzle-name");
     puzzleName.textContent = THEMECLUE[0];
 
     let board = document.getElementById("game-board");
@@ -266,7 +266,7 @@ function initBoard() {
         let entry = document.createElement("div");
         entry.classList.add("entry");
         //entry.style.color = color_list[i%color_list.length];
-        progressPane.appendChild(entry);
+        wordsPane.appendChild(entry);
         let enumSpan = document.createElement("span");
         enumSpan.textContent = ENUMERATIONS[i];
         entry.appendChild(enumSpan);
@@ -544,8 +544,8 @@ function updateProgress() {
         
         // for each word
         for (let wordIndex = 0; wordIndex < WORDS.length; wordIndex++) {
-            // get child element of progressPane corresponding to the current word
-            let entry = progressPane.children[wordIndex];
+            // get child element of wordsPane corresponding to the current word
+            let entry = wordsPane.children[wordIndex];
             let currentEnum = entry.children[0];
             let currentWord = entry.children[1];
             // get the text content from the nodes belonging to the current word
@@ -588,30 +588,52 @@ function updateProgress() {
     }
 }
 
+var helpModal = document.getElementById("help-modal");
+var resultsModal = document.getElementById("results-modal");
+
 document.addEventListener('click', function(event) {
     if ((event.target.lang == "en" || event.target.id == "mini-map" || event.target.classList.contains("keyboard-button") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
         return
     }
 
+    if (event.target.classList.contains("close") || (event.target.classList.contains("modal") && !(event.target.parentElement.classList.contains("modal")))) {
+        helpModal.style.display = "none";
+        resultsModal.style.display = "none";
+    }
+
     if (event.target.id === "help-button") {
+        let customModalText = document.getElementById("custom-modal-text");
         if (puzzleNumber > 0) {
-            alert(
-`- every puzzle has a theme
-- click nodes to select
-- the first letter of each word is marked with an enumeration
-- arrow keys navigate within a word and "enter" cycles through any intersecting words
-- "tab" cycles through the word list
-- hit "check" on the keyboard when you're done
-- hit "hint" on the keyboard to reveal the selected letter`
-                        );
+            helpModal.style.display = "block";
+//             alert(
+// `- every puzzle has a theme
+// - click nodes to select
+// - the first letter of each word is marked with an enumeration
+// - arrow keys navigate within a word and "enter" cycles through any intersecting words
+// - "tab" cycles through the word list
+// - hit "check" on the keyboard when you're done
+// - hit "hint" on the keyboard to reveal the selected letter`
+//                         );
         } else if (puzzleNumber === -2) {
-            alert(
-`Assume D, E, N, S, I, T, and Y are measured in radians.`
-);
+            customModalText.textContent = "Assume D, E, N, S, I, T, and Y are measured in radians.";
+            customModalText.style.color = "#b2b2b2";
+            customModalText.style.textAlign = "center";
+            customModalText.style.margin = "40px auto";
+            customModalText.style["letter-spacing"] = "0.2rem";
+            helpModal.style.display = "block";
+//             alert(
+// `Assume D, E, N, S, I, T, and Y are measured in radians.`
+// );
         } else {
-            alert(
-`All keys are now available.`
-);
+            customModalText.textContent = "All keys are now available.";
+            customModalText.style.color = "#b2b2b2";
+            customModalText.style.textAlign = "center";
+            customModalText.style.margin = "40px auto";
+            customModalText.style["letter-spacing"] = "0.2rem";
+            helpModal.style.display = "block";
+//             alert(
+// `All keys are now available.`
+// );
         }
         
     }
@@ -914,6 +936,9 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
         }
         updateMinimap(false);
     } else if (key === "Hint") {
+        if (puzzleNumber < 1) {
+            return;
+        }
         // reveal the currently selected letter
         // get the selected-box element
         let selectedBox = document.querySelector(".selected-box");

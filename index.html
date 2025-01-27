@@ -15,6 +15,97 @@
 </head>
 <body>
     
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <p><span class="close">&times;</span></p>
+            <div class="help-node-flex">
+                <div class="dummy-box"><p>E</p></div>
+            </div>
+            <div id = custom-modal-text>
+                <p>welcome to <span class = "entangle">entangle.</span></p>
+                <section>
+                    <p>the goal of the game is to fill in the network.</p>
+                </section>
+                <section>
+                    <h2 class="puzzle-name">"Slightly open a container"</h2>
+                    <p>every puzzle has a theme.</p>
+                </section>
+                <section>
+                    <h2 class="puzzle-name" id="help-name"><u>"Slightly open</u> a container" <span id="name-answer"> = AJAR </span></h2>
+                    <p>the name of the puzzle <a href="https://archive.nytimes.com/www.nytimes.com/premium/xword/cryptics.html" target="_blank">encodes the theme.</a></p>
+                </section>
+                <section>
+                    <p>words are comprised of nodes.</p>
+                    <p>each node holds one symbol.</p>
+                </section>
+                <section>
+                    <div class="help-node-flex">
+                        <div class="dummy-box"></div>
+                        <div class="dummy-box" style="border-color:#A4A8D1">F</div>
+                        <div class="dummy-box intersecting-box" style="border-color:#EF626C">I</div>
+                        <div class="dummy-box repeated-box" style="border-color:#E2C391; top:-2px">R</div>
+                        <div class="dummy-box hinted-box" style="border-color:#52FFB8">H</div>
+                    </div>
+                    <div class="help-node-flex">
+                        <p class="node-label">empty node</p>
+                        <p class="node-label">filled node</p>
+                        <p class="node-label">intersecting node</p>
+                        <p class="node-label">repeated node</p>
+                        <p class="node-label">hinted node</p>
+                    </div>
+                    <p>here are different types of nodes.</p>
+                    
+                </section>
+                <section>
+                    <p class="entangle">Controls:</p>
+                    <p>first, <b>click</b> any node to select it and its parent word.</p>
+                    <p>then, use the <b>arrow keys</b> to navigate within the word.</p>
+                    <p>use the <b>keyboard</b> to insert symbols.</p>
+                    <p>press <b>"enter"</b> while an <i>intersecting node</i> is selected to toggle words.</p>
+                    <p>press <b>"tab"</b> to cycle through the word list.</p>
+                </section>
+                <section>
+                    <button class="keyboard-button" style="margin: auto;">Hint</button>
+                    <p>press <b>"hint"</b> to reveal the selected node.</p>
+                </section>
+                <section>
+                    <button class="keyboard-button">Check</button>
+                    <p>press <b>"check"</b> when you're done.</p>
+                </section>
+                <section>
+                    <p>- - -</p>
+                </section>
+                <section>
+                    <p>obfuscation is beauty, but</p>
+                    <p>clarity is paramount.</p>
+                </section>
+                <section>
+                    <p>good luck.</p>
+                </section>
+                <section>
+                    <p>- - -</p>
+                </section>
+                <section>
+                    <i>
+                        <p style="color:#4e4e4e">yes, there are hidden hard mode puzzles.</p>
+                        <p style="color:#4e4e4e">when you get there, you'll know...</p>
+                    </i>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>RESULTS</h1>
+            <p id="results-puzzle-info"></p>
+            <p>Checks: <span id="checks"></span></p>
+            <p>Hints: <span id="hints"></span></p>
+            <p id="quip"></p>
+            <button class="keyboard-button">COPY RESULTS</button>
+        </div>
+    </div>
 
     <div id="main-divider">
         
@@ -31,7 +122,7 @@
                     <div id="next"></div>
                 </div>
                 <h1 id="title"> entangle </h1>
-                <i><h2 id="puzzle-name"></h2></i>
+                <h2 class="puzzle-name" id="main-puzzle-name"></h2>
                 
             </div>
             <h3 class="clue"><span id="clue"></span><span id="clue-enum"></span></h3>
@@ -78,8 +169,14 @@
                 </div>
             </div>
 
-            <div id="progress-pane">
+            <div class="progress-pane">
+                <!-- <div id="completion-pane">
+                    <p>Checks: </p>
+                    <p>Hints: </p>
+                </div> -->
+                <div id="words-pane">
 
+                </div>
             </div>
 
             <!-- <div id="help-pane">
