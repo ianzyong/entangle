@@ -1,4 +1,58 @@
 export const GAMEDATA = {
+    "-3": {
+        words: ["RIGHT?","WHO?","HAPPY?","SERIOUSLY?","WHEN?","WHY?","DANGER","WHERE?","WHAT?"],
+        enumerations: ["(6)","(4)","(6)","(10)","(5)","(4)","(6)","(6)","(5)"],
+        clues: ["Frighten out of swamp? Don't you agree?","Never heard of them... crazy in what way?","Satisfied? Like Pharrell?","Southeastern Rio University cunning? You're joking","Date question... with lady bird?","Letter read aloud? For what reason?","Harm's way", "Win present? I don't see it", "Washington Nationals cap? Come again?"],
+        themeClue: ["\x22Risk of JYP abruptly boxing headless leopard\x22"],
+        themeAnswer: ["JEOPARDY"],
+        sharedLetters: [
+            {
+                indices: [[1,0],[4,0]]
+            },
+            {
+                indices: [[4,1],[5,1]]
+            },
+            {
+                indices: [[1,3],[4,4],[5,3],[7,5]]
+            },
+            {
+                indices: [[0,0],[6,5]]
+            },
+            {
+                indices: [[0,2],[6,3]]
+            },
+            {
+                indices: [[2,1],[6,1]]
+            },
+            {
+                indices: [[2,0],[8,1]]
+            },
+            {
+                indices: [[3,1],[7,2]]
+            },
+            {
+                indices: [[3,2],[7,3]]
+            },
+            {
+                indices: [[3,0],[3,6]]
+            },
+            {
+                indices: [[1,2],[3,4]]
+            },
+            {
+                indices: [[0,4],[8,3]]
+            },
+            {
+                indices: [[2,4],[3,8]]
+            },
+            {
+                indices: [[0,5],[8,4]]
+            },
+            {
+                indices: [[2,5],[3,9],[7,5]]
+            }
+        ]
+    },
     "-2": {
         words: ["COSY","STAND","TITANS","COTS","SECT","INSECT","TETANY","3141592"],
         enumerations: ["(4)","(5)","(6)","(4)","(4)","(6)","(6)","(7)"],
