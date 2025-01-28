@@ -107,7 +107,7 @@ button {
 }
 
 #help-button:hover {
-    background-color: #1a1a1a;
+    background-color: #1e1e1e;
 }
 
 #copy-results {
@@ -126,6 +126,18 @@ button {
     87.5% { color: purple; text-shadow:yellow -3px -3px 6px;}
     100% { color: red; text-shadow:green 0px -4px 5px;}
 }
+
+@keyframes bs-color-change {
+      0% { box-shadow:purple 3px 4px 5px;}
+      12.5% { box-shadow:red 3px 3px 6px;}
+      25% { box-shadow:orange 0px 0px 7px;}
+      37.5% { box-shadow:yellow -3px -3px 6px;}
+      50% { box-shadow:green 0px -4px 5px;}
+      62.5% { box-shadow:blue 0px -4px 5px;}
+    75% { box-shadow:indigo 3px -3px 6px;}
+      87.5% { box-shadow:violet 3px 0px 7px;}
+      100% { box-shadow:purple 3px 3px 6px;}
+  }
 
 .entangle {
     font-family: 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;

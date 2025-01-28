@@ -208,9 +208,6 @@ export const GAMEDATA = {
             {
                 indices: [[6,1],[4,1]]
             },
-            // {
-            //     indices: [[6,2],[2,2],[3,5]]
-            // },
             {
                 indices: [[1,0],[1,7]]
             }
@@ -452,9 +449,6 @@ export const GAMEDATA = {
             {
                 indices: [[4,7],[0,5]]
             }
-            // {
-            //     indices: [[4,2],[5,6]]
-            // }
         ]
     },
     9: {
@@ -498,14 +492,4 @@ export const GAMEDATA = {
     }
 }
 
-//format: (index in WORDS, index in string),(index in WORDS, index in string),
-
-// let start_x = Math.floor(Math.random() * 100)
-// let start_y = Math.floor(Math.random() * 100)
-
-// export const CNTLPTS = [
-//     [{x: start_x, y: start_y},
-//     {x: Math.floor(Math.random() * 500), y: Math.floor(Math.random() * 500)},
-//     {x: Math.floor(Math.random() * 500), y: Math.floor(Math.random() * 500)},
-//     {x: start_x+500, y: start_y+500}]
-// ]
+//format: (index in WORDS, index in string),(index in WORDS, index in string)

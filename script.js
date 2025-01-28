@@ -20,11 +20,15 @@ if (!(puzzleNumber in GAMEDATA)) {
 
 if (puzzleNumber < 1) {
     let tl = document.getElementById("title")
-    tl.style["text-shadow"] = "9px 9px #41FF00";
+    tl.style["text-shadow"] = "9px 9px rgb(200, 200, 200)";
     tl.style["animation"] = "color-change 20s ease-in-out infinite";
     let hb = document.getElementById("hint-button");
     // grey out button
     hb.classList.add("disabled");
+    // get help-button div
+    let helpButton = document.getElementById("help-button");
+    helpButton.style["box-shadow"] = "9px 9px rgb(200, 200, 200)";
+    helpButton.style["animation"] = "bs-color-change 20s ease-in-out infinite";
 }
 
 const WORDS = GAMEDATA[puzzleNumber].words
@@ -193,13 +197,6 @@ function initBoard() {
 
     let board = document.getElementById("game-board");
 
-    
-    // for (let i = 0; i < CNTLPTS.length; i++) {
-    //     for (let t= 0; t <= 2; t += 0.1) {
-    //         coords.push(bezier(t, CNTLPTS[i][0], CNTLPTS[i][1], CNTLPTS[i][2], CNTLPTS[i][3]));
-    //     }
-    // }
-
     // create elements
     let yOffset = 20;
     let xOffset = 25;
@@ -363,27 +360,6 @@ function initBoard() {
     let mainDivider = document.getElementById("main-divider");
     mainDivider.style.maxWidth = boardWidth + maxLetters * blockWidth + "px";
 
-    //controlPanel.style.height = maxY + "px";
-
-    // for (let i = 0; i < coords.length; i++) {
-    //     let element = document.createElement("div");
-    //     element.style.position = "absolute";
-    //     element.style.left = coords[i].x + "px";
-    //     element.style.top = coords[i].y + "px";
-        
-    //     element.classList.add("letter-box");
-    //     board.appendChild(element);
-    //     // associate the element with a node
-    //     if (i < nodes.length) {
-    //         element.textContent = nodes[i].value.toLowerCase();
-    //         element.classList.add("filled-box");
-    //         element.style.borderColor = color_list[(element.textContent.charCodeAt(0) - 97)%color_list.length];
-            
-    //         element.node = nodes[i];
-    //         nodes[i].element = element;     
-    //     }
-    // }
-    
 }
 
 let lastClickedElement = null;
@@ -396,10 +372,6 @@ function cycleWord(lce) {
         last_position = null;
 
         toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
-
-        // for (let nodeIndex of lce.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-        //     nodes[nodeIndex].element.classList.remove("highlighted-box");
-        // }
 
         if(!lce.classList.contains("filled-box") && !lce.classList.contains("first-letter-box")) {
             lce.style.removeProperty("border-color")
@@ -440,13 +412,6 @@ function cycleWord(lce) {
         }
         clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
         clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
-
-        //console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
-        // add highlighted-box class to elements in the selected word
-        //console.log(lce.node.nodeIndicesOfParentWords);
-        // for (let nodeIndex of lce.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-        //     nodes[nodeIndex].element.classList.add("highlighted-box");
-        // }
         
         toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
 
@@ -548,8 +513,6 @@ function updateMinimap(sameWord) {
                 element.style.top = "0px";
             }
             element.classList.add("mini-box");
-            // element.classList.add("animate__animated");
-            // element.classList.add("animate__pulse");
             miniMap.appendChild(element);
         }
     }
@@ -580,10 +543,6 @@ function updateProgress() {
                     currentWordText = currentWordText.slice(0,spaceIndices[i]) + " " + currentWordText.slice(spaceIndices[i]);
                 }
             }
-
-            // if (currentWord.textContent != currentWordText) {
-            //     animateCSS(entry, 'pulse');
-            // }
 
             if (puzzleNumber === -2 && wordIndex != WORDS.length-1 && !(currentWordText).includes("_")) {
                 console.log(currentWordText);
@@ -622,33 +581,23 @@ document.addEventListener('click', function(event) {
         helpModal.style.display = "block";
         helpModal.scrollTop = 0;
         if (puzzleNumber > 0) {
-//             alert(
-// `- every puzzle has a theme
-// - click nodes to select
-// - the first letter of each word is marked with an enumeration
-// - arrow keys navigate within a word and "enter" cycles through any intersecting words
-// - "tab" cycles through the word list
-// - hit "check" on the keyboard when you're done
-// - hit "hint" on the keyboard to reveal the selected letter`
-//                         );
+            // default text
         } else if (puzzleNumber === -2) {
-            customModalText.innerText = "Assume D, E, N, S, I, T, and Y are measured in radians.";
+            customModalText.innerText = "Assume D, E, N, S, I, T, and Y\r\nare measured in radians.";
             customModalText.style.color = "#b2b2b2";
             customModalText.style.textAlign = "center";
             customModalText.style.margin = "40px auto";
             customModalText.style["letter-spacing"] = "0.2rem";
-//             alert(
-// `Assume D, E, N, S, I, T, and Y are measured in radians.`
-// );
         } else {
-            customModalText.innerText = "All keys are now available.";
+            customModalText.innerText = "All keys are now available.\r\n\r\n";
+            // add a span child element to customModalText
+            const mention = customModalText.appendChild(document.createElement("span"));
+            mention.innerText = "(Mobile users — try desktop?)"
             customModalText.style.color = "#b2b2b2";
             customModalText.style.textAlign = "center";
             customModalText.style.margin = "40px auto";
             customModalText.style["letter-spacing"] = "0.2rem";
-//             alert(
-// `All keys are now available.`
-// );
+            mention.style.color = "#4e4e4e";
         }
 
     }
@@ -748,30 +697,8 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
         } else {
             lastSelectedWord = Object.keys(lastClickedNode.nodeIndicesOfParentWords)[0];
         }
-        
-        // add highlighted-box class to elements in the selected word
-        // for (let nodeIndex of lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]) {
-        //     nodes[nodeIndex].element.classList.add("highlighted-box");
-        // }
 
         toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
-
-        // add highlighted-line class to lines connecting nodes in the selected word
-        // console.log(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
-        // for (let i = 0; i < lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord].length-1; i++) {
-        //     let array1 = nodes[i].lines;
-        //     let array2 = nodes[i+1].lines;
-        //     console.log(array1);
-        //     console.log(array2);
-        //     // for each line in array1 and array2
-        //     for (let j = 0; j < array1.length; j++) {
-        //         for (let k = 0; k < array2.length; k++) {
-        //             if (array1[j] == array2[k]) {
-        //                 array1[j].classList.add("highlighted-line");
-        //             }
-        //         }
-        //     }
-        // }
 
         // if text settings includes the current word as a key
         if (lastSelectedWord in TEXTSETTINGS) {
@@ -808,45 +735,6 @@ function toggleHighlight(nodeIndices) {
             nodes[nodeIndices[i]].element.classList.toggle("highlighted-box");
         }
     }
-    
-    // if there are any elements with the highlighted-line class
-    // if (document.getElementsByClassName("highlighted-line").length) {
-    //     // remove all elements with the highlighted-line class
-    //     // get main-svg
-    //     let mainSvg = document.getElementById("main-svg");
-    //     let highlightedLines = mainSvg.getElementsByClassName("highlighted-line");
-    //     while (highlightedLines.length) {
-    //         highlightedLines[0].remove();
-    //     }
-    // }
-    // append lines between highlighted nodes to document
-    // for (let i = 0; i < nodeIndices.length - 1; i++) {
-    //     let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    //     line.setAttribute("x1", parseInt(nodes[nodeIndices[i]].element.style.left)+20+"px");
-    //     line.setAttribute("y1", parseInt(nodes[nodeIndices[i]].element.style.top)+20+"px");
-    //     line.setAttribute("x2", parseInt(nodes[nodeIndices[i+1]].element.style.left)+20+"px");
-    //     line.setAttribute("y2", parseInt(nodes[nodeIndices[i+1]].element.style.top)+20+"px");
-    //     line.classList.add("highlighted-line");
-    //     document.getElementById("main-svg").appendChild(line);
-    // }
-
-    // get lines belonging to the nodes in nodeIndices
-    //containedLines = [];
-    // for (let i = 0; i < nodeIndices.length-1; i++) {
-    //     // find the line in lines that has the current terminals
-    //     let result = getLines(nodeIndices[i],nodeIndices[i+1])
-    //     result.classList.toggle("highlighted-line")
-    //     //console.log([nodeIndices[i],nodeIndices[i+1]])
-
-    //     //containedLines.push(line);
-    // }
-
-    // toggle highlighted-line class for lines that are shared between nodes
-    // for (let i = 1; i < containedLines.length; i++) {
-    //     for (let j = 0; j < containedLines[i].length; j++) {
-    //         lines[i][j].classList.toggle("highlighted-line");
-    //     }
-    // }
 
 }
 
@@ -966,8 +854,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                 selectedBox.classList.remove("selected-box");
             }
 
-            //alert("entangle #" + puzzleNumber + "\n" + THEMECLUE + " — " + THEMEANSWER + "\nsolved with " + numHints + hintText + " and " + numChecks + checkText + "\n" + quips[quipNumber]);
-            
             // set results text
             let resultsTitle = document.getElementById("results-title");
             let resultsSubtitle = document.getElementById("results-subtitle");
@@ -989,8 +875,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                 resultsDelay = 0;
             }
 
-            
-            
             const displayResults = () => {
                 resultsModal.style.display = "block";
                 // set min-width of results-modal
@@ -1002,10 +886,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             for (let i = 0; i < elementsToHint.length; i++) {
                 elementsToHint[i].classList.add("hinted-box");
             }
-            // let selectedBox = document.querySelector(".selected-box");
-            // if (selectedBox) {
-            //     selectedBox.classList.remove("selected-box");
-            // }
+
             numChecks++;
         }
         updateMinimap(false);
@@ -1096,25 +977,6 @@ function getBorderColor(element) {
     return col;
 }
 
-// function toggleLineColor(position, nodeIndices) {
-//     if (position === 0) {
-//         let result = lines.find(line => line.terminals[0] == nodeIndices[position] && line.terminals[1] == nodeIndices[position+1]);
-
-//         console.log([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)])
-//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)]);
-        
-//     } else if (position === nodeIndices.length - 1) {
-//         let result = lines.find(line => line.terminals[0] == nodeIndices[position-1] && line.terminals[1] == nodeIndices[position]);
-//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position-1]].element), getBorderColor(nodes[nodeIndices[position]].element)]);
-//     } else {
-//         let result = lines.find(line => line.terminals[0] == nodeIndices[position] && line.terminals[1] == nodeIndices[position+1]);
-//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)]);
-        
-//         result = lines.find(line => line.terminals[0] == nodeIndices[position-1] && line.terminals[1] == nodeIndices[position]);
-//         result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position-1]].element), getBorderColor(nodes[nodeIndices[position]].element)]);   
-//     }
-// }
-
 function getLines(terminal1,terminal2) {
     return lines.find((line => line.terminals[0] == terminal1 && line.terminals[1] == terminal2) || (line.terminals[0] == terminal2 && line.terminals[1] == terminal1));
 }
@@ -1135,21 +997,6 @@ function colorLines(currentNode, adjNodes, clear) {
             line.style.stroke = darkenRGB(getBorderColor(nodes[currentNode].element));
         }
     }
-    // let result = null;
-    // if (position < nodeIndices.length - 1) {
-    //     result = getLines(nodeIndices[position],nodeIndices[position+1]);
-    //     result.style.stroke = getBorderColor(nodes[nodeIndices[position]].element)
-    //     console.log(result.style.stroke)
-    //     //result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position+1]].element)]);
-        
-    // }
-    
-    // if (position > 0) {
-    //     result = getLines(nodeIndices[position],nodeIndices[position-1]);
-    //     result.style.stroke = getBorderColor(nodes[nodeIndices[position-1]].element)
-    //     //result.style.stroke = blendColors([getBorderColor(nodes[nodeIndices[position]].element), getBorderColor(nodes[nodeIndices[position-1]].element)]);
-    //     //result.style.stroke = getBorderColor(nodes[nodeIndices[position-1]].element)
-    // }
 }
 
 function insertLetter (pressedKey) {
@@ -1164,32 +1011,12 @@ function insertLetter (pressedKey) {
         lastClickedElement.classList.add("filled-box");
         lastClickedElement.style.borderColor = getBorderColor(lastClickedElement);
 
-        // get nodes of last selected word
-        //let nodeIndices = lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord];
-        // get position of id of last selected element in nodeIndices
-        //let position = nodeIndices.indexOf(lastClickedElement.node.id);
-
         // get adjacent nodes of last clicked element
         let adjNodes = lastClickedElement.node.adjNodeIndices;
         let currentNode = lastClickedElement.node.id;
         
         colorLines(currentNode, adjNodes, false);
         
-        // for (let i = 0; i < nodeIndices.length-1; i++) {
-        //     // find the line in lines that has the terminals [i,j]
-        //     let result = lines.find(line => line.terminals[0] == nodeIndices[i] && line.terminals[1] == nodeIndices[i+1]);
-        //     result.classList.toggle("highlighted-line")
-        //     result.style.stroke = blendColors(nodes[i].element.style.borderColor, nodes[i+1].element.style.borderColor);
-        //     //result.style.stroke = lastClickedElement.style.borderColor;
-        //     //containedLines.push(line);
-        // }
-        
-        // for (let i = 0; i < lastClickedElement.node.lines.length; i++) { 
-        //     //console.log(blendColors(lastClickedElement.style.borderColor, "#FFFFFF"))
-        //     //lastClickedElement.node.lines[i].style.stroke = darkenRGB(lastClickedElement.style.borderColor);
-        //     lastClickedElement.node.lines[i].style.stroke = lastClickedElement.style.borderColor;
-        //     lastClickedElement.node.lines[i].style["stroke-dasharray"] = 0;
-        // }
     }
     cycleLetter(pressedKey, lastClickedElement);
 }
@@ -1205,24 +1032,12 @@ function deleteLetter (pressedKey) {
         if (!(lastClickedElement.classList.contains("first-letter-box"))) {
             lastClickedElement.style.removeProperty("border-color")
         }
-        //lastClickedElement.classList.remove("selected-box")
-        // remove stroke attribute from element.style
-        // for (let i = 0; i < lastClickedElement.node.lines.length; i++) {
-        //     //lastClickedElement.node.lines[i].style.stroke = "#2e2e2e";
-        //     lastClickedElement.node.lines[i].style.stroke = "";
-        // }
+
         let nodeIndices = lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord];
         // find the position of the last clicked element in nodeIndices
         let position = nodeIndices.indexOf(lastClickedElement.node.id);
 
         colorLines(lastClickedElement.node.id, lastClickedElement.node.adjNodeIndices, true);
-
-        // for (let i = 0; i < nodeIndices.length-1; i++) {
-        //     // find the line in lines that has the terminals [i,j]
-        //     let result = lines.find(line => line.terminals[0] == nodeIndices[i] && line.terminals[1] == nodeIndices[i+1]);
-        //     result.style.removeProperty('stroke');
-        //     //containedLines.push(line);
-        // }
 
     }
     cycleLetter(pressedKey, lastClickedElement)
