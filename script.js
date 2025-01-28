@@ -14,7 +14,8 @@ if (window.location.href.includes("?")) {
 
 // if GAMEDATA does not have puzzle number
 if (!(puzzleNumber in GAMEDATA)) {
-    puzzleNumber = 0;
+    // go to 404 page
+    window.location = "https://ianzyong.github.io/entangle/404.html";
 }
 
 if (puzzleNumber < 1) {

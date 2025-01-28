@@ -8,6 +8,7 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #151515;
+    margin: 0;
 }
 
 h1, h2 {
@@ -32,6 +33,21 @@ a {
 
 button {
     font-family: 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;
+}
+
+#portal-text {
+    font-family: 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;
+    font-size: 200px;
+    font-weight: 200;
+    color: #b2b2b2;
+    letter-spacing: normal;
+    user-select: none;
+}
+
+#portal {
+    animation: color-change;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
 }
 
 #title {
