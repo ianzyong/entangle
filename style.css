@@ -172,6 +172,7 @@ button {
     animation-name: modal-enter;
     animation-duration: 0.8s;
     animation-timing-function: ease-out;
+    user-select: none;
 }
 
 @keyframes modal-enter {

@@ -2,7 +2,7 @@ export const GAMEDATA = {
     "-3": {
         words: ["RIGHT?","WHO?","HAPPY?","SERIOUSLY?","WHEN?","WHY?","DANGER","WHERE?","WHAT?"],
         enumerations: ["(6)","(4)","(6)","(10)","(5)","(4)","(6)","(6)","(5)"],
-        clues: ["Frighten out of swamp? Don't you agree?","Never heard of them... crazy in what way?","Satisfied? Like Pharrell?","Southeastern Rio University cunning? You're joking","Date question... with lady bird?","Letter read aloud? For what reason?","Harm's way", "Win present? I don't see it", "Washington Nationals cap? Come again?"],
+        clues: ["Frighten out of swamp? Don't you agree?","Never heard of them... crazy in what way?","Satisfied? Like Pharrell?","Southeast Rio University cunning? You're joking","Date question... with lady bird?","Letter read aloud? For what reason?","Harm's way", "Win present? I don't see it", "Washington Nationals cap? Come again?"],
         themeClue: ["\x22Risk of JYP abruptly boxing headless leopard\x22"],
         themeAnswer: ["JEOPARDY"],
         sharedLetters: [
@@ -56,8 +56,8 @@ export const GAMEDATA = {
     "-2": {
         words: ["COSY","STAND","TITANS","COTS","SECT","INSECT","TETANY","3141592"],
         enumerations: ["(4)","(5)","(6)","(4)","(4)","(6)","(6)","(7)"],
-        clues: ["British tea accessory... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 70.08335","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -21.95076","Involuntary contraction of muscles... or about -19.66536", "DENSITY of private eye?"],
-        themeClue: ["\x22Work force salve\x22"],
+        clues: ["British teapot sweater... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 70.08335","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -21.95076","Involuntary contraction of muscles... or about -19.66536", "DENSITY of private eye?"],
+        themeClue: ["\x22Work party\x22"],
         themeAnswer: ["FUNCTION"],
         sharedLetters: [
             {
