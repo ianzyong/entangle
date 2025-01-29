@@ -291,6 +291,8 @@ function initBoard() {
         }
     }
 
+    // get minimum x value from nod
+
     // set board style
     let boardWidth = maxX + 100;
     let boardHeight = maxY + 100;
@@ -344,9 +346,33 @@ function initBoard() {
 
     let controlPane = document.getElementById("control-pane");
     // set width to a multiple of the number of letters in the longest word
-    let maxLetters = Math.max(...WORDS.map(x => x.length));
+    // find max number in ENUMERATIONS
+    let maxLetters = 0;
+    for (let i = 0; i < ENUMERATIONS.length; i++) {
+        let currentEnum = ENUMERATIONS[i];
+        let currentEnumSplit = currentEnum.slice(1,-1).split(",").map(x => parseInt(x));
+        let maxEnum = Math.max(...currentEnumSplit);
+        if (maxEnum > maxLetters) {
+            maxLetters = maxEnum;
+        }
+    }
+
+    //let maxLetters = Math.max(...WORDS.map(x => x.length));
     let blockWidth = 55;
-    controlPane.style.minWidth = maxLetters * blockWidth + "px";
+    let minPaneWidth = maxLetters * blockWidth;
+    // get offsetwidth of the puzzle name
+    let puzzleNameWidth = puzzleName.offsetWidth;
+    if (puzzleNameWidth > minPaneWidth) {
+        minPaneWidth = puzzleNameWidth;
+    }
+
+    controlPane.style.minWidth = minPaneWidth + "px";
+
+    // add max width to the clue class
+    let clueCont = document.getElementById("clue-cont");
+    clueCont.style.maxWidth = minPaneWidth + "px";
+    let miniMap = document.getElementById("mini-map");
+    miniMap.style.maxWidth = minPaneWidth + "px";
 
     // get viewport height
     let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
@@ -354,11 +380,11 @@ function initBoard() {
     // get body element
     let body = document.getElementsByTagName("body")[0];
     // set body style
-    body.style.minHeight = boardHeight + controlPane.offsetHeight + "px";
-    body.style.minWidth = boardWidth + maxLetters * blockWidth + "px";
+    body.style.minHeight = boardHeight + "px";
+    body.style.minWidth = boardWidth + minPaneWidth + "px";
 
     let mainDivider = document.getElementById("main-divider");
-    mainDivider.style.maxWidth = boardWidth + maxLetters * blockWidth + "px";
+    mainDivider.style.maxWidth = boardWidth + minPaneWidth + "px";
 
 }
 
@@ -492,17 +518,21 @@ function updateUrl(new_num) {
 }
 
 function updateMinimap(sameWord) {
+    let miniMap = document.getElementById("mini-map");
     if (lastSelectedWord !== null && lastClickedElement.classList.contains("letter-box")) {
         // delete all children of mini-map div, if any
-        let miniMap = document.getElementById("mini-map");
-
         while (miniMap.firstChild) {
             miniMap.removeChild(miniMap.firstChild);
         }
-        // get selected element
-        
+        // get enumeration for the selected word
+        let currentEnum = ENUMERATIONS[lastSelectedWord];
+        // split and only keep numbers
+        let currentEnumSplit = currentEnum.slice(1,-1).split(",").map(x => parseInt(x));
+        // remove last element
+        currentEnumSplit.pop();
+        miniMap.style.minHeight = + 44 + (currentEnumSplit.length)*49 + "px";
         // create a copy of each node in the selected word, retaining classes
-        for (let nodeIndex of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]) {
+        for (let [index, nodeIndex] of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord].entries()) {
             let element = nodes[nodeIndex].element.cloneNode(true);
             // remove position styles
             element.style.position = "relative";
@@ -514,7 +544,15 @@ function updateMinimap(sameWord) {
             }
             element.classList.add("mini-box");
             miniMap.appendChild(element);
+            // if the node number is in currentEnumSplit, add a br
+            if (currentEnumSplit.includes(index+1)) {
+                miniMap.appendChild(document.createElement("div"));
+                // add break class
+                miniMap.lastChild.classList.add("break");
+            }
         }
+    } else {
+        miniMap.style.minHeight = "0px";
     }
 }
 
@@ -545,7 +583,6 @@ function updateProgress() {
             }
 
             if (puzzleNumber === -2 && wordIndex != WORDS.length-1 && !(currentWordText).includes("_")) {
-                console.log(currentWordText);
                 let currentClueSplit = CLUES[wordIndex].split(" ");
                 currentWordText = currentWordText + " ≈ " + currentClueSplit[currentClueSplit.length - 1];
             }
@@ -583,7 +620,7 @@ document.addEventListener('click', function(event) {
         if (puzzleNumber > 0) {
             // default text
         } else if (puzzleNumber === -2) {
-            customModalText.innerText = "Assume D, E, N, S, I, T, and Y\r\nare measured in radians.";
+            customModalText.innerText = "Assume D, E, N, S, I, T, and Y are\r\nsingle-digit numbers expressed in radians.";
             customModalText.style.color = "#b2b2b2";
             customModalText.style.textAlign = "center";
             customModalText.style.margin = "40px auto";
@@ -603,7 +640,7 @@ document.addEventListener('click', function(event) {
     }
     if (event.target.id === "copy-results") {
         let resultsText = document.getElementById("results-text");
-        let rankings = ["👑","🎖️","🏵️","⚜️","🍀","🔰","💠","🥀"]
+        let rankings = ["👑","🎖️","🏵️","⚜️","🍀","🔰","💠","🥀","🥀","🥀","☠️"]
         // get numerals from results text
         let numerals = resultsText.textContent.split(".")[0].split(" ").filter(x => !isNaN(x));
         let sum = numerals.reduce((a,b) => parseInt(a) + parseInt(b), 0);
@@ -623,6 +660,12 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
     if (event.target.parentElement.id == "mini-map") {
         let miniMap = document.getElementById("mini-map");
         let miniMapChildren = miniMap.children;
+        // remove children with the break class
+        for (let i = 0; i < miniMapChildren.length; i++) {
+            if (miniMapChildren[i].classList.contains("break")) {
+                miniMap.removeChild(miniMapChildren[i]);
+            }
+        }
         for (let i = 0; i < miniMapChildren.length; i++) {
             if (event.target == miniMapChildren[i]) {
                 lastClickedElement.classList.remove("selected-box");

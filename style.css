@@ -110,6 +110,11 @@ button {
     background-color: #1e1e1e;
 }
 
+#clue-cont {
+    margin: auto;
+    margin-bottom: 1.2rem;
+}
+
 #copy-results {
     margin: auto;
     margin-bottom: 25px;
@@ -411,12 +416,18 @@ line {
     content: "-";
 }
 
+.break {
+    flex-basis: 100%;
+    height: 0;
+}
+
 #mini-map {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    margin: 1rem;
-    gap: 0.5rem;
-    max-height: 39px;
+    column-gap: 0.5rem;
+    row-gap: 0.2rem;
+    /* max-height: 39px; */
 }
 
 #selector {
@@ -469,6 +480,7 @@ line {
     animation: margin-top 1s ease-out;
     position: relative;
     margin: 1rem;
+    margin-top: 0.65rem;
     display: flex;
     flex-direction: column;
     align-items: center;

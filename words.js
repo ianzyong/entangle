@@ -56,7 +56,7 @@ export const GAMEDATA = {
     "-2": {
         words: ["COSY","STAND","TITANS","COTS","SECT","INSECT","TETANY","3141592"],
         enumerations: ["(4)","(5)","(6)","(4)","(4)","(6)","(6)","(7)"],
-        clues: ["British teapot sweater... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 70.08335","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -21.95076","Involuntary contraction of muscles... or about -19.66536", "DENSITY of private eye?"],
+        clues: ["British teapot sweater... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 70.08335","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -21.95076","Involuntary contraction of muscles... or about -19.66536", "Private eye's DENSITY?"],
         themeClue: ["\x22Work party\x22"],
         themeAnswer: ["FUNCTION"],
         sharedLetters: [
@@ -541,6 +541,58 @@ export const GAMEDATA = {
             },
             {
                 indices: [[2,0],[2,5]]
+            }
+        ]
+    },
+    10: {
+        words: ["FIREFOX","EDGE","LOOKER","OPERA","SAFARI","CHROME","INTERNETEXPLORER"],
+        enumerations: ["(7)","(4)","(6)","(5)","(6)","(6)","(8,8)"],
+        clues: ["Let go of sly animal?","Advantage","Attractive person","\x22Carmen,\x22 for one","Expedition","Shiny metal plating","Briefly, i.e."],
+        themeClue: ["\x22King Koopa presents Mario's soul for window shopper\x22"],
+        themeAnswer: ["BROWSER"],
+        sharedLetters: [
+            {
+                indices: [[0,6],[6,9]]
+            },
+            {
+                indices: [[0,1],[4,5]]
+            },
+            {
+                indices: [[0,2],[4,4]]
+            },
+            {
+                indices: [[0,4],[4,2]]
+            },
+            {
+                indices: [[1,3],[6,3],[6,6]]
+            },
+            {
+                indices: [[2,1],[2,2],[3,0]]
+            },
+            {
+                indices: [[2,5],[5,2]]
+            },
+            {
+                indices: [[1,0],[6,8],[6,14]]
+            },
+            {
+                indices: [[4,1],[4,3]]
+            },
+            // {
+            //     indices: [[6,1],[6,5]]
+            // },
+            {
+                indices: [[6,13],[6,15]]
+            },
+            {
+                indices: [[2,0],[6,11]]
+            },
+            {
+                indices: [[6,2],[6,7]]
+            },
+            
+            {
+                indices: [[5,3],[6,12]]
             }
         ]
     }
