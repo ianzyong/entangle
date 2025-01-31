@@ -56,7 +56,7 @@ export const GAMEDATA = {
     "-2": {
         words: ["COSY","STAND","TITANS","COTS","SECT","INSECT","TETANY","3141592"],
         enumerations: ["(4)","(5)","(6)","(4)","(4)","(6)","(6)","(7)"],
-        clues: ["British teapot sweater... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 70.08335","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -21.95076","Involuntary contraction of muscles... or about -19.66536", "Private eye's DENSITY?"],
+        clues: ["British teapot sweater... or about -0.41615","Stomach... or about -0.14255","Gaia's offspring... or about 147.95373","Foldable beds... or about 0.64209","Splinter group... or about -1.09754","Bug... or about -59.26705","Involuntary contraction of muscles... or about -198.83863", "Private eye's DENSITY?"],
         themeClue: ["\x22Work party\x22"],
         themeAnswer: ["FUNCTION"],
         sharedLetters: [
@@ -593,6 +593,51 @@ export const GAMEDATA = {
             
             {
                 indices: [[5,3],[6,12]]
+            }
+        ]
+    },
+    11: {
+        words: ["ATONE","ATTACK","ATHEIST","ATTIRE","HANDLE","ATOM","ATTRACTOR","ATTEMPT"],
+        enumerations: ["(5)","(6)","(7)","(6)","(6)","(4)","(9)","(7)"],
+        clues: ["Make amends... or the first poster?","Offensive... or a sticky poster?","Nonbeliever... or a loot poster?","Wear... or an automobile poster?","Take care of","Smallest bit... or a meditative poster?","Attention grabber... or a farm poster?","Try... or an enticing poster?"],
+        themeClue: ["\x22Mention at sign\x22"],
+        themeAnswer: ["@"],
+        sharedLetters: [
+            {
+                indices: [[5,3],[7,4]]
+            },
+            {
+                indices: [[0,0],[4,1]]
+            },
+            {
+                indices: [[1,3],[6,4]]
+            },
+            {
+                indices: [[1,4],[6,5]]
+            },
+            {
+                indices: [[0,2],[5,2]]
+            },
+            {
+                indices: [[7,2],[7,6]]
+            },
+            {
+                indices: [[7,3],[4,5]]
+            },
+            {
+                indices: [[0,3],[4,2]]
+            },
+            {
+                indices: [[2,2],[4,0]]
+            },
+            {
+                indices: [[2,4],[3,3]]
+            },
+            {
+                indices: [[3,4],[6,3],[6,8]]
+            },
+            {
+                indices: [[1,2],[6,2]]
             }
         ]
     }
