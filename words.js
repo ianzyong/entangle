@@ -597,14 +597,14 @@ export const GAMEDATA = {
         ]
     },
     11: {
-        words: ["ATONE","ATTACK","ATHEIST","ATTIRE","HANDLE","ATOM","ATTRACTOR","ATTEMPT"],
+        words: ["ATONE","ATTACK","ATHEIST","ATTIRE","HANDLE","ATOP","ATTRACTOR","ATTEMPT"],
         enumerations: ["(5)","(6)","(7)","(6)","(6)","(4)","(9)","(7)"],
-        clues: ["Make amends... or the first poster?","Offensive... or a sticky poster?","Nonbeliever... or a loot poster?","Wear... or an automobile poster?","Take care of","Smallest bit... or a meditative poster?","Attention grabber... or a farm poster?","Try... or an enticing poster?"],
+        clues: ["Make amends... or a half and half poster?","Offensive... or a sticky poster?","Nonbeliever... or a loot poster?","Wear... or a wheel poster?","Take care of","On... or an original poster?","Attention grabber... or a farm vehicle poster?","Try... or an enticing poster?"],
         themeClue: ["\x22Mention at sign\x22"],
         themeAnswer: ["@"],
         sharedLetters: [
             {
-                indices: [[5,3],[7,4]]
+                indices: [[5,3],[7,5]]
             },
             {
                 indices: [[0,0],[4,1]]

@@ -203,13 +203,19 @@ function initBoard() {
     let gameState = null;
     if (localStorage.getItem(puzzleNumber)) {
         gameState = JSON.parse(localStorage.getItem(puzzleNumber));
-        for (let i = 0; i < gameState.indicesHinted.length; i++) {
-            isHinted[gameState.indicesHinted[i]] = true;
+        // check if the game state is malformed
+        if (gameState.values.length !== num_nodes) {
+            localStorage.removeItem(puzzleNumber);
+            gameState = null;
+        } else {
+            for (let i = 0; i < gameState.indicesHinted.length; i++) {
+                isHinted[gameState.indicesHinted[i]] = true;
+            }
+            numChecks = gameState.numChecks;
+            numHints = gameState.numHints;
+            isSolved = gameState.isSolved;
+            animationPlayed = gameState.isSolved;
         }
-        numChecks = gameState.numChecks;
-        numHints = gameState.numHints;
-        isSolved = gameState.isSolved;
-        animationPlayed = gameState.isSolved;
     }
 
     if (isSolved) {
@@ -974,11 +980,15 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             resultsNameAnswer.innerText = " — " + THEMEANSWER;
             resultsText.innerText = "solved with " + numHints + hintText + " and " + numChecks + checkText + "\r\n" + quips[quipNumber];
 
-            let extraQuips = [["wowowowowow","*high five*","wanna go bowling sometime?","for hard mode: try messing with the url"]];
+            let extraQuips = [["for hard mode: try messing with the url","wowowowowow","*high five*","wanna go bowling sometime?"]];
             if (quipNumber == 0) {
                 let extraQuip = document.getElementById("extra-quip");
+                let extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
+                while (puzzleNumber < 1 && extraQuipNumber == 0) {
+                    extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
+                }
                 // randomly select an extra quip
-                extraQuip.innerText = extraQuips[quipNumber][Math.floor(Math.random() * extraQuips[quipNumber].length)];
+                extraQuip.innerText = extraQuips[quipNumber][extraQuipNumber];
             }
             
             let resultsDelay = 50*nodeElements.length+1000;
