@@ -87,10 +87,8 @@
                     <p>- - -</p>
                 </section>
                 <section>
-                    <i>
-                        <p style="color:#4e4e4e">yes, there are hidden hard mode puzzles.</p>
-                        <p style="color:#4e4e4e">when you get there, you'll know...</p>
-                    </i>
+                    <p class="mention">yes, there are hidden hard mode puzzles.</p>
+                    <p class="mention">when you get there, you'll know...</p>
                 </section>
             </div>
         </div>
@@ -108,9 +106,25 @@
                     <p><span class="puzzle-name" id="full-subtitle"><span id="results-subtitle"></span><span class="name-answer" id="results-name-answer"></span></span></p>
                     <p id="results-text"></p>
                 </section>
+                <p class="mention" id="extra-quip"></p>
                 <section>
                     <button class="keyboard-button" id="copy-results">COPY RESULTS</button>
                 </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="reset-modal" class="modal">
+        <div class="modal-content">
+            <p><span class="close">&times;</span></p>
+            <div class="help-node-flex">
+                <div class="dummy-box"><p>E</p></div>
+            </div>
+            <p>are you sure you want to reset?</p>
+            <i><p class="mention">there's no going back...</p></i>
+            <div id="reset-buttons">
+                <button class="keyboard-button" id="reset-yes">Yes</button>
+                <button class="keyboard-button" id="reset-no">No</button>
             </div>
         </div>
     </div>
@@ -171,9 +185,9 @@
                     <button class="keyboard-button">m</button>
                     <button class="keyboard-button">Enter</button>
                 </div>
-                <div class="fourth-row">
+                <div class="fourth-row" id="fourth-row">
                     <button class="keyboard-button" id="hint-button">Hint</button>
-                    <button class="keyboard-button">Check</button>
+                    <button class="keyboard-button" id="check-button">Check</button>
                 </div>
             </div>
 

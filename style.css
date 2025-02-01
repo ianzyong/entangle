@@ -83,6 +83,11 @@ button {
     text-underline-offset: 3px;
 }
 
+.mention {
+    font-style: italic;
+    color: #4e4e4e;
+}
+
 #help-button {
     position: absolute;
     display: flex;
@@ -118,6 +123,25 @@ button {
 #copy-results {
     margin: auto;
     margin-bottom: 25px;
+    margin-top: 0px;
+}
+
+#reset-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    gap: 5rem;
+}
+
+#reset-yes {
+    position: relative;
+    display: flex;
+}
+
+#reset-no {
+    position: relative;
+    display: flex;
 }
 
 @keyframes color-change {

@@ -92,6 +92,8 @@ for (let i = 0; i < node_memberships.length; i++) {
 var num_nodes = current_node;
 var numChecks = 0;
 var numHints = 0;
+var isSolved = false;
+var isHinted = new Array(num_nodes).fill(false);
 
 function Node(id, value, containsFirstLetter, containsRepeat, nodeIndicesOfParentWords, adjNodeIndices) {
     this.id = id;
@@ -197,6 +199,23 @@ function initBoard() {
 
     let board = document.getElementById("game-board");
 
+    // read game state from localstorage if it exists
+    let gameState = null;
+    if (localStorage.getItem(puzzleNumber)) {
+        gameState = JSON.parse(localStorage.getItem(puzzleNumber));
+        for (let i = 0; i < gameState.indicesHinted.length; i++) {
+            isHinted[gameState.indicesHinted[i]] = true;
+        }
+        numChecks = gameState.numChecks;
+        numHints = gameState.numHints;
+        isSolved = gameState.isSolved;
+        animationPlayed = gameState.isSolved;
+    }
+
+    if (isSolved) {
+        addPostGameObjects();
+    }
+
     // create elements
     let yOffset = 20;
     let xOffset = 25;
@@ -213,8 +232,19 @@ function initBoard() {
         // associate the element with a node
         //element.textContent = nodes[i].value.toLowerCase();
         //element.classList.add("filled-box");
-        
+
         element.node = nodes[i];
+
+        // set content according to gameState
+        if (gameState && gameState.values[i] !== "") {
+            element.textContent = gameState.values[i];
+            element.classList.add("filled-box");
+            element.style.borderColor = getBorderColor(element);
+        }
+
+        if (isHinted[i]) {
+            element.classList.add("hinted-box");
+        }
 
         if (nodes[i].containsFirstLetter[0]) {
             element.classList.add("first-letter-box");
@@ -256,9 +286,17 @@ function initBoard() {
             element.classList.add("repeated-box");
         }
 
+        if (isSolved) {
+            element.classList.add("unfillable-box");
+        }
+
         //element.style.borderColor = color_list[(element.textContent.charCodeAt(0) - 97)%color_list.length];
 
         nodes[i].element = element;
+    }
+
+    if (localStorage.getItem(puzzleNumber) === null) {
+        updateGameState();
     }
 
     // populate the progress pane
@@ -342,7 +380,13 @@ function initBoard() {
         }
         //nodes[i].lines = thisNodeLines;
     }
-    
+
+    // color filled nodes
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].element.classList.contains("filled-box")) {
+            colorLines(nodes[i].id, nodes[i].adjNodeIndices, false);
+        }
+    }
 
     let controlPane = document.getElementById("control-pane");
     // set width to a multiple of the number of letters in the longest word
@@ -386,6 +430,18 @@ function initBoard() {
     let mainDivider = document.getElementById("main-divider");
     mainDivider.style.maxWidth = boardWidth + minPaneWidth + "px";
 
+}
+
+function addPostGameObjects() {
+    let checkButton = document.getElementById("check-button");
+    checkButton.textContent = "Results";
+    // add a reset button to the fourth row
+    let resetButton = document.createElement("button");
+    resetButton.id = "reset-button";
+    resetButton.classList.add("keyboard-button");
+    resetButton.textContent = "Reset";
+    let fourthRow = document.getElementById("fourth-row");
+    fourthRow.appendChild(resetButton);
 }
 
 let lastClickedElement = null;
@@ -602,6 +658,7 @@ function updateProgress() {
 
 var helpModal = document.getElementById("help-modal");
 var resultsModal = document.getElementById("results-modal");
+var resetModal = document.getElementById("reset-modal");
 
 document.addEventListener('click', function(event) {
     if ((event.target.lang == "en" || event.target.id == "mini-map" || (event.target.classList.contains("keyboard-button") && event.target.parentElement.parentElement.id === "keyboard-cont") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
@@ -611,6 +668,7 @@ document.addEventListener('click', function(event) {
     if (event.target.classList.contains("close") || (event.target.classList.contains("modal") && !(event.target.parentElement.classList.contains("modal")))) {
         helpModal.style.display = "none";
         resultsModal.style.display = "none";
+        resetModal.style.display = "none";
     }
 
     if (event.target.id === "help-button") {
@@ -678,16 +736,16 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
         }
     }
 
-    if (event.target.classList.contains("accordion")) {
-        event.target.classList.toggle("active");
-        let panel = event.target.nextElementSibling;
-        if (panel.style.maxHeight) {
-            panel.style.maxHeight = null;
-        } else {
-            panel.style.maxHeight = 500 + "px";
-        }
-        return
-    }
+    // if (event.target.classList.contains("accordion")) {
+    //     event.target.classList.toggle("active");
+    //     let panel = event.target.nextElementSibling;
+    //     if (panel.style.maxHeight) {
+    //         panel.style.maxHeight = null;
+    //     } else {
+    //         panel.style.maxHeight = 500 + "px";
+    //     }
+    //     return
+    // }
 
     last_position = null;
 
@@ -825,9 +883,10 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
         key = "Backspace"
     }
 
-    if (key === "Check") {
+    if (key === "Check" || key === "Results") {
         let allCorrect = true;
-        let elementsToHint = [];
+        //let elementsToHint = [];
+        let indicesToHint = [];
         for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].element.textContent) {
                 if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toString().toLowerCase()) {
@@ -844,13 +903,18 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                     allCorrect = false;
                 } 
                 else {
-                    elementsToHint.push(nodes[i].element);
+                    //elementsToHint.push(nodes[i].element);
+                    indicesToHint.push(i);
                 }
             } else {
                 allCorrect = false;
             }
         }
         if (allCorrect) {
+            isSolved = true;
+            // get check-button
+            let checkButton = document.getElementById("check-button");
+            checkButton.textContent = "Results";
             if (lastClickedElement && lastClickedElement.classList.contains("letter-box")) {
                 toggleHighlight(lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]);
             }
@@ -877,7 +941,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             // let numHints = document.getElementsByClassName("hinted-box").length
 
             //quip based on number of hints used
-            let quips = ["perfect!","well done!", "not too shabby.","pretty good.","not bad.","satisfactory.","good effort.","well, there's always next time."]
+            let quips = ["perfect!","well done!","not too shabby.","pretty good.","not bad.","satisfactory.","good effort.","well, there's always next time."]
             
             let quipNumber = numHints + numChecks >= quips.length ? quips.length-1 : numHints + numChecks;
             let hintText = numHints == 1 ? " hint" : " hints";
@@ -910,8 +974,20 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             resultsNameAnswer.innerText = " — " + THEMEANSWER;
             resultsText.innerText = "solved with " + numHints + hintText + " and " + numChecks + checkText + "\r\n" + quips[quipNumber];
 
+            let extraQuips = [["wowowowowow","*high five*","wanna go bowling sometime?","for hard mode: try messing with the url"]];
+            if (quipNumber == 0) {
+                let extraQuip = document.getElementById("extra-quip");
+                // randomly select an extra quip
+                extraQuip.innerText = extraQuips[quipNumber][Math.floor(Math.random() * extraQuips[quipNumber].length)];
+            }
+            
             let resultsDelay = 50*nodeElements.length+1000;
             if (!animationPlayed) {
+
+                addPostGameObjects();
+                // update gamestate
+                updateGameState();
+
                 animateCascade(nodeElements, 'flip', 50);
                 animationPlayed = true;
             } else {
@@ -926,11 +1002,15 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             setTimeout(displayResults,resultsDelay);
             
         } else {
-            for (let i = 0; i < elementsToHint.length; i++) {
-                elementsToHint[i].classList.add("hinted-box");
+            // for (let i = 0; i < elementsToHint.length; i++) {
+            //     elementsToHint[i].classList.add("hinted-box");
+            // }
+            for (let i = 0; i < indicesToHint.length; i++) {
+                isHinted[indicesToHint[i]] = true;
+                nodes[indicesToHint[i]].element.classList.add("hinted-box");
             }
-
             numChecks++;
+            updateGameState();
         }
         updateMinimap(false);
     } else if (key === "Hint") {
@@ -950,12 +1030,30 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             updateMinimap(false);
             updateProgress();
             numHints++;
+            isHinted[selectedBox.node.id] = true;
+            updateGameState();
         }
-    } 
+    } else if (key === "Reset") {
+        resetModal.style.display = "block";
+    }
     else {
         document.dispatchEvent(new KeyboardEvent("keydown", {'key': key}))
     }
 
+});
+
+document.getElementById("reset-buttons").addEventListener("click", (e) => {
+    const target = e.target;
+    let key = target.textContent;
+    if (key === "Yes") {
+        // clear localStorage
+        localStorage.removeItem(puzzleNumber);
+        // refresh page
+        location.reload();
+    } else if (key === "No") {
+        resetModal.style.display = "none";
+        return
+    }
 });
 
 function blendColors(colors) {
@@ -1174,6 +1272,40 @@ function cycleLetter(pressedKey, lce) {
     }
 }
 
+function updateGameState() {
+    // get values from all nodes
+    let values = [];
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].element.textContent) {
+            values.push(nodes[i].element.textContent);
+        } else {
+            values.push("");
+        }
+    }
+    // get number of hints used
+    let numH = numHints;
+    // get number of checks used
+    let numC = numChecks;
+    // is puzzle solved?
+    let solved = isSolved;
+    // get indices of True values in ishinted
+    let indicesHinted = [];
+    for (let i = 0; i < isHinted.length; i++) {
+        if (isHinted[i]) {
+            indicesHinted.push(i);
+        }
+    }
+    let gameState = {
+        "values": values,
+        "indicesHinted": indicesHinted,
+        "numHints": numH,
+        "numChecks": numC,
+        "isSolved": solved
+    }
+    // save gameState to localStorage
+    localStorage.setItem(puzzleNumber, JSON.stringify(gameState));
+}
+
 document.addEventListener("keydown", (e) => {
 
     let pressedKey = String(e.key)
@@ -1181,6 +1313,7 @@ document.addEventListener("keydown", (e) => {
         deleteLetter(pressedKey)
         updateMinimap(true);
         updateProgress();
+        updateGameState();
         return
     }
 
@@ -1228,6 +1361,7 @@ document.addEventListener("keydown", (e) => {
 
     updateMinimap(false);
     updateProgress();
+    updateGameState();
 
 })
 
