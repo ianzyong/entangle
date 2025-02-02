@@ -1,15 +1,29 @@
 import { GAMEDATA } from "./words.js";
 
-// get last key in GAMEDATA
+// ignore non-numeric keys
+let numericKeys = Object.keys(GAMEDATA).filter(x => !isNaN(x));
 // sort as integers
-let sortedKeys = Object.keys(GAMEDATA).sort((a,b) => parseInt(a) - parseInt(b));
+let sortedKeys = numericKeys.sort((a,b) => parseInt(a) - parseInt(b));
 let puzzleNumber = Number(sortedKeys[sortedKeys.length-1]);
 let maxPuzzleNumber = puzzleNumber;
+let minPuzzleNumber = Number(sortedKeys[0]);
 
 // if there is a query string
 if (window.location.href.includes("?")) {
     // get the puzzle number from the query string
-    puzzleNumber = Number(window.location.href.match(/(?<=puzzle=)-?\d+/));
+    puzzleNumber = window.location.href.match(/(?<=\/\?puzzle=)-?.+/)[0];
+    puzzleNumber = decodeURIComponent(puzzleNumber);
+    // if the puzzle number is a number, convert to number
+    if (!isNaN(puzzleNumber)) {
+        puzzleNumber = Number(puzzleNumber);
+    } else {
+        let hb = document.getElementById("hint-button");
+        let cb = document.getElementById("check-button");
+        // grey out button
+        hb.classList.add("disabled");
+        cb.classList.add("disabled");
+        let tl = document.getElementById("title")
+    }
 }
 
 // if GAMEDATA does not have puzzle number
@@ -443,6 +457,8 @@ function initBoard() {
 function addPostGameObjects() {
     let checkButton = document.getElementById("check-button");
     checkButton.textContent = "Results";
+    // remove disabled class from the check button
+    checkButton.classList.remove("disabled");
     // add a reset button to the fourth row
     let resetButton = document.createElement("button");
     resetButton.id = "reset-button";
@@ -851,7 +867,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
     if (event.target.id == "prev") {
         
         let new_num = puzzleNumber-1;
-        if (new_num == 0) {
+        if (new_num == 0 || new_num < minPuzzleNumber) {
             return
         } else {
             updateUrl(new_num);
@@ -974,7 +990,7 @@ const animateCascade = (elementList, animation, delay, prefix = 'animate__') =>
 document.getElementById("keyboard-cont").addEventListener("click", (e) => {
     const target = e.target;
 
-    if (!target.classList.contains("keyboard-button")) {
+    if (!target.classList.contains("keyboard-button") || target.classList.contains("disabled")) {
         return
     }
     let key = target.textContent
@@ -1075,8 +1091,19 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             resultsText.innerText = "solved with " + numHints + hintText + " and " + numChecks + checkText + "\r\n" + quips[quipNumber];
 
             let extraQuips = [["for hard mode: try messing with the url","wowowowowow","*high five*","wanna go bowling sometime?"]];
-            if (quipNumber == 0) {
-                let extraQuip = document.getElementById("extra-quip");
+            let alephQuips = [];
+            // for each non-numeric key in GAMEDATA, add the corresponding unicode character to alephQuips
+            for (let key in GAMEDATA) {
+                if (isNaN(key)) {
+                    alephQuips.push(encodeURIComponent(key));
+                }
+            }
+            let extraQuip = document.getElementById("extra-quip");
+            if (isNaN(puzzleNumber)) {
+                let extraQuipNumber = Math.floor(Math.random() * alephQuips.length);
+                extraQuip.innerText = `...${alephQuips[extraQuipNumber]}...`;
+                extraQuip.style["userSelect"] = "text";
+            } else if (quipNumber == 0) {
                 let extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
                 while (puzzleNumber < 1 && extraQuipNumber == 0) {
                     extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
@@ -1118,9 +1145,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
         }
         updateMinimap(false);
     } else if (key === "Hint") {
-        if (puzzleNumber < 1) {
-            return;
-        }
         // reveal the currently selected letter
         // get the selected-box element
         let selectedBox = document.querySelector(".selected-box");
@@ -1438,6 +1462,9 @@ function updateGameState() {
     }
     // save gameState to localStorage
     localStorage.setItem(puzzleNumber, JSON.stringify(gameState));
+
+    // return whether all nodes are correct
+    return (values.every((val, i) => val.toLowerCase() === nodes[i].value.toString().toLowerCase()) && !isSolved);
 }
 
 document.addEventListener("keydown", (e) => {
@@ -1495,8 +1522,13 @@ document.addEventListener("keydown", (e) => {
 
     updateMinimap(false);
     updateProgress();
-    updateGameState();
-
+    if (updateGameState() && isNaN(puzzleNumber)) {
+        // remove disabled class from the check button
+        let checkButton = document.getElementById("check-button");
+        checkButton.classList.remove("disabled");
+        // simulate clicking the check button
+        checkButton.click();
+    }
 })
 
 initBoard()

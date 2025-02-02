@@ -468,7 +468,7 @@ line {
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent; 
     border-right:10px solid #3e3e3e;
-    margin-right: 0rem;
+    margin-right: 0.5rem;
     transition: all 0.2s ease-in-out;
 }
 
@@ -482,15 +482,18 @@ line {
     width: 40px;
     align-items: center;
     user-select: none;
-    
+    text-align: center;
 }
 
 #level-select-button-text {
-    margin-top: -5px;
+    margin-top: 0px;
     margin-bottom: 0px;
+    margin-left: 1px;
     font-size: 20px;
-    color: #888888;
+    font-weight: 700;
+    color: #3e3e3e;
     transition: all 0.2s ease-in-out;
+    text-align: center;
 }
 
 #level-select-button-text:hover {
@@ -512,6 +515,7 @@ line {
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-left: 10px solid #3e3e3e;
+    margin-left: 0.5rem;
     transition: all 0.2s ease-in-out;
 }
 
@@ -524,7 +528,7 @@ line {
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    gap: 4rem;
+    gap: 2rem;
     padding: 10px;
     border-top: solid 0.5px #3e3e3e;
     border-bottom: solid 0.5px #3e3e3e;
@@ -542,6 +546,7 @@ line {
     left: 12px;
     top: 28px;
     margin-right: 100%;
+    color: #888888;
 }
 
 #world-select-nodes {
