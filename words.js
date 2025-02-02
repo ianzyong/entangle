@@ -730,6 +730,57 @@ export const GAMEDATA = {
                 indices: [[1,2],[6,2]]
             }
         ]
+    },
+    12: {
+        words: ["SHARP","BRIGHT","QUICK","BOUTIQUE","STING","INTELLIGENT","GIFTED"],
+        enumerations: ["(5)","(6)","(5)","(8)","(5)","(11)","(6)"],
+        clues: ["Variety of cheddar","Shining","Hg without Ag?","Posh shop","Prick","Brainy","Presented?"],
+        themeClue: ["\x22Chic streetcars head west\x22"],
+        themeAnswer: ["SMART"],
+        sharedLetters: [
+            {
+                indices: [[2,0],[3,5]]
+            },
+            {
+                indices: [[2,1],[3,2],[3,6]]
+            },
+            {
+                indices: [[5,7],[6,0]]
+            },
+            {
+                indices: [[5,0],[5,6],[6,1]]
+            },
+            {
+                indices: [[5,2],[6,3]]
+            },
+            {
+                indices: [[1,0],[3,0]]
+            },
+            {
+                indices: [[1,5],[6,3]]
+            },
+            {
+                indices: [[1,2],[4,2]]
+            },
+            {
+                indices: [[1,3],[4,4]]
+            },
+            {
+                indices: [[5,2],[5,10]]
+            },
+            {
+                indices: [[3,7],[5,8]]
+            },
+            {
+                indices: [[0,3],[1,1]]
+            },
+            {
+                indices: [[1,5],[4,1]]
+            },
+            {
+                indices: [[2,2],[3,4]]
+            }
+        ]
     }
 }
 
