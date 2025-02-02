@@ -661,10 +661,18 @@ function updateMinimap(sameWord) {
         // get enumeration for the selected word
         let currentEnum = ENUMERATIONS[lastSelectedWord];
         // split and only keep numbers
-        let currentEnumSplit = currentEnum.slice(1,-1).split(",").map(x => parseInt(x));
+        let currentEnumSplit = currentEnum.slice(1,-1).split(",");
+        // get indices of any decimal enumerations
+        let decimalEnumIndices = currentEnumSplit.map((x,index) => x % 1 !== 0 ? index: -1).filter(index => index !== -1);
+        currentEnumSplit = currentEnumSplit.map(x => parseInt(x));
+        // cumulative sum
+        for (let i = 1; i < currentEnumSplit.length; i++) {
+            currentEnumSplit[i] += currentEnumSplit[i-1];
+        }
         // remove last element
         currentEnumSplit.pop();
-        miniMap.style.minHeight = + 44 + (currentEnumSplit.length)*49 + "px";
+        
+        let numBreaks = 0;
         // create a copy of each node in the selected word, retaining classes
         for (let [index, nodeIndex] of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord].entries()) {
             let element = nodes[nodeIndex].element.cloneNode(true);
@@ -676,15 +684,21 @@ function updateMinimap(sameWord) {
             } else {
                 element.style.top = "0px";
             }
+            // if the text content of the box exceeds the width, set the font size so that it fits
+            if (element.textContent.length > 2) {
+                element.style.fontSize = 2/element.textContent.length + "rem";
+            }
             element.classList.add("mini-box");
             miniMap.appendChild(element);
             // if the node number is in currentEnumSplit, add a br
-            if (currentEnumSplit.includes(index+1)) {
+            if (currentEnumSplit.includes(index+1) && !decimalEnumIndices.includes(currentEnumSplit.indexOf(index+1))) {
                 miniMap.appendChild(document.createElement("div"));
                 // add break class
                 miniMap.lastChild.classList.add("break");
+                numBreaks++;
             }
         }
+        miniMap.style.minHeight = + 44 + (numBreaks)*49 + "px";
     } else {
         miniMap.style.minHeight = "0px";
     }
@@ -708,14 +722,70 @@ function updateProgress() {
                     currentWordText += "_";
                 }
             }
-            // if the enumeration contains a comma, add a space at the locations in thte enumeration
+            // if the enumeration contains a comma, add a space at the locations in the enumeration
             if (currentEnum.textContent.includes(",")) {
+                // clear the currentWordText
+                currentWordText = "";
                 let spaceIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseInt(x));
-                for (let i = 0; i < spaceIndices.length-1; i++) {
-                    currentWordText = currentWordText.slice(0,spaceIndices[i]) + " " + currentWordText.slice(spaceIndices[i]);
+                let decimalIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseFloat(x));
+                let decimalEnumIndices = currentEnum.textContent.slice(1,-1).split(",").map((x,index) => x % 1 !== 0 ? index: -1).filter(index => index !== -1);
+                // cumulative sum
+                for (let i = 1; i < spaceIndices.length; i++) {
+                    spaceIndices[i] += spaceIndices[i-1];
+                }
+                if (currentEnum.textContent.includes(".")) {
+                    // ignore spaceIndices at decimalEnumIndices
+                    spaceIndices = spaceIndices.filter(x => !decimalEnumIndices.includes(spaceIndices.indexOf(x)));
+                    // decimal enumeration
+                    let potentialRebusIndices = [];
+                    let potentialDecimalIndices = [];
+                    for (let i = 1; i < decimalIndices.length; i++) {
+                        if ((decimalIndices[i] % 1 !== 0) && (decimalIndices[i-1] % 1 !== 0)) {
+                            potentialRebusIndices.push(Math.floor(decimalIndices[i-1]));
+                            potentialDecimalIndices.push(decimalIndices[i]);
+                        }   
+                    }
+                    for (let k = 0; k < node_memberships[wordIndex].length; k++) {
+                        // if this is a potential rebus index
+                        if (potentialRebusIndices.includes(k) && nodes[node_memberships[wordIndex][k]].element.textContent) {
+                            let decimalIndex = potentialDecimalIndices[potentialRebusIndices.indexOf(k)];
+                            let decimalPart = decimalIndex % 1;
+                            let denominator = parseInt(1/decimalPart);
+                            // determine if the node's text content can be evenly multiplied by the decimal index
+                            let potentialRebus = nodes[node_memberships[wordIndex][k]].element.textContent;
+                            if (potentialRebus.length % denominator === 0) {
+                                // insert a space at potentialRebus.length/denominator
+                                for (let m = 1/denominator; m < 1; m=m+1/denominator) {
+                                    currentWordText += potentialRebus.slice(0,parseInt(potentialRebus.length*m)) + " " + potentialRebus.slice(parseInt(potentialRebus.length*m));
+                                }
+                            } else {
+                                currentWordText += potentialRebus;
+                            }
+                        } else if (nodes[node_memberships[wordIndex][k]].element.textContent) {
+                            currentWordText += nodes[node_memberships[wordIndex][k]].element.textContent;
+                        } else {
+                            currentWordText += "_";
+                        }
+                        if (spaceIndices.includes(k+1)) {
+                            currentWordText += " ";
+                        }
+                    }
+                } else {
+                    // integer enumeration
+                    for (let k = 0; k < node_memberships[wordIndex].length; k++) {
+                        if (nodes[node_memberships[wordIndex][k]].element.textContent) {
+                            currentWordText += nodes[node_memberships[wordIndex][k]].element.textContent;
+                        } else {
+                            currentWordText += "_";
+                        }
+                        if (spaceIndices.includes(k+1)) {
+                            currentWordText += " ";
+                        }
+                    }
                 }
             }
-
+            
+            // for puzzle -2
             if (puzzleNumber === -2 && wordIndex != WORDS.length-1 && !(currentWordText).includes("_")) {
                 let currentClueSplit = CLUES[wordIndex].split(" ");
                 currentWordText = currentWordText + " ≈ " + currentClueSplit[currentClueSplit.length - 1];

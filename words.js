@@ -1,4 +1,50 @@
 export const GAMEDATA = {
+    "-4": {
+        // [naMETAg, METAtarsal, tiMETAble, METAl, incoMETAx, METAphor, METAcarpal]
+        words: [[["N"],["A"],["META"],["G"]],[["META"],["T"],["A"],["R"],["S"],["A"],["L"]],[["T"],["I"],["META"],["B"],["L"],["E"]],[["META"],["L"]],[["I"],["N"],["C"],["O"],["META"],["X"]],[["META"],["P"],["H"],["O"],["R"]],[["META"],["C"],["A"],["R"],["P"],["A"],["L"]]],
+        enumerations: ["(2.5,1.5)","(7)","(6)","(2)","(4.5,1.5)","(5)","(7)"],
+        clues: ["Pin at a conference","Foot bone... was introduced to a sailor's aluminum?","Schedule","Rock genre","Paycheck deduction","Figure of speech","Hand bone... was introduced to a ride buddy?"],
+        themeClue: ["\x22Tech giant smokes meat\x22"],
+        themeAnswer: ["META"],
+        sharedLetters: [
+            {
+                indices: [[0,2],[1,0],[2,2],[3,0],[4,4],[5,0],[6,0]]
+            },
+            {
+                indices: [[4,2],[6,1]]
+            },
+            // {
+            //     indices: [[1,5],[6,5]]
+            // },
+            // {
+            //     indices: [[1,6],[6,6]]
+            // },
+            {
+                indices: [[2,0],[1,1]]
+            },
+            {
+                indices: [[0,0],[4,1]]
+            },
+            {
+                indices: [[4,3],[5,3]]
+            },
+            {
+                indices: [[5,1],[6,4]]
+            },
+            {
+                indices: [[1,2],[1,5]]
+            },
+            {
+                indices: [[6,2],[6,5]]
+            },
+            {
+                indices: [[2,4],[3,1]]
+            },
+            {
+                indices: [[1,3],[5,4]]
+            }
+        ]
+    },
     "-3": {
         words: ["RIGHT?","WHO?","HAPPY?","SERIOUSLY?","WHEN?","WHY?","DANGER","WHERE?","WHAT?"],
         enumerations: ["(6)","(4)","(6)","(10)","(5)","(4)","(6)","(6)","(5)"],
