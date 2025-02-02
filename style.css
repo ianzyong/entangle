@@ -468,12 +468,41 @@ line {
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent; 
     border-right:10px solid #3e3e3e;
-    margin-right: 1rem;
+    margin-right: 0rem;
     transition: all 0.2s ease-in-out;
 }
 
 #prev:hover {
     border-right:10px solid #888888;
+}
+
+
+#level-select-button {
+    height: 20px;
+    width: 40px;
+    align-items: center;
+    user-select: none;
+    
+}
+
+#level-select-button-text {
+    margin-top: -5px;
+    margin-bottom: 0px;
+    font-size: 20px;
+    color: #888888;
+    transition: all 0.2s ease-in-out;
+}
+
+#level-select-button-text:hover {
+    color: #b2b2b2;
+}
+
+#hard {
+    display: none;
+}
+
+#aleph {
+    display: none;
 }
 
 #next {
@@ -488,6 +517,91 @@ line {
 
 #next:hover {
     border-left:10px solid #888888;
+}
+
+#world-select-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 4rem;
+    padding: 10px;
+    border-top: solid 0.5px #3e3e3e;
+    border-bottom: solid 0.5px #3e3e3e;
+}
+
+#wsl-pos {
+    position: relative;
+    height: 0;
+    
+}
+
+#world-select-label {
+    text-align: left;
+    position: relative;
+    left: 12px;
+    top: 28px;
+    margin-right: 100%;
+}
+
+#world-select-nodes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+    margin-bottom: 3rem;
+    gap: 0.5rem;
+    padding: 10px;
+    width: 275px;
+}
+
+.level-select-node {
+    display: flex;
+    font: 1rem 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;
+    justify-content: center;
+    align-items: center;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #4e4e4e;
+    border-radius: 3px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    height: 1.5rem;
+    width: 1.5rem;
+    text-transform: uppercase;
+    color: #d1d1d1;
+    background-color: #151515;
+    transition: all 0.4s ease-in-out;
+    user-select: none;
+    transition: all 0.4s ease-in-out;
+}
+
+.level-select-node:hover {
+    border-color: #959595;
+}
+
+#world-select-answer-div {
+    height: 40px;
+    width: 100%;
+    display: hidden;
+    margin-top: 2rem;
+}
+
+#world-select-answer {
+    height: 40px;
+}
+
+.level-select-node:hover #world-select-answer-div {
+    display: block;
+}
+
+.solved-level-node {
+    background-color: #19271f;
+    box-shadow: 0px 0px 10px #2b2b2b;
+}
+
+.unfinished-level-node {
+    background-color: #2d2b23;
 }
 
 #control-pane {

@@ -114,6 +114,26 @@
         </div>
     </div>
 
+    <div id="level-select-modal" class="modal">
+        <div class="modal-content" id="results-modal-content">
+            <p><span class="close">&times;</span></p>
+            <div class="help-node-flex">
+                <div class="dummy-box"><p>E</p></div>
+            </div>
+            <span class="entangle"><p id="results-title"></p></span>
+            <div id="wsl-pos">
+                <p class="entangle" id="world-select-label">World<br>Select:</p>
+            </div>
+            <div id="world-select-buttons">
+                <button class="keyboard-button" id="hard">-</button>
+                <button class="keyboard-button" id="normal">+</button>
+                <button class="keyboard-button" id="aleph">ℵ</button>
+            </div>
+            <div id="world-select-answer-div"><p class="puzzle-name name-answer animate__animated animate__faster" id="world-select-answer"></p></div>
+            <div id="world-select-nodes"></div>
+        </div>
+    </div>
+
     <div id="reset-modal" class="modal">
         <div class="modal-content">
             <p><span class="close">&times;</span></p>
@@ -141,6 +161,9 @@
             <div id="puzzle-info">
                 <div id="selector">
                     <div id="prev"></div>
+                    <div id="level-select-button">
+                        <p id="level-select-button-text">᎒᎒᎒</p>
+                    </div>
                     <div id="next"></div>
                 </div>
                 <h1 id="title"> entangle </h1>

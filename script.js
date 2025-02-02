@@ -250,6 +250,8 @@ function initBoard() {
 
         if (isHinted[i]) {
             element.classList.add("hinted-box");
+            // fill with correct symbol
+            element.textContent = nodes[i].value;
         }
 
         if (nodes[i].containsFirstLetter[0]) {
@@ -450,6 +452,60 @@ function addPostGameObjects() {
     fourthRow.appendChild(resetButton);
 }
 
+function displayLevelNodes(allData, worldName) {
+    let worldSelectNodes = document.getElementById("world-select-nodes");
+    // delete any children of wordlSelectNodes
+    while (worldSelectNodes.firstChild) {
+        worldSelectNodes.removeChild(worldSelectNodes.firstChild);
+    }
+    if (worldName === "hard") {
+        // get all negative keys from GAMEDATA
+        let keys = Object.keys(GAMEDATA).filter(x => parseInt(x) <= 0);
+        // add a div for each key
+        for (let key of keys.sort((a, b) => a - b)) {
+            let div = document.createElement("div");
+            div.textContent = key;
+            div.classList.add("level-select-node");
+            colorLevelNode(div, allData);
+            worldSelectNodes.appendChild(div);
+        }
+    } else if (worldName === "aleph") {
+        // get all non number keys from allData
+        let keys = Object.keys(allData).filter(x => isNaN(x));
+        // add a div for each key
+        for (let key of keys) {
+            let div = document.createElement("div");
+            div.textContent = key;
+            div.classList.add("level-select-node");
+            colorLevelNode(div, allData);
+            worldSelectNodes.appendChild(div);
+        }
+    } else {
+        // get all positive keys from GAMEDATA
+        let keys = Object.keys(GAMEDATA).filter(x => parseInt(x) > 0);
+        // add a div for each key in descending order
+        for (let key of keys.sort((a, b) => b - a)) {
+            let div = document.createElement("div");
+            div.textContent = key;
+            div.classList.add("level-select-node");
+            colorLevelNode(div, allData);
+            worldSelectNodes.appendChild(div);
+        }
+    }
+}
+
+function colorLevelNode(div, allData) {
+    let key = div.textContent;
+    if (key in allData) {
+        // if the key is solved
+        if (JSON.parse(localStorage.getItem(key)).isSolved) {
+            div.classList.add("solved-level-node");
+        } else if (JSON.parse(localStorage.getItem(key)).values.some(x => x !== "")) {
+            div.classList.add("unfinished-level-node");
+        }
+    }
+}
+
 let lastClickedElement = null;
 let lastSelectedWord = null;
 let lastClickedNode = null;
@@ -569,13 +625,13 @@ function cycleWordList(lce) {
 let clue = document.getElementById("clue");
 let clueEnum = document.getElementById("clue-enum");
 
-function updateUrl(new_num) {
+function updateUrl(new_char) {
     if (window.location.href.includes("?puzzle=")) {
         // if the puzzle query string is in the url
-        window.location = window.location.href.replace(/(\?puzzle=)[^\&]+/, '$1' + new_num);
+        window.location = window.location.href.replace(/(\?puzzle=)[^\&]+/, '$1' + new_char);
     } else {
         // add the query string with the updated puzzle number
-        window.location = window.location + "?puzzle=" + new_num;
+        window.location = window.location + "?puzzle=" + new_char;
     }
 }
 
@@ -663,6 +719,7 @@ function updateProgress() {
 }
 
 var helpModal = document.getElementById("help-modal");
+var levelSelectModal = document.getElementById("level-select-modal");
 var resultsModal = document.getElementById("results-modal");
 var resetModal = document.getElementById("reset-modal");
 
@@ -673,6 +730,7 @@ document.addEventListener('click', function(event) {
 
     if (event.target.classList.contains("close") || (event.target.classList.contains("modal") && !(event.target.parentElement.classList.contains("modal")))) {
         helpModal.style.display = "none";
+        levelSelectModal.style.display = "none";
         resultsModal.style.display = "none";
         resetModal.style.display = "none";
     }
@@ -702,6 +760,40 @@ document.addEventListener('click', function(event) {
         }
 
     }
+
+    if (event.target.id === "level-select-button-text") {
+        levelSelectModal.style.display = "block";
+        // get all items from local storage
+        const allData = { ...localStorage };
+        let allDataKeys = Object.keys(allData);
+        // remove "debug" key if it exists
+        if (allDataKeys.includes("debug")) {
+            allDataKeys.splice(allDataKeys.indexOf("debug"),1);
+        }
+        if (isNaN(puzzleNumber)) {
+            displayLevelNodes(allData,"aleph");
+        } else if (puzzleNumber <= 0) {
+            displayLevelNodes(allData,"hard");
+        } else {
+            displayLevelNodes(allData,"normal");
+        }
+        // if negative keys exist in allData
+        if (allDataKeys.some(x => parseInt(x) <= 0)) {
+            let hardButton = document.getElementById("hard");
+            hardButton.style.display = "block";
+        }
+        // if non numeric keys exist in allData
+        if (allDataKeys.some(x => isNaN(x))) {
+            let alephButton = document.getElementById("aleph");
+            alephButton.style.display = "block";
+        }
+    }
+
+    if (event.target.id === "normal" || event.target.id === "hard" || event.target.id === "aleph") {
+        const allData = { ...localStorage };
+        displayLevelNodes(allData,event.target.id);
+    }
+
     if (event.target.id === "copy-results") {
         let resultsText = document.getElementById("results-text");
         let rankings = ["👑","🎖️","🏵️","⚜️","🍀","🔰","💠","🥀","🥀","🥀","☠️"]
@@ -854,6 +946,8 @@ const animateCSS = (element, animation, prefix = 'animate__') =>
     new Promise((resolve, reject) => {
       const animationName = `${prefix}${animation}`;
       const node = element;
+      // if the animation class exists, remove it
+      node.classList.remove(`${prefix}animated`, animationName);
   
       node.classList.add(`${prefix}animated`, animationName);
   
@@ -1064,6 +1158,36 @@ document.getElementById("reset-buttons").addEventListener("click", (e) => {
         resetModal.style.display = "none";
         return
     }
+});
+
+document.getElementById("world-select-nodes").addEventListener("click", (e) => {
+    const target = e.target;
+    // if target is a div with class level-select-node
+    if (target.classList.contains("level-select-node")) {
+        let new_char = target.textContent;
+        updateUrl(new_char);
+    }
+});
+
+document.getElementById("world-select-nodes").addEventListener("mouseover", (e) => {
+    const target = e.target;
+    // if target is a div with class level-select-node
+    if (target.classList.contains("level-select-node")) {
+        let worldSelectAnswer = document.getElementById("world-select-answer");
+        let displayText = "?????";
+        if (target.classList.contains("solved-level-node")) {
+            // from GAMEDATA, get the theme answer
+            displayText = GAMEDATA[target.textContent].themeAnswer;
+            // add animation
+            animateCSS(worldSelectAnswer, 'bounceIn');
+        }
+        worldSelectAnswer.textContent = displayText;
+    }
+});
+
+document.getElementById("world-select-nodes").addEventListener("mouseout", (e) => {
+    let worldSelectAnswer = document.getElementById("world-select-answer");
+    worldSelectAnswer.textContent = "";
 });
 
 function blendColors(colors) {
