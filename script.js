@@ -733,6 +733,7 @@ function updateProgress() {
                 for (let i = 1; i < spaceIndices.length; i++) {
                     spaceIndices[i] += spaceIndices[i-1];
                 }
+                // TODO: refactor...
                 if (currentEnum.textContent.includes(".")) {
                     // ignore spaceIndices at decimalEnumIndices
                     spaceIndices = spaceIndices.filter(x => !decimalEnumIndices.includes(spaceIndices.indexOf(x)));
@@ -873,6 +874,22 @@ document.addEventListener('click', function(event) {
             let alephButton = document.getElementById("aleph");
             alephButton.style.display = "block";
         }
+        let normalButton = document.getElementById("normal");
+        normalButton.style.display = "block";
+        // get number of elements in world-select-buttons
+        let worldSelectButtons = document.getElementById("world-select-buttons");
+        // get number of children with display block
+        let numChildren = 0;
+        for (let i = 0; i < worldSelectButtons.children.length; i++) {
+            if (worldSelectButtons.children[i].style.display === "block") {
+                numChildren++;
+            }
+        }
+        // get world-select-progress
+        let worldSelectProgress = document.getElementById("world-select-progress");
+        // set text
+        const MAXWORLDS = 3;
+        worldSelectProgress.textContent = `(${numChildren}/${MAXWORLDS})`;
     }
 
     if (event.target.id === "normal" || event.target.id === "hard" || event.target.id === "aleph") {
@@ -1175,11 +1192,13 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                 extraQuip.style["userSelect"] = "text";
             } else if (quipNumber == 0) {
                 let extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
-                while (puzzleNumber < 1 && extraQuipNumber == 0) {
-                    extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
+                if (puzzleNumber < 1 && extraQuipNumber == 0) {
+                    extraQuip.innerText = `...?puzzle=%C2%B6...`;
+                    extraQuip.style["userSelect"] = "text";
+                } else {
+                    // randomly select an extra quip
+                    extraQuip.innerText = extraQuips[quipNumber][extraQuipNumber];
                 }
-                // randomly select an extra quip
-                extraQuip.innerText = extraQuips[quipNumber][extraQuipNumber];
             }
             
             let resultsDelay = 50*nodeElements.length+1000;

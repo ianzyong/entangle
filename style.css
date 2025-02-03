@@ -508,6 +508,10 @@ line {
     display: none;
 }
 
+#normal {
+    display: block;
+}
+
 #next {
     /* arrow pointing right */
     width: 0; 
@@ -537,7 +541,11 @@ line {
 #wsl-pos {
     position: relative;
     height: 0;
-    
+}
+
+#wsl-pos-2 {
+    position: relative;
+    height: 0;
 }
 
 #world-select-label {
@@ -546,6 +554,16 @@ line {
     left: 12px;
     top: 28px;
     margin-right: 100%;
+    color: #888888;
+}
+
+#world-select-progress {
+    font: 1rem 'Chakra Petch', 'Terminal', 'Courier New', Courier, monospace;
+    text-align: right;
+    position: relative;
+    left: -45px;
+    top: 36px;
+    margin-left: 100%;
     color: #888888;
 }
 
