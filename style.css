@@ -341,9 +341,10 @@ section {
 }
 
 .highlighted-line {
-    stroke: #d8d8d8;
-    stroke-width: 1px;
-    z-index: 2;
+    display: hidden;
+    stroke: #d8d8d8 !important;
+    stroke-width: 2px;
+    /* z-index: 2 !important; */
 }
 
 .selected-box {
@@ -478,11 +479,31 @@ line {
 
 
 #level-select-button {
-    height: 20px;
-    width: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    height: 18px;
+    width: 21px;
     align-items: center;
     user-select: none;
     text-align: center;
+    margin-left: 12px;
+    margin-right: 11px;
+}
+
+.level-select-button-icon {
+    background-color: #3e3e3e;
+    height: 3px;
+    width: 3px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 2px;
+    margin-right: 2px;
+    transition: all 0.2s ease-in-out;
+    border-radius: 2px;
+}
+
+#level-select-button:hover .level-select-button-icon {
+    background-color: #888888;
 }
 
 #level-select-button-text {

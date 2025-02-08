@@ -827,6 +827,42 @@ export const GAMEDATA = {
                 indices: [[2,2],[3,4]]
             }
         ]
+    },
+    13: {
+        words: ["DEVOID","RAPID","RIGID","BRAID","CUPID","PAPERS","FLUID"],
+        enumerations: ["(6)","(5)","(5)","(5)","(5)","(6)","(5)"],
+        clues: ["Barren... or a \x22Whip It\x22 band card?","Speedy... or a hip-hop card?","Stiff... or an oil drilling card?","Weave... or an undergarment card?","Matchmaker... or a mug card?","NYT, WSJ, WaPo, etc.","Liquid or gas... or a sick card?"],
+        themeClue: ["\x22Primal urges from Idaho\x22"],
+        themeAnswer: ["ID"],
+        sharedLetters: [
+            {
+                indices: [[0,0],[0,5],[6,4]]
+            },
+            {
+                indices: [[0,4],[2,1],[3,3],[6,3],[2,3]]
+            },
+            {
+                indices: [[0,1],[5,3]]
+            },
+            {
+                indices: [[1,2],[5,0]]
+            },
+            {
+                indices: [[2,0],[3,1]]
+            },
+            {
+                indices: [[4,2],[5,2]]
+            },
+            {
+                indices: [[4,1],[6,2]]
+            },
+            {
+                indices: [[1,0],[5,4]]
+            },
+            {
+                indices: [[1,1],[5,1]]
+            }
+        ]
     }
 }
 

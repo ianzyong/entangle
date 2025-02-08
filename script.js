@@ -161,11 +161,19 @@ firstLetterNodeIndices.sort((a,b) => a[1] - b[1]);
 // remove the second element of each subarray
 firstLetterNodeIndices = firstLetterNodeIndices.map(x => x[0]);
 
+// svg object
+let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
 // create nodes in dagre
 var g = new dagre.graphlib.Graph();
 
 // Set an object for the graph label
 g.setGraph({});
+
+// configure layout
+g.graph().rankdir = "TB";
+g.graph().ranker = "network-simplex";
+
 
 // Default to assigning a new object as a label for each new edge.
 g.setDefaultEdgeLabel(function() { return {}; });
@@ -177,9 +185,16 @@ for (let i = 0; i < nodes.length; i++) {
 // set edges
 for (let i = 0; i < nodes.length; i++) {
     for (let j = 0; j < nodes[i].adjNodeIndices.length; j++) {
-        g.setEdge(nodes[i].id, nodes[i].adjNodeIndices[j]);
+        // if the reverse edge does not exist in _edgeObjs, add the edge
+        let edgeObjs = Object.values(g._edgeObjs);
+        let edgeExists = (edgeObjs.some(x => x.v == nodes[i].id && x.w == nodes[i].adjNodeIndices[j]) || edgeObjs.some(x => x.v == nodes[i].adjNodeIndices[j] && x.w == nodes[i].id));
+        if (!edgeExists) {
+            g.setEdge(nodes[i].id, nodes[i].adjNodeIndices[j]);
+        }
     }
 }
+
+
 
 dagre.layout(g);
 
@@ -201,6 +216,7 @@ function bezier(t, p0, p1, p2, p3) {
 let color_list = ["#A4A8D1", "#EF626C", "#E2C391", "#52FFB8", "#66C7F4","#D156CB"]
 
 let lines = [];
+let linesByWord = [];
 
 let wordsPane = document.getElementById("words-pane");
 
@@ -359,8 +375,7 @@ function initBoard() {
     board.style.width = boardWidth + "px";
     board.style.height = boardHeight + "px";
 
-    // create an svg element and add to board
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    // svg attributes
     svg.id = "main-svg";
     svg.setAttribute("width", boardWidth);
     svg.setAttribute("height", boardHeight);
@@ -371,36 +386,41 @@ function initBoard() {
     board.appendChild(svg);
 
     // create a line element connecting each pair of adjacent nodes without repeats
-    for (let i = 0; i < nodes.length; i++) {
-        //let thisNodeLines = [];
-        for (let j = 0; j < nodes[i].adjNodeIndices.length; j++) {
-            //thisNodeLines.push(line);
-            if (!nodes[i].adjNodeIndices[j]) {
-                continue;
-            }
-            let terminals = [nodes[i].id, nodes[nodes[i].adjNodeIndices[j]].id];
-            // if the node is adjacent to itself or if the terminal nodes already exist in the lines array
-            if (nodes[i].adjNodeIndices[j] == nodes[i].id || getLines(terminals[0], terminals[1])) {
-                continue;
-            }
-
-            // get parent indices of the current node
-            let parentIndices = Object.keys(nodes[i].nodeIndicesOfParentWords);
-
+    // get _edgeObjs from g
+    let edgeObjs = Object.values(g._edgeObjs);
+    for (let i = 0; i < edgeObjs.length; i++) {
+        let edge = edgeObjs[i];
+        if (!((edge.v === "undefined") || (edge.w === "undefined"))) {
             let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", g.node(nodes[i].id).x + xOffset + 20);
-            line.setAttribute("y1", g.node(nodes[i].id).y + yOffset + 20);
-            line.setAttribute("x2", g.node(nodes[nodes[i].adjNodeIndices[j]].id).x + xOffset + 20);
-            line.setAttribute("y2", g.node(nodes[nodes[i].adjNodeIndices[j]].id).y + yOffset + 20);
+            line.setAttribute("x1", g.node(edge.v).x + xOffset + 20);
+            line.setAttribute("y1", g.node(edge.v).y + yOffset + 20);
+            line.setAttribute("x2", g.node(edge.w).x + xOffset + 20);
+            line.setAttribute("y2", g.node(edge.w).y + yOffset + 20);
             line.setAttribute("stroke", "#2e2e2e");
             line.setAttribute("stroke-width", "1px");
-            line.parentWords = parentIndices;
-            line.terminals = [nodes[i].id, nodes[nodes[i].adjNodeIndices[j]].id];
+            line.terminals = [nodes[edge.v].id, nodes[edge.w].id];
+            line.style.zIndex = -1;
             svg.appendChild(line);
             lines.push(line);
-            
         }
-        //nodes[i].lines = thisNodeLines;
+    }
+
+    // determine linesByWord
+    // for each word in the puzzle
+    for (let i = 0; i < WORDS.length; i++) {
+        // get the nodes belonging to the word
+        let wordNodes = node_memberships[i];
+        // get the lines belonging to the word
+        let wordLines = [];
+        // for each consecutive pair of nodes in the word
+        for (let j = 0; j < wordNodes.length - 1; j++) {
+            // get the line connecting the two nodes
+            let line = getLines(nodes[wordNodes[j]].id, nodes[wordNodes[j+1]].id);
+            if (!wordLines.includes(line)) {
+                wordLines.push(line);
+            }
+        }
+        linesByWord[i] = wordLines;
     }
 
     // color filled nodes
@@ -531,7 +551,7 @@ function cycleWord(lce) {
 
         last_position = null;
 
-        toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
+        toggleHighlight(lce.node, lastSelectedWord);
 
         if(!lce.classList.contains("filled-box") && !lce.classList.contains("first-letter-box")) {
             lce.style.removeProperty("border-color")
@@ -573,7 +593,7 @@ function cycleWord(lce) {
         clueEnum.textContent = ENUMERATIONS[lastSelectedWord];
         clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
         
-        toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
+        toggleHighlight(lce.node, lastSelectedWord);
 
     }
 }
@@ -587,7 +607,7 @@ function cycleWordList(lce) {
 
     } else if (lce.classList.contains("letter-box")) {
         lce.classList.remove("selected-box");
-        toggleHighlight(lce.node.nodeIndicesOfParentWords[lastSelectedWord]);
+        toggleHighlight(lce.node, lastSelectedWord);
 
         let wordIndex = lastSelectedWord;
         nextWordIndex = (wordIndex+1) % WORDS.length;
@@ -629,7 +649,7 @@ function cycleWordList(lce) {
     clueEnum.style.color = color_list[(lastSelectedWord)%color_list.length];
 
     last_position = 0;
-    toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
+    toggleHighlight(lastClickedNode, lastSelectedWord);
 
     if (lastClickedElement.getBoundingClientRect().top > 0 && lastClickedElement.getBoundingClientRect().bottom <= (window.innerHeight || document.documentElement.clientHeight)) {
         return
@@ -848,7 +868,7 @@ document.addEventListener('click', function(event) {
 
     }
 
-    if (event.target.id === "level-select-button-text") {
+    if (event.target.id === "level-select-button" || event.target.classList.contains("level-select-button-icon")) {
         levelSelectModal.style.display = "block";
         // get all items from local storage
         const allData = { ...localStorage };
@@ -983,7 +1003,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
         // for (let nodeIndex of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]) {
         //     nodes[nodeIndex].element.classList.remove("highlighted-box");
         // }
-        toggleHighlight(lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]);
+        toggleHighlight(lastClickedElement.node, lastSelectedWord);
     }
     // if the clicked element is a letter-box
     if (event.target.classList.contains("letter-box")) {
@@ -1000,7 +1020,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
             lastSelectedWord = Object.keys(lastClickedNode.nodeIndicesOfParentWords)[0];
         }
 
-        toggleHighlight(lastClickedNode.nodeIndicesOfParentWords[lastSelectedWord]);
+        toggleHighlight(lastClickedNode, lastSelectedWord);
 
         // if text settings includes the current word as a key
         if (lastSelectedWord in TEXTSETTINGS) {
@@ -1030,14 +1050,21 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
     updateProgress();
 });
 
-function toggleHighlight(nodeIndices) {
+function toggleHighlight(node, wordInd) {
+    let nodeIndices = node.nodeIndicesOfParentWords[wordInd]
     for (let i = 0; i < nodeIndices.length; i++) {
         // if the current node index is contained in nodeindices thus far
         if (!nodeIndices.slice(0,i).includes(nodeIndices[i])) {
             nodes[nodeIndices[i]].element.classList.toggle("highlighted-box");
         }
     }
+    toggleLineHighlight(wordInd);
+}
 
+function toggleLineHighlight(wordInd) {
+    for (let line of linesByWord[wordInd]) {
+        line.classList.toggle("highlighted-line");
+    }
 }
 
 function sleep(ms) {
@@ -1119,7 +1146,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             let checkButton = document.getElementById("check-button");
             checkButton.textContent = "Results";
             if (lastClickedElement && lastClickedElement.classList.contains("letter-box")) {
-                toggleHighlight(lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]);
+                toggleHighlight(lastClickedElement.node, lastSelectedWord);
             }
             lastClickedElement = null;
             lastSelectedWord = null;
@@ -1366,11 +1393,10 @@ function getBorderColor(element) {
 }
 
 function getLines(terminal1,terminal2) {
-    return lines.find((line => line.terminals[0] == terminal1 && line.terminals[1] == terminal2) || (line.terminals[0] == terminal2 && line.terminals[1] == terminal1));
+    return lines.find(line => (line.terminals[0] === terminal1 && line.terminals[1] === terminal2) || (line.terminals[0] === terminal2 && line.terminals[1] === terminal1));
 }
 
 function colorLines(currentNode, adjNodes, clear) {
-    
     // get lines that have the current node as a terminal
     for (let i = 0; i < adjNodes.length; i++) {
         let line = getLines(currentNode, adjNodes[i]);
