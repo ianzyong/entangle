@@ -343,7 +343,7 @@ section {
 .highlighted-line {
     display: hidden;
     stroke: #d8d8d8 !important;
-    stroke-width: 2px;
+    stroke-width: 1.5px;
     /* z-index: 2 !important; */
 }
 

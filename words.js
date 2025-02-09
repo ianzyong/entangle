@@ -863,6 +863,51 @@ export const GAMEDATA = {
                 indices: [[1,1],[5,1]]
             }
         ]
+    },
+    14: {
+        words: ["TAILOR","RATS","FLIES","GAS","LINE","ALLIGATORS","MANHOLE"],
+        enumerations: ["(6)","(4)","(5)","(3)","(4)","(10)","(7)"],
+        clues: ["Specifically adapt","\x22Darn it!\x22","Pilots","Accelerator","Trade","Swamp snappers","Staff opening?"],
+        themeClue: ["\x22Female sheep breaks senior's drainage system\x22"],
+        themeAnswer: ["SEWER"],
+        sharedLetters: [
+            {
+                indices: [[0,0],[1,2]]
+            },
+            {
+                indices: [[0,3],[2,1]]
+            },
+            {
+                indices: [[0,2],[2,2]]
+            },
+            {
+                indices: [[1,1],[3,1]]
+            },
+            {
+                indices: [[1,3],[3,2]]
+            },
+            {
+                indices: [[5,0],[5,5],[6,1]]
+            },
+            {
+                indices: [[4,0],[5,1]]
+            },
+            {
+                indices: [[4,2],[6,2]]
+            },
+            {
+                indices: [[6,5],[5,2]]
+            },
+            {
+                indices: [[6,4],[5,7]]
+            },
+            {
+                indices: [[0,5],[5,8]]
+            },
+            {
+                indices: [[2,3],[4,3]]
+            }
+        ]
     }
 }
 
