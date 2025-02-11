@@ -908,6 +908,48 @@ export const GAMEDATA = {
                 indices: [[2,3],[4,3]]
             }
         ]
+    },
+    15: {
+        words: ["APP","PLUMP","PINE","CHUMP","STATION","NEWPIE","PHONE"],
+        enumerations: ["(3)","(5)","(4)","(5)","(7)","(3,3)","(5)"],
+        clues: ["Program... from donkey?","Chubby... from losing streak?","Tree... from a trigonometric function?","Sucker... from pals?","Radio choice","Dessert that's fresh from the oven, maybe ...from reporter?","Call... from gleamed?"],
+        themeClue: ["\x22Last opportunity to grab foil\x22"],
+        themeAnswer: ["STOP"],
+        sharedLetters: [
+            {
+                indices: [[1,2],[3,2]]
+            },
+            {
+                indices: [[1,3],[3,3]]
+            },
+            {
+                indices: [[1,4],[1,0]]
+            },
+            {
+                indices: [[2,0],[3,4],[5,3],[6,0]]
+            },
+            {
+                indices: [[2,1],[5,4],[4,4]]
+            },
+            {
+                indices: [[5,0],[6,3]]
+            },
+            {
+                indices: [[5,1],[6,4]]
+            },
+            {
+                indices: [[4,1],[4,3]]
+            },
+            {
+                indices: [[4,6],[2,2]]
+            },
+            {
+                indices: [[4,2],[0,0]]
+            },
+            {
+                indices: [[4,5],[6,2]]
+            }
+        ]
     }
 }
 
