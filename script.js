@@ -1,5 +1,9 @@
 import { GAMEDATA } from "./words.js";
 
+// get current device width
+let deviceWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+let MOBILE_BREAKPOINT = 866;
+
 // ignore non-numeric keys
 let numericKeys = Object.keys(GAMEDATA).filter(x => !isNaN(x));
 // sort as integers
@@ -174,6 +178,11 @@ g.setGraph({});
 g.graph().rankdir = "TB";
 g.graph().ranker = "network-simplex";
 
+if (deviceWidth < MOBILE_BREAKPOINT) {
+    g.graph().nodesep = 40;
+    g.graph().edgesep = 5;
+    g.graph().ranksep = 40;
+}
 
 // Default to assigning a new object as a label for each new edge.
 g.setDefaultEdgeLabel(function() { return {}; });
@@ -222,10 +231,14 @@ let wordsPane = document.getElementById("words-pane");
 
 function initBoard() {
     let title = document.getElementById("title");
+    let titleM = document.getElementById("title-m");
     title.textContent = "entangle #" + puzzleNumber;
+    titleM.textContent = "entangle #" + puzzleNumber;
 
     let puzzleName = document.getElementById("main-puzzle-name");
+    let puzzleNameM = document.getElementById("main-puzzle-name-m");
     puzzleName.textContent = THEMECLUE[0];
+    puzzleNameM.textContent = THEMECLUE[0];
 
     let board = document.getElementById("game-board");
 
@@ -252,15 +265,53 @@ function initBoard() {
         addPostGameObjects();
     }
 
+    // get maximum y value from nodes
+    let maxY = 0;
+    for (let i = 0; i < nodes.length; i++) {
+        if (g.node(nodes[i].id).y > maxY) {
+            maxY = g.node(nodes[i].id).y;
+        }
+    }
+
+    // get maximum x value from nodes
+    let maxX = 0;
+    for (let i = 0; i < nodes.length; i++) {
+        if (g.node(nodes[i].id).x > maxX) {
+            maxX = g.node(nodes[i].id).x;
+        }
+    }
+
     // create elements
+    // set board style
+    let boardWidth = maxX + 100;
+    let boardHeight = maxY + 100;
     let yOffset = 20;
     let xOffset = 25;
+    let zoomFactor = 1;
+    if (deviceWidth < MOBILE_BREAKPOINT) {
+        boardWidth = deviceWidth;
+        yOffset = 150;
+        xOffset = (deviceWidth-maxX)/2-25;
+        if (deviceWidth < (maxX+50)) {
+            // determine zoom factor
+            zoomFactor = deviceWidth / (maxX*1.2);
+            // yOffset = yOffset/zoomFactor;
+            xOffset = (deviceWidth-((maxX+50)*zoomFactor))/2;
+            boardHeight = maxY*zoomFactor+100;
+        }
+    }
+
+    // if the device width is less than the board width
+    
+
     for (let i = 0; i < nodes.length; i++) {
         let element = document.createElement("div");
         element.style.position = "absolute";
-        element.style.left = g.node(nodes[i].id).x + xOffset + "px";
-        element.style.top = g.node(nodes[i].id).y + yOffset + "px";
-        
+        element.style.left = (g.node(nodes[i].id).x*zoomFactor + xOffset) + "px";
+        element.style.top = (g.node(nodes[i].id).y*zoomFactor + yOffset) + "px";
+        element.style.height = 2*zoomFactor + "rem";
+        element.style.width = 2*zoomFactor + "rem";
+        element.style.fontSize = 1.5*zoomFactor + "rem";
         element.classList.add("letter-box");
         element.classList.add("animate__animated");
         element.style.zIndex = 1;
@@ -290,8 +341,8 @@ function initBoard() {
             let enumerations = document.createElement("div");
             //enumeration.textContent += ENUMERATIONS[nodes[i].containsFirstLetter[1]];
             enumerations.style.position = "absolute";
-            enumerations.style.left = g.node(nodes[i].id).x + xOffset - 17 + "px";
-            enumerations.style.top = g.node(nodes[i].id).y + yOffset - 17 + "px";
+            enumerations.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset - 17*zoomFactor + "px";
+            enumerations.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 17*zoomFactor + "px";
             // place on bottom of z-index
             enumerations.style.zIndex = 0;
             enumerations.classList.add("enumerations");
@@ -351,27 +402,7 @@ function initBoard() {
         entry.appendChild(wordSpan);
     }
 
-    // get maximum y value from nodes
-    let maxY = 0;
-    for (let i = 0; i < nodes.length; i++) {
-        if (g.node(nodes[i].id).y > maxY) {
-            maxY = g.node(nodes[i].id).y;
-        }
-    }
-
-    // get maximum x value from nodes
-    let maxX = 0;
-    for (let i = 0; i < nodes.length; i++) {
-        if (g.node(nodes[i].id).x > maxX) {
-            maxX = g.node(nodes[i].id).x;
-        }
-    }
-
     // get minimum x value from nod
-
-    // set board style
-    let boardWidth = maxX + 100;
-    let boardHeight = maxY + 100;
     board.style.width = boardWidth + "px";
     board.style.height = boardHeight + "px";
 
@@ -392,10 +423,10 @@ function initBoard() {
         let edge = edgeObjs[i];
         if (!((edge.v === "undefined") || (edge.w === "undefined"))) {
             let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", g.node(edge.v).x + xOffset + 20);
-            line.setAttribute("y1", g.node(edge.v).y + yOffset + 20);
-            line.setAttribute("x2", g.node(edge.w).x + xOffset + 20);
-            line.setAttribute("y2", g.node(edge.w).y + yOffset + 20);
+            line.setAttribute("x1", (g.node(edge.v).x)*zoomFactor + xOffset + 20*zoomFactor);
+            line.setAttribute("y1", (g.node(edge.v).y)*zoomFactor  + yOffset + 20*zoomFactor);
+            line.setAttribute("x2", (g.node(edge.w).x)*zoomFactor  + xOffset + 20*zoomFactor);
+            line.setAttribute("y2", (g.node(edge.w).y)*zoomFactor  + yOffset + 20*zoomFactor);
             line.setAttribute("stroke", "#2e2e2e");
             line.setAttribute("stroke-width", "1px");
             line.terminals = [nodes[edge.v].id, nodes[edge.w].id];
@@ -682,6 +713,13 @@ function updateMinimap(sameWord) {
         let currentEnum = ENUMERATIONS[lastSelectedWord];
         // split and only keep numbers
         let currentEnumSplit = currentEnum.slice(1,-1).split(",");
+        // get longest enum
+        let longestEnum = 0;
+        for (let i = 0; i < currentEnumSplit.length; i++) {
+            if (currentEnumSplit[i] > longestEnum) {
+                longestEnum = currentEnumSplit[i];
+            }
+        }
         // get indices of any decimal enumerations
         let decimalEnumIndices = currentEnumSplit.map((x,index) => x % 1 !== 0 ? index: -1).filter(index => index !== -1);
         currentEnumSplit = currentEnumSplit.map(x => parseInt(x));
@@ -707,6 +745,18 @@ function updateMinimap(sameWord) {
             // if the text content of the box exceeds the width, set the font size so that it fits
             if (element.textContent.length > 2) {
                 element.style.fontSize = 2/element.textContent.length + "rem";
+            }
+            // set box width to fit each word on a single line
+            if (50*longestEnum > deviceWidth) {
+                console.log(longestEnum)
+                element.style.width = "2rem";
+                element.style.height = "2rem";
+                element.style.fontSize = "1.5rem";
+                element.style.zoom = deviceWidth/(50*longestEnum);
+            } else {
+                element.style.width = "2rem";
+                element.style.height = "2rem";
+                element.style.fontSize = "1.5rem";
             }
             element.classList.add("mini-box");
             miniMap.appendChild(element);
@@ -842,7 +892,7 @@ document.addEventListener('click', function(event) {
         resetModal.style.display = "none";
     }
 
-    if (event.target.id === "help-button") {
+    if (event.target.id === "help-button" || event.target.id === "help-button-m") {
         let customModalText = document.getElementById("custom-modal-text");
         helpModal.style.display = "block";
         helpModal.scrollTop = 0;
@@ -868,7 +918,7 @@ document.addEventListener('click', function(event) {
 
     }
 
-    if (event.target.id === "level-select-button" || event.target.classList.contains("level-select-button-icon")) {
+    if (event.target.id === "level-select-button" || event.target.id === "level-select-button-m" || event.target.classList.contains("level-select-button-icon")) {
         levelSelectModal.style.display = "block";
         // get all items from local storage
         const allData = { ...localStorage };
@@ -971,8 +1021,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
     last_position = null;
 
     // if the prev div is clicked
-    if (event.target.id == "prev") {
-        
+    if (event.target.id == "prev" || event.target.id == "prev-m") {
         let new_num = puzzleNumber-1;
         if (new_num == 0 || new_num < minPuzzleNumber) {
             return
@@ -981,7 +1030,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
         }
     }
 
-    if (event.target.id == "next") {
+    if (event.target.id == "next" || event.target.id == "next-m") {
         let new_num = puzzleNumber+1;
         if (new_num > maxPuzzleNumber) {
             return
