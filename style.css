@@ -726,6 +726,10 @@ line {
     color: #d1d1d1;
 }
 
+#tab {
+    width: 3.8rem;
+}
+
 .disabled {
     color: #3e3e3e;
     background-color: #232323;
@@ -753,7 +757,7 @@ line {
     }
 
     .puzzle-name {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     #main-divider {
@@ -775,6 +779,14 @@ line {
 
     #puzzle-info {
         display: none;
+    }
+
+    #prev-m {
+        margin-right: 1.5rem;
+    }
+
+    #next-m {
+        margin-left: 1.5rem;
     }
 
     #control-pane {
@@ -846,7 +858,7 @@ line {
 
     line {
         stroke-width: 0.1em;
-    } 
+    }
 
     svg {
         overflow: visible;

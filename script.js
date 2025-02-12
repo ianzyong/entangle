@@ -341,8 +341,13 @@ function initBoard() {
             let enumerations = document.createElement("div");
             //enumeration.textContent += ENUMERATIONS[nodes[i].containsFirstLetter[1]];
             enumerations.style.position = "absolute";
-            enumerations.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset - 17*zoomFactor + "px";
-            enumerations.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 17*zoomFactor + "px";
+            if (deviceWidth < MOBILE_BREAKPOINT) {
+                enumerations.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset - 12*zoomFactor + "px";
+                enumerations.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 15*zoomFactor + "px";
+            } else {
+                enumerations.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset - 17*zoomFactor + "px";
+                enumerations.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 17*zoomFactor + "px";
+            }
             // place on bottom of z-index
             enumerations.style.zIndex = 0;
             enumerations.classList.add("enumerations");
@@ -752,7 +757,7 @@ function updateMinimap(sameWord) {
                 element.style.width = "2rem";
                 element.style.height = "2rem";
                 element.style.fontSize = "1.5rem";
-                element.style.zoom = deviceWidth/(50*longestEnum);
+                element.style.zoom = deviceWidth/(55*longestEnum);
             } else {
                 element.style.width = "2rem";
                 element.style.height = "2rem";
