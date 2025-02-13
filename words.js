@@ -950,6 +950,57 @@ export const GAMEDATA = {
                 indices: [[4,5],[6,2]]
             }
         ]
+    },
+    16: {
+        words: ["CREW","BREAK","RUBBER","TURTLE","BOTTLE","WRY","NECKANDNECK"],
+        enumerations: ["(4)","(5)","(6)","(6)","(6)","(3)","(4,3,4)"],
+        clues: ["Squad... or a sweater?","Vacation... or very fast?","Bouncy material... or stare?","Terrarium pet... or close-fitting collar?","Place for spirits... or impasse?","Dryly humorous... or a type of woodpecker?","Close"],
+        themeClue: ["\x22Massage spots oddly need cakes\x22"],
+        themeAnswer: ["NECKS"],
+        sharedLetters: [
+            {
+                indices: [[2,5],[5,1]]
+            },
+            {
+                indices: [[2,2],[2,3]]
+            },
+            {
+                indices: [[0,3],[5,0]]
+            },
+            {
+                indices: [[6,0],[6,7],[6,5]]
+            },
+            {
+                indices: [[6,1],[6,8],[4,5]]
+            },
+            {
+                indices: [[6,2],[6,9]]
+            },
+            {
+                indices: [[6,3],[6,10],[1,4]]
+            },
+            {
+                indices: [[2,0],[1,1]]
+            },
+            {
+                indices: [[2,2],[1,0]]
+            },
+            {
+                indices: [[3,0],[3,3],[4,2],[4,3]]
+            },
+            {
+                indices: [[0,1],[3,2]]
+            },
+            {
+                indices: [[0,2],[3,5]]
+            },
+            {
+                indices: [[1,3],[6,4]]
+            },
+            {
+                indices: [[3,4],[4,4]]
+            }
+        ]
     }
 }
 
