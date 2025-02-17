@@ -1001,6 +1001,48 @@ export const GAMEDATA = {
                 indices: [[3,4],[4,4]]
             }
         ]
+    },
+    17: {
+        words: ["LATEX","GALAXY","COVERT","APEX","COLONY","BANKSY","FIRES"],
+        enumerations: ["(5)","(6)","(6)","(4)","(6)","(6)","(5)"],
+        clues: ["Glove material... a dead one?","Andromeda, for one... or two after a fancy party?","Secret... report on one?","Pinnacle... imitate one?","Bunch of bees... or one with two points?","Noted graffiti artist... one belonging to a financial institution?","Shoots"],
+        themeClue: ["\x22A Times essayist quartered hacks\x22"],
+        themeAnswer: ["AXES"],
+        sharedLetters: [
+            {
+                indices: [[0,1],[1,1],[1,3]]
+            },
+            {
+                indices: [[2,4],[6,2]]
+            },
+            {
+                indices: [[2,3],[6,3]]
+            },
+            {
+                indices: [[2,0],[4,0]]
+            },
+            {
+                indices: [[2,1],[4,1],[4,3]]
+            },
+            {
+                indices: [[5,4],[6,4]]
+            },
+            {
+                indices: [[0,3],[3,2]]
+            },
+            {
+                indices: [[5,1],[3,0]]
+            },
+            {
+                indices: [[4,5],[5,5]]
+            },
+            {
+                indices: [[0,2],[2,5]]
+            },
+            {
+                indices: [[4,4],[5,2]]
+            }
+        ]
     }
 }
 

@@ -244,10 +244,11 @@ function initBoard() {
 
     // read game state from localstorage if it exists
     let gameState = null;
+    let gameStateValues = null;
     if (localStorage.getItem(puzzleNumber)) {
         gameState = JSON.parse(localStorage.getItem(puzzleNumber));
         // check if the game state is malformed
-        if (gameState.values.length !== num_nodes) {
+        if (!gameState.isSolved && gameState.values.length !== num_nodes) {
             localStorage.removeItem(puzzleNumber);
             gameState = null;
         } else {
@@ -290,8 +291,8 @@ function initBoard() {
     let zoomFactor = 1;
     if (deviceWidth < MOBILE_BREAKPOINT) {
         boardWidth = deviceWidth;
-        yOffset = 150;
-        xOffset = (deviceWidth-maxX)/2-25;
+        yOffset = 125 + document.getElementById('main-puzzle-name-m').offsetHeight
+        xOffset = (deviceWidth-maxX)/2-20;
         if (deviceWidth < (maxX+50)) {
             // determine zoom factor
             zoomFactor = deviceWidth / (maxX*1.2);
@@ -323,7 +324,11 @@ function initBoard() {
         element.node = nodes[i];
 
         // set content according to gameState
-        if (gameState && gameState.values[i] !== "") {
+        if (isSolved) {
+            element.textContent = nodes[i].value;
+            element.classList.add("filled-box");
+            element.style.borderColor = getBorderColor(element);
+        } else if (gameState && gameState.values[i] !== "") {
             element.textContent = gameState.values[i];
             element.classList.add("filled-box");
             element.style.borderColor = getBorderColor(element);
@@ -544,6 +549,8 @@ function displayLevelNodes(allData, worldName) {
     } else if (worldName === "aleph") {
         // get all non number keys from allData
         let keys = Object.keys(allData).filter(x => isNaN(x));
+        // remove "debug" if it exists
+        keys = keys.filter(x => x !== "debug");
         // add a div for each key
         for (let key of keys) {
             let div = document.createElement("div");
@@ -922,7 +929,7 @@ document.addEventListener('click', function(event) {
 
     }
 
-    if (event.target.id === "level-select-button" || event.target.id === "level-select-button-m" || event.target.classList.contains("level-select-button-icon")) {
+    if (event.target.id === "level-select-button" || event.target.id === "level-select-button-m" || (event.target.classList.contains("selector-box") && event.target.firstElementChild.id === "level-select-button-m") || event.target.classList.contains("level-select-button-icon")) {
         levelSelectModal.style.display = "block";
         // get all items from local storage
         const allData = { ...localStorage };
@@ -1025,7 +1032,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
     last_position = null;
 
     // if the prev div is clicked
-    if (event.target.id == "prev" || event.target.id == "prev-m") {
+    if (event.target.id === "prev" || event.target.id === "prev-m" || (event.target.classList.contains("selector-box") && event.target.firstElementChild.id === "prev-m")) {
         let new_num = puzzleNumber-1;
         if (new_num == 0 || new_num < minPuzzleNumber) {
             return
@@ -1034,7 +1041,7 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
         }
     }
 
-    if (event.target.id == "next" || event.target.id == "next-m") {
+    if (event.target.id === "next" || event.target.id === "next-m"|| (event.target.classList.contains("selector-box") && event.target.firstElementChild.id === "next-m")) {
         let new_num = puzzleNumber+1;
         if (new_num > maxPuzzleNumber) {
             return
@@ -1627,6 +1634,11 @@ function updateGameState() {
         "numHints": numH,
         "numChecks": numC,
         "isSolved": solved
+    }
+    // if puzzleNumber is a number
+    if (!isNaN(puzzleNumber) && isSolved) {
+        // clear values to save space
+        gameState.values = [];
     }
     // save gameState to localStorage
     localStorage.setItem(puzzleNumber, JSON.stringify(gameState));
