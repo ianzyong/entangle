@@ -753,7 +753,6 @@ function updateMinimap(sameWord) {
             }
             // set box width to fit each word on a single line
             if (50*longestEnum > deviceWidth) {
-                console.log(longestEnum)
                 element.style.width = "2rem";
                 element.style.height = "2rem";
                 element.style.fontSize = "1.5rem";
