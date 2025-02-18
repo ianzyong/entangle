@@ -709,8 +709,13 @@ function updateUrl(new_char) {
         // if the puzzle query string is in the url
         window.location = window.location.href.replace(/(\?puzzle=)[^\&]+/, '$1' + new_char);
     } else {
-        // add the query string with the updated puzzle number
-        window.location = window.location + "?puzzle=" + new_char;
+        // remove "index.html" from the url if it exists
+        if (window.location.href.includes("index.html")) {
+            window.location = window.location.href.replace("index.html", "") + "?puzzle=" + new_char;
+        } else {
+            // add the query string with the updated puzzle number
+            window.location = window.location + "?puzzle=" + new_char;
+        }
     }
 }
 
