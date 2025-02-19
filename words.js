@@ -1043,6 +1043,51 @@ export const GAMEDATA = {
                 indices: [[4,4],[5,2]]
             }
         ]
+    },
+    18: {
+        words: ["THEME","BEEF","DEED","DEFACE","DEFLATE","CEDE","CABBAGE","BADGE"],
+        enumerations: ["(5)","(4)","(4)","(6)","(7)","(4)","(7)","(5)"],
+        clues: ["Feature of most crosswords","Bone to pick","It's done","Vandalize","Knock down a peg","Give up","Kimchi vegetable","Scout's honor"],
+        themeClue: ["\x22Tune hallucinating model with today's terminal\x22"],
+        themeAnswer: ["MELODY"],
+        sharedLetters: [
+            {
+                indices: [[0,2],[0,4],[4,1],[4,6]]
+            },
+            {
+                indices: [[1,0],[6,2]]
+            },
+            {
+                indices: [[6,3],[7,0]]
+            },
+            {
+                indices: [[2,0],[2,3]]
+            },
+            {
+                indices: [[2,1],[2,2],[5,1]]
+            },
+            {
+                indices: [[5,3],[1,2],[6,6]]
+            },
+            {
+                indices: [[3,4],[5,0]]
+            },
+            {
+                indices: [[6,1],[7,1]]
+            },
+            {
+                indices: [[3,0],[4,0]]
+            },
+            {
+                indices: [[3,2],[4,2]]
+            },
+            {
+                indices: [[3,3],[4,4]]
+            },
+            {
+                indices: [[6,5],[7,3]]
+            }
+        ]
     }
 }
 
