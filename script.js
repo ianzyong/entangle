@@ -368,10 +368,12 @@ function initBoard() {
             element.textContent = nodes[i].value;
             element.classList.add("filled-box");
             element.style.borderColor = getBorderColor(element);
+            element.style["outline-color"] = getBorderColor(element);
         } else if (gameState && gameState.values[i] !== "") {
             element.textContent = gameState.values[i];
             element.classList.add("filled-box");
             element.style.borderColor = getBorderColor(element);
+            element.style["outline-color"] = getBorderColor(element);
         }
 
         if (isHinted[i]) {
@@ -433,7 +435,6 @@ function initBoard() {
             multiplier.style.color = getBorderColor(element);
             // shade in node
             element.classList.add("mult-box");
-            element.style["outline-color"] = getBorderColor(element);
         }
 
         // if the node has multiple parent words
@@ -1664,7 +1665,8 @@ function insertLetter (pressedKey) {
         lastClickedElement.textContent = pressedKey;
         lastClickedElement.classList.add("filled-box");
         lastClickedElement.style.borderColor = getBorderColor(lastClickedElement);
-
+        lastClickedElement.style["outline-color"] = getBorderColor(lastClickedElement);
+        
         // get adjacent nodes of last clicked element
         let adjNodes = lastClickedElement.node.adjNodeIndices;
         let currentNode = lastClickedElement.node.id;
@@ -1685,6 +1687,7 @@ function deleteLetter (pressedKey) {
         lastClickedElement.classList.remove("filled-box")
         if (!(lastClickedElement.classList.contains("first-letter-box"))) {
             lastClickedElement.style.removeProperty("border-color")
+            lastClickedElement.style.removeProperty("outline-color")
         }
 
         let nodeIndices = lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord];

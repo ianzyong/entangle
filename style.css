@@ -427,6 +427,11 @@ hr {
     box-shadow: 0px 0px 10px #bcbcbc;
 }
 
+.highlighted-box.mult-box.repeated-box {
+    outline-style: dashed;
+    outline-color: #959595;
+}
+
 .highlighted-line { 
     stroke: #aaaaaa !important;
     stroke-width: 1.5px;
@@ -473,11 +478,11 @@ hr {
 
 .mult-box:not(.repeated-box) {
     border-style: dashed;
-    outline: 0px dashed #d3d3d3;
+    outline: 0px dashed #4e4e4e;
 }
 
-.repeated-box.mult-box {
-    outline: 2px dashed #d3d3d3;
+.mult-box.repeated-box {
+    outline: 2px dashed #4e4e4e;
     outline-offset: 0px;
 }
 
