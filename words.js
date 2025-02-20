@@ -248,7 +248,7 @@ export const GAMEDATA = {
         ]
     },
     "¶": {
-        words: ["     ","     ","     ","     ","     "],
+        words: ["12111","11121","11311","11131","11113"],
         enumerations: ["(5)","(5)","(5)","(5)","(5)"],
         clues: ["","","","",""],
         themeClue: [""],
@@ -266,7 +266,7 @@ export const GAMEDATA = {
         ]
     },
     "🝉": {
-        words: ["     "],
+        words: ["11111"],
         enumerations: ["(5)"],
         clues: [""],
         themeClue: [""],
@@ -275,7 +275,7 @@ export const GAMEDATA = {
         ]
     },
     "ȡ": {
-        words: ["     "],
+        words: ["11111"],
         enumerations: ["(5)"],
         clues: [""],
         themeClue: [""],
@@ -284,7 +284,7 @@ export const GAMEDATA = {
         ]
     },
     "‡": {
-        words: ["     "],
+        words: ["11111"],
         enumerations: ["(5)"],
         clues: [""],
         themeClue: [""],
@@ -293,7 +293,7 @@ export const GAMEDATA = {
         ]
     },
     "֍": {
-        words: ["   ","    ","     ","      ","       ","        "],
+        words: ["111","1111","11311","111311","1113111","13111111"],
         enumerations: ["(3)","(4)","(5)","(6)","(7)","(8)"],
         clues: ["","","","","",""],
         themeClue: [""],
@@ -308,25 +308,7 @@ export const GAMEDATA = {
         ]
     },
     "ƾ": {
-        words: ["     "],
-        enumerations: ["(5)"],
-        clues: [""],
-        themeClue: [""],
-        themeAnswer: [""],
-        sharedLetters: [
-        ]
-    },
-    "℈": {
-        words: ["     "],
-        enumerations: ["(5)"],
-        clues: [""],
-        themeClue: [""],
-        themeAnswer: [""],
-        sharedLetters: [
-        ]
-    },
-    "♘": {
-        words: ["       ","    ","     ","   ","       ","   "],
+        words: ["1111113","3111","11511","515","5111113","311"],
         enumerations: ["(7)","(4)","(5)","(3)","(7)","(3)"],
         clues: ["","","","","",""],
         themeClue: [""],
@@ -355,8 +337,56 @@ export const GAMEDATA = {
             }
         ]
     },
+    "℈": {
+        words: ["11111"],
+        enumerations: ["(5)"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
+        sharedLetters: [
+        ]
+    },
+    "♘": {
+        words: ["11311","1311","311","11113","3115111","5111"],
+        enumerations: ["(5)","(4)","(3)","(5)","(7)","(4)"],
+        clues: ["","","","","",""],
+        themeClue: [""],
+        themeAnswer: [""],
+        sharedLetters: [
+            {
+                indices: [[0,1],[1,0]]
+            },
+            {
+                indices: [[0,2],[1,1],[2,0]]
+            },
+            {
+                indices: [[0,3],[1,2],[2,1]]
+            },
+            {
+                indices: [[0,4],[1,3],[2,2]]
+            },
+            {
+                indices: [[0,0],[3,0]]
+            },
+            {
+                indices: [[3,4],[4,0]]
+            },
+            {
+                indices: [[4,3],[5,0]]
+            },
+            {
+                indices: [[4,4],[5,1]]
+            },
+            {
+                indices: [[4,5],[5,2]]
+            },
+            {
+                indices: [[4,6],[5,3]]
+            }
+        ]
+    },
     "🝇": {
-        words: ["     ","     ","     ","     ","     ","     "],
+        words: ["11311","13111","11113","51511","11112","11112"],
         enumerations: ["(5)","(5)","(5)","(5)","(5)","(5)"],
         clues: ["","","","","",""],
         themeClue: [""],
@@ -386,7 +416,7 @@ export const GAMEDATA = {
         ]
     },
     "㌔": {
-        words: ["     "],
+        words: ["11111"],
         enumerations: ["(5)"],
         clues: [""],
         themeClue: [""],

@@ -52,10 +52,34 @@ if (puzzleNumber < 1) {
 let validWords = null;
 
 if (isNaN(puzzleNumber)) {
+    // add class to body
+    document.body.classList.add("aleph-body");
+    // get prev, prev-m, next, next-m, level-select, and level-select-m elements
+    let prev = document.getElementById("prev");
+    let prevM = document.getElementById("prev-m");
+    let next = document.getElementById("next");
+    let nextM = document.getElementById("next-m");
+    let levelSelect = document.getElementById("level-select-button");
+    let levelSelectM = document.getElementById("level-select-button-m");
+    // add class to each element
+    prev.style["border-right"] = "10px solid #828282";
+    prevM.style["border-right"] = "10px solid #828282";
+    next.style["border-left"] = "10px solid #828282";
+    nextM.style["border-left"] = "10px solid #828282";
+    //levelSelectIcon.style["background-color"] = "#828282";
+
+    // get level-select-button's chilrden and apply class
+    for (let k = 0; k < levelSelect.children.length; k++) {
+        levelSelect.children[k].classList.add("level-select-button-icon-aleph");
+    }
+    for (let k = 0; k < levelSelectM.children.length; k++) {
+        levelSelectM.children[k].classList.add("level-select-button-icon-aleph");
+    }
+
     // read valid_words.txt into array
     const fileUrl = "./valid_words.txt";
     fetch(fileUrl).then(r => r.text()).then(t => {
-        validWords = t.split("\n");
+        validWords = t.split(/\r\n?|\r/);
     }).catch(e => {
         console.error(e);
     });
@@ -327,6 +351,9 @@ function initBoard() {
         element.style.width = 2*zoomFactor + "rem";
         element.style.fontSize = 1.5*zoomFactor + "rem";
         element.classList.add("letter-box");
+        if (isNaN(puzzleNumber)) {
+            element.classList.add("aleph-box");
+        }
         element.classList.add("animate__animated");
         element.style.zIndex = 1;
         board.appendChild(element);
@@ -386,6 +413,27 @@ function initBoard() {
                 enumerations.appendChild(enumeration);
             }
             element.style.borderColor = getBorderColor(element);
+        }
+
+        // add multipliers
+        if (isNaN(puzzleNumber) && !isNaN(parseInt(nodes[i].value)) && parseInt(nodes[i].value) > 1) {
+            let multiplier = document.createElement("div");
+            multiplier.textContent = "x" + nodes[i].value;
+            multiplier.style.position = "absolute";
+            if (deviceWidth < MOBILE_BREAKPOINT) {
+                multiplier.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset + 25*zoomFactor + "px";
+                multiplier.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 14*zoomFactor + "px";
+            } else {
+                multiplier.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset + 27*zoomFactor + "px";
+                multiplier.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 17*zoomFactor + "px";
+            }
+            multiplier.style.zIndex = 0;
+            multiplier.classList.add("multiplier");
+            board.appendChild(multiplier);
+            multiplier.style.color = getBorderColor(element);
+            // shade in node
+            element.classList.add("mult-box");
+            element.style["outline-color"] = getBorderColor(element);
         }
 
         // if the node has multiple parent words
@@ -890,7 +938,17 @@ function updateProgress() {
                 let currentClueSplit = CLUES[wordIndex].split(" ");
                 currentWordText = currentWordText + " ≈ " + currentClueSplit[currentClueSplit.length - 1];
             }
-            
+
+            // for aleph puzzles, display score of each word
+            if (isNaN(puzzleNumber) && !(currentWordText).includes("_")) {
+                // if word is in validWords
+                if (validWords.includes(currentWordText)) {
+                    currentWordText = currentWordText + " ⇒ " + getScrabbleScore(currentWordText,WORDS[wordIndex]);
+                } else {
+                    currentWordText = currentWordText + " ⇒ " + "Ø";
+                }
+            }
+
             currentWord.textContent = currentWordText;
             currentWord.style.color = color_list[(wordIndex)%color_list.length];
             // if currentWordText is not empty, color the text
@@ -941,8 +999,19 @@ document.addEventListener('click', function(event) {
             mention.style.color = "#4e4e4e";
             mention.innerText = "(Mobile users — try desktop?)"
         } else if (isNaN(puzzleNumber)) {
-            customModalText.innerText = "Well done.\r\n\r\nVery few have made it this far.\r\n\r\nHowever.\r\n\r\nIt does not end here.\r\n\r\nWithin hidden topologies...\r\n\r\nthere is new clarity.\r\n\r\nGo forth.\r\n\r\nSeek your own truth.";
-            
+            // check to see if all keys are solved
+            let alephQuips = [];
+            // for each non-numeric key in GAMEDATA, add the corresponding unicode character to alephQuips
+            for (let key in GAMEDATA) {
+                if (isNaN(key) && (localStorage.getItem(key) === null || !JSON.parse(localStorage.getItem(key)).isSolved)) {
+                    alephQuips.push(encodeURIComponent(key));
+                }
+            }
+            if (alephQuips.length === 0) {
+                customModalText.innerText = "Excellent.\r\n\r\nYou've done it.\r\n\r\nThere are no more topologies to solve.\r\n\r\nYou've finally reached the end of this cryptic journey.\r\n\r\nAt this point, you should go make your own word game or something.\r\n\r\nThat would be cool.\r\n\r\nOr go rip off the New York Times.\r\n\r\nHey, just an idea.\r\n\r\nIn any case, let me know how it goes.\r\n\r\nThanks.\r\nFor everything.\r\n\r\nUntil we meet again, my friend..."
+            } else {
+                customModalText.innerText = "Well done.\r\n\r\nVery few have made it this far.\r\n\r\nHowever.\r\n\r\nIt does not end here.\r\n\r\nWithin hidden topologies...\r\n\r\nthere is new clarity.\r\n\r\nGo forth.\r\n\r\nSeek your own truth.";
+            }
         }
 
     }
@@ -1006,7 +1075,10 @@ document.addEventListener('click', function(event) {
             // convert score number to unicode symbol based on code point
             let symbol = "🪢";
             try {
-                symbol = String.fromCodePoint(0x1F3C6 + parseInt(resText.split(" ").filter(x => !isNaN(x))));
+                symbol = String.fromCodePoint(0x1F330 + parseInt(resText.split(" ").filter(x => !isNaN(x))));
+                // for (let k = 0; k < 100; k++) {
+                //     console.log(String.fromCodePoint(0x1F330 + k));
+                // }
             } catch (e) {
                 symbol = "🪢";
             }
@@ -1212,7 +1284,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
     if (key === "Check" || key === "Results") {
         let allCorrect = true;
         //let elementsToHint = [];
-        let indicesToHint = [];;
+        let indicesToHint = [];
         if (!isNaN(puzzleNumber)) {
             for (let i = 0; i < nodes.length; i++) {
                 if (nodes[i].element.textContent) {
@@ -1240,21 +1312,19 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
         } else {
             // get the words from the grid
             let words = [];
+            scrabbleScore = 0;
             for (let i = 0; i < WORDS.length; i++) {
                 let word = "";
                 for (let j = 0; j < node_memberships[i].length; j++) {
                     word += nodes[node_memberships[i][j]].element.textContent;
                 }
                 words.push(word);
+                scrabbleScore = scrabbleScore + getScrabbleScore(word, WORDS[i]);
             }
-            // get all letters from the grid
-            let allLetters = [];
-            for (let i = 0; i < nodes.length; i++) {
-                allLetters.push(nodes[i].element.textContent);
-            }
-            scrabbleScore = getScrabbleScore(allLetters);
-            // check if all words are valid
-            allCorrect = words.every((word) => validWords.includes(word.toLowerCase()));
+            
+            // boolean array of whether word is included in valid words
+            let wordValidity = words.map(x => validWords.includes(x));
+            allCorrect = wordValidity.every(x => x);
         }
         if (allCorrect) {
             isSolved = true;
@@ -1330,7 +1400,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             if (isNaN(puzzleNumber)) {
                 resultsText.innerText = "solved." + "\r\n" + "score: " + scrabbleScore + "." + "\r\n";
                 if (alephQuips.length === 0) {
-                    extraQuip.innerText = `\r\n\r\n...${"\r\n\r\nexcellent.\r\n\r\nyou've done it.\r\n\r\nthere are no more topologies to solve.\r\n\r\nyou've finally reached the end of this cryptic journey.\r\n\r\nat this point, you should go make your own word game or something.\r\n\r\nthat would be cool.\r\n\r\nor rip off the New York Times.\r\n\r\njust an idea.\r\n\r\nin any case, let me know how it goes.\r\n\r\nthanks.\r\nfor everything.\r\n\r\nuntil we meet again, my friend."}...`;
+                    extraQuip.innerText = "......?";
                 } else {
                     let extraQuipNumber = Math.floor(Math.random() * alephQuips.length);
                     extraQuip.innerText = `...${alephQuips[extraQuipNumber]}...`;
@@ -1414,7 +1484,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
 });
 
-function getScrabbleScore(letters) {
+function getScrabbleScore(letters, multValues) {
     let pointValues = {
         "a": 1,
         "b": 3,
@@ -1445,7 +1515,7 @@ function getScrabbleScore(letters) {
     };
     let scrabbleScore = 0;
     for (let i = 0; i < letters.length; i++) {
-        scrabbleScore += pointValues[letters[i].toLowerCase()];
+        scrabbleScore += pointValues[letters[i].toLowerCase()]*multValues[i];
     }
     return scrabbleScore;
 }

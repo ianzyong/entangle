@@ -41,6 +41,10 @@ button {
     font-family: 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;
 }
 
+.aleph-body {
+    background: radial-gradient(circle, rgba(21,21,21,1) 0%, rgba(0,59,69,1) 100%);
+}
+
 #portal-text {
     font-family: 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;
     font-size: 200px;
@@ -261,6 +265,16 @@ button {
     user-select: none;
 }
 
+.multiplier {
+    display: inline-block;
+    margin: 2px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #d1d1d1;
+    justify-content: center;
+    align-items: center;
+}
+
 .entry {
     display: flex;
     position: relative;
@@ -305,6 +319,10 @@ button {
     transition: all 0.4s ease-in-out;
     user-select: none;
     scroll-margin-top: 20rem;
+}
+
+.aleph-box {
+    background: radial-gradient(circle, rgba(21,21,21,1) 0%, rgba(0,59,69,0) 100%);
 }
 
 section {
@@ -452,6 +470,16 @@ hr {
     align-content: center;
 }
 
+.mult-box:not(.repeated-box) {
+    border-style: dashed;
+    outline: 0px dashed #d3d3d3;
+}
+
+.repeated-box.mult-box {
+    outline: 2px dashed #d3d3d3;
+    outline-offset: 0px;
+}
+
 /* .highlighted-line {
     stroke:#ff0000;
 } */
@@ -576,6 +604,10 @@ line {
     margin-right: 2px;
     transition: all 0.2s ease-in-out;
     border-radius: 2px;
+}
+
+.level-select-button-icon-aleph {
+    background-color: #828282;
 }
 
 #level-select-button:hover .level-select-button-icon {
