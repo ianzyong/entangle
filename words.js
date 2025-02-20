@@ -248,92 +248,101 @@ export const GAMEDATA = {
         ]
     },
     "¶": {
-        words: ["ALEPH"],
-        enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        words: ["     ","     ","     ","     ","     "],
+        enumerations: ["(5)","(5)","(5)","(5)","(5)"],
+        clues: ["","","","",""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
+            {
+                indices: [[0,0],[1,0]]
+            },
+            {
+                indices: [[0,4],[1,4],[2,0],[3,0]]
+            },
+            {
+                indices: [[2,4],[3,4],[4,0]]
+            }
         ]
     },
     "🝉": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "ȡ": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "‡": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "֍": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "ƾ": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "℈": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "♘": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "🝇": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },
     "㌔": {
-        words: ["ALEPH"],
+        words: ["     "],
         enumerations: ["(5)"],
-        clues: ["A new beginning"],
-        themeClue: ["\x22ALEPH\x22"],
-        themeAnswer: ["ALEPH"],
+        clues: [""],
+        themeClue: [""],
+        themeAnswer: [""],
         sharedLetters: [
         ]
     },

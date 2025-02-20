@@ -155,6 +155,10 @@ button {
     display: flex;
 }
 
+#extra-quip {
+    text-wrap: pretty;
+}
+
 .sample-clue {
     font-family: 'Turret Road', 'Terminal', 'Courier New', Courier, monospace;
 }
@@ -349,6 +353,11 @@ hr {
     user-select: none;
 }
 
+.dummy-box + .repeated-box {
+    margin-left: 18px;
+    margin-right: 18px;
+}
+
 .sample-clue-answer, .sample-clue-answer2 {
     border: 2px solid #A4A8D1;
     margin-left: 7px;
@@ -372,14 +381,25 @@ hr {
     font-size: 0.6rem;
     text-align: center;
     width: 4rem;
-    margin-left: 6.2px;
-    margin-right: 6.2px;
+    margin-left: 6px;
+    margin-right: 6px;
 }
+
+.node-label:nth-child(1) {
+    margin-left: 8px;
+    margin-right: 6px;
+}
+
+.node-label:nth-child(3) {
+    margin-left: 7px;
+    margin-right: 8px;
+}
+
 /* .first-letter-box {
     background: radial-gradient(#151515, #262626);
 } */
 
-.letter-box:hover, .dummy-box:hover+:not(.sample-clue-answer,.sample-clue-answer2) {
+.letter-box:hover, .dummy-box:not(.sample-clue-answer,.sample-clue-answer2):hover {
     border-color:#959595;
 }
 
@@ -938,6 +958,22 @@ line {
     .dummy-box + .repeated-box {
         margin-left: 12px;
         margin-right: 12px;
+    }
+
+    .node-label {
+        width: 3.5rem;
+        margin-left: 6px;
+        margin-right: 6px;
+    }
+
+    .node-label:nth-child(1) {
+        margin-left: 10px;
+        margin-right: 5px;
+    }
+
+    .node-label:nth-child(3) {
+        margin-left: 4px;
+        margin-right: 2px;
     }
 
     .sample-clue-answer, .sample-clue-answer2 {

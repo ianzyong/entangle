@@ -49,6 +49,18 @@ if (puzzleNumber < 1) {
     helpButton.style["animation"] = "bs-color-change 20s ease-in-out infinite";
 }
 
+let validWords = null;
+
+if (isNaN(puzzleNumber)) {
+    // read valid_words.txt into array
+    const fileUrl = "./valid_words.txt";
+    fetch(fileUrl).then(r => r.text()).then(t => {
+        validWords = t.split("\n");
+    }).catch(e => {
+        console.error(e);
+    });
+}
+
 const WORDS = GAMEDATA[puzzleNumber].words
 const ENUMERATIONS = GAMEDATA[puzzleNumber].enumerations
 const CLUES = GAMEDATA[puzzleNumber].clues
@@ -112,6 +124,7 @@ var numChecks = 0;
 var numHints = 0;
 var isSolved = false;
 var isHinted = new Array(num_nodes).fill(false);
+let scrabbleScore = 0;
 
 function Node(id, value, containsFirstLetter, containsRepeat, nodeIndicesOfParentWords, adjNodeIndices) {
     this.id = id;
@@ -222,7 +235,7 @@ function bezier(t, p0, p1, p2, p3) {
     return {x: x, y: y};
 }
 
-let color_list = ["#A4A8D1", "#EF626C", "#E2C391", "#52FFB8", "#66C7F4","#D156CB"]
+let color_list = ["#A4A8D1", "#EF626C", "#E2C391", "#52FFB8", "#66C7F4", "#D156CB"]
 
 let lines = [];
 let linesByWord = [];
@@ -324,7 +337,7 @@ function initBoard() {
         element.node = nodes[i];
 
         // set content according to gameState
-        if (isSolved) {
+        if (isSolved && !isNaN(puzzleNumber)) {
             element.textContent = nodes[i].value;
             element.classList.add("filled-box");
             element.style.borderColor = getBorderColor(element);
@@ -912,24 +925,24 @@ document.addEventListener('click', function(event) {
         let customModalText = document.getElementById("custom-modal-text");
         helpModal.style.display = "block";
         helpModal.scrollTop = 0;
-        if (puzzleNumber > 0) {
-            // default text
-        } else if (puzzleNumber === -2) {
-            customModalText.innerText = "Assume D, E, N, S, I, T, and Y are\r\nsingle-digit numbers expressed in radians.";
+        if (!(puzzleNumber > 0)) {
             customModalText.style.color = "#b2b2b2";
             customModalText.style.textAlign = "center";
             customModalText.style.margin = "40px auto";
             customModalText.style["letter-spacing"] = "0.2rem";
-        } else {
+            customModalText.style["text-wrap"] = "pretty";
+        }
+        if (puzzleNumber === -2) {
+            customModalText.innerText = "Assume D, E, N, S, I, T, and Y are\r\nsingle-digit numbers expressed in radians.";
+        } else if (puzzleNumber <= 0) {
             customModalText.innerText = "All keys are now available.\r\n\r\n";
             // add a span child element to customModalText
             const mention = customModalText.appendChild(document.createElement("span"));
-            mention.innerText = "(Mobile users — try desktop?)"
-            customModalText.style.color = "#b2b2b2";
-            customModalText.style.textAlign = "center";
-            customModalText.style.margin = "40px auto";
-            customModalText.style["letter-spacing"] = "0.2rem";
             mention.style.color = "#4e4e4e";
+            mention.innerText = "(Mobile users — try desktop?)"
+        } else if (isNaN(puzzleNumber)) {
+            customModalText.innerText = "Well done.\r\n\r\nVery few have made it this far.\r\n\r\nHowever.\r\n\r\nIt does not end here.\r\n\r\nWithin hidden topologies...\r\n\r\nthere is new clarity.\r\n\r\nGo forth.\r\n\r\nSeek your own answers.";
+            
         }
 
     }
@@ -984,19 +997,37 @@ document.addEventListener('click', function(event) {
     }
 
     if (event.target.id === "copy-results") {
+        let copyText = "";
         let resultsText = document.getElementById("results-text");
-        let rankings = ["👑","🎖️","🏵️","⚜️","🍀","🔰","💠","🥀","🥀","🥀","☠️"]
-        // get numerals from results text
-        let numerals = resultsText.textContent.split(".")[0].split(" ").filter(x => !isNaN(x));
-        let sum = numerals.reduce((a,b) => parseInt(a) + parseInt(b), 0);
-        if (sum >= rankings.length) {
-            sum = rankings.length-1;
-        }
-        let copyText =
+        if (isNaN(puzzleNumber)) {
+            let resText = resultsText.textContent;
+            // replace first period with a newline
+            let splitResultsText = resText.replace(".", ".\n");
+            // convert score number to unicode symbol based on code point
+            let symbol = "🪢";
+            try {
+                symbol = String.fromCodePoint(0x1F3C6 + parseInt(resText.split(" ").filter(x => !isNaN(x))));
+            } catch (e) {
+                symbol = "🪢";
+            }
+            copyText =
+`entangle #${puzzleNumber}
+${splitResultsText}  ${symbol}
+https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
+        } else {
+            let rankings = ["👑","🎖️","🏵️","⚜️","🍀","🔰","💠","🥀","🥀","🥀","☠️"]
+            // get numerals from results text
+            let numerals = resultsText.textContent.split(".")[0].split(" ").filter(x => !isNaN(x));
+            let sum = numerals.reduce((a,b) => parseInt(a) + parseInt(b), 0);
+            if (sum >= rankings.length) {
+                sum = rankings.length-1;
+            }
+            copyText =
 `entangle #${puzzleNumber}
 ${THEMECLUE}
 ${resultsText.textContent.split(".")[0]}. ${rankings[sum]}
 https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
+        }
         navigator.clipboard.writeText(copyText)
         // change text of button
         event.target.textContent = "COPIED!";
@@ -1181,29 +1212,49 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
     if (key === "Check" || key === "Results") {
         let allCorrect = true;
         //let elementsToHint = [];
-        let indicesToHint = [];
-        for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].element.textContent) {
-                if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toString().toLowerCase()) {
-                    // nodes[i].element.textContent = "";
-                    nodes[i].element.style.color = "#f87a7a";
+        let indicesToHint = [];;
+        if (!isNaN(puzzleNumber)) {
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].element.textContent) {
+                    if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toString().toLowerCase()) {
+                        // nodes[i].element.textContent = "";
+                        nodes[i].element.style.color = "#f87a7a";
 
-                    //nodes[i].element.classList.remove("filled-box");
-                    if (!(nodes[i].containsFirstLetter[0])) {
-                        nodes[i].element.style.removeProperty("border-color")
+                        //nodes[i].element.classList.remove("filled-box");
+                        if (!(nodes[i].containsFirstLetter[0])) {
+                            nodes[i].element.style.removeProperty("border-color")
+                        }
+                        animateCSS(nodes[i].element, 'headShake');
+                        // set the lines of the node back to default color
+                        colorLines(nodes[i].id, nodes[i].adjNodeIndices, true);
+                        allCorrect = false;
+                    } 
+                    else {
+                        //elementsToHint.push(nodes[i].element);
+                        indicesToHint.push(i);
                     }
-                    animateCSS(nodes[i].element, 'headShake');
-                    // set the lines of the node back to default color
-                    colorLines(nodes[i].id, nodes[i].adjNodeIndices, true);
+                } else {
                     allCorrect = false;
-                } 
-                else {
-                    //elementsToHint.push(nodes[i].element);
-                    indicesToHint.push(i);
                 }
-            } else {
-                allCorrect = false;
             }
+        } else {
+            // get the words from the grid
+            let words = [];
+            for (let i = 0; i < WORDS.length; i++) {
+                let word = "";
+                for (let j = 0; j < node_memberships[i].length; j++) {
+                    word += nodes[node_memberships[i][j]].element.textContent;
+                }
+                words.push(word);
+            }
+            // get all letters from the grid
+            let allLetters = [];
+            for (let i = 0; i < nodes.length; i++) {
+                allLetters.push(nodes[i].element.textContent);
+            }
+            scrabbleScore = getScrabbleScore(allLetters);
+            // check if all words are valid
+            allCorrect = words.every((word) => validWords.includes(word.toLowerCase()));
         }
         if (allCorrect) {
             isSolved = true;
@@ -1265,31 +1316,39 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             let resultsModalContent = document.getElementById("results-modal-content");
 
             resultsTitle.innerText = "entangle #" + puzzleNumber;
-            resultsSubtitle.innerText = THEMECLUE;
-            resultsNameAnswer.innerText = " — " + THEMEANSWER;
-            resultsText.innerText = "solved with " + numHints + hintText + " and " + numChecks + checkText + "\r\n" + quips[quipNumber];
 
             let extraQuips = [["for hard mode: try messing with the url","wowowowowow","*high five*","wanna go bowling sometime?"]];
             let alephQuips = [];
             // for each non-numeric key in GAMEDATA, add the corresponding unicode character to alephQuips
             for (let key in GAMEDATA) {
-                if (isNaN(key)) {
+                if (isNaN(key) && key !== puzzleNumber && (localStorage.getItem(key) === null || !JSON.parse(localStorage.getItem(key)).isSolved)) {
                     alephQuips.push(encodeURIComponent(key));
                 }
             }
+            
             let extraQuip = document.getElementById("extra-quip");
             if (isNaN(puzzleNumber)) {
-                let extraQuipNumber = Math.floor(Math.random() * alephQuips.length);
-                extraQuip.innerText = `...${alephQuips[extraQuipNumber]}...`;
-                extraQuip.style["userSelect"] = "text";
-            } else if (quipNumber == 0) {
-                let extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
-                if (puzzleNumber < 1 && extraQuipNumber == 0) {
-                    extraQuip.innerText = `...?puzzle=%C2%B6...`;
-                    extraQuip.style["userSelect"] = "text";
+                resultsText.innerText = "solved." + "\r\n" + "score: " + scrabbleScore + "." + "\r\n";
+                if (alephQuips.length === 0) {
+                    extraQuip.innerText = `\r\n\r\n...${"\r\n\r\nexcellent.\r\n\r\nyou've done it.\r\n\r\nthere are no more topologies to solve.\r\n\r\nyou've finally reached the end of this cryptic journey.\r\n\r\nat this point, you should go make your own word game or something.\r\n\r\nthat would be cool.\r\n\r\nor rip off the New York Times.\r\n\r\njust an idea.\r\n\r\nin any case, let me know how it goes.\r\n\r\nthanks.\r\nfor everything.\r\n\r\nuntil we meet again, my friend."}...`;
                 } else {
-                    // randomly select an extra quip
-                    extraQuip.innerText = extraQuips[quipNumber][extraQuipNumber];
+                    let extraQuipNumber = Math.floor(Math.random() * alephQuips.length);
+                    extraQuip.innerText = `...${alephQuips[extraQuipNumber]}...`;
+                    extraQuip.style["userSelect"] = "text";
+                }
+            } else {
+                resultsSubtitle.innerText = THEMECLUE;
+                resultsNameAnswer.innerText = " — " + THEMEANSWER;
+                resultsText.innerText = "solved with " + numHints + hintText + " and " + numChecks + checkText + "\r\n" + quips[quipNumber];
+                if (quipNumber == 0) {
+                let extraQuipNumber = Math.floor(Math.random() * extraQuips[quipNumber].length);
+                    if (puzzleNumber < 1 && extraQuipNumber == 0) {
+                        extraQuip.innerText = `...?puzzle=%C2%B6...`;
+                        extraQuip.style["userSelect"] = "text";
+                    } else {
+                        // randomly select an extra quip
+                        extraQuip.innerText = extraQuips[quipNumber][extraQuipNumber];
+                    }
                 }
             }
             
@@ -1313,6 +1372,10 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             };
             setTimeout(displayResults,resultsDelay);
             
+        } else if (isNaN(puzzleNumber)) {
+            let checkButton = document.getElementById("check-button");
+            checkButton.classList.add("disabled");
+            return;
         } else {
             // for (let i = 0; i < elementsToHint.length; i++) {
             //     elementsToHint[i].classList.add("hinted-box");
@@ -1351,6 +1414,42 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
 });
 
+function getScrabbleScore(letters) {
+    let pointValues = {
+        "a": 1,
+        "b": 3,
+        "c": 3,
+        "d": 2,
+        "e": 1,
+        "f": 4,
+        "g": 2,
+        "h": 4,
+        "i": 1,
+        "j": 8,
+        "k": 5,
+        "l": 1,
+        "m": 3,
+        "n": 1,
+        "o": 1,
+        "p": 3,
+        "q": 10,
+        "r": 1,
+        "s": 1,
+        "t": 1,
+        "u": 1,
+        "v": 4,
+        "w": 4,
+        "x": 8,
+        "y": 4,
+        "z": 10
+    };
+    let scrabbleScore = 0;
+    for (let i = 0; i < letters.length; i++) {
+        scrabbleScore += pointValues[letters[i].toLowerCase()];
+    }
+    return scrabbleScore;
+}
+
 document.getElementById("reset-buttons").addEventListener("click", (e) => {
     const target = e.target;
     let key = target.textContent;
@@ -1381,8 +1480,14 @@ document.getElementById("world-select-nodes").addEventListener("mouseover", (e) 
         let worldSelectAnswer = document.getElementById("world-select-answer");
         let displayText = "?????";
         if (target.classList.contains("solved-level-node")) {
-            // from GAMEDATA, get the theme answer
-            displayText = GAMEDATA[target.textContent].themeAnswer;
+            if (isNaN(target.textContent)) {
+                // get score from local storage
+                let score = JSON.parse(localStorage.getItem(target.textContent)).score;
+                displayText = "SCORE: " + score;
+            } else {
+                // from GAMEDATA, get the theme answer
+                displayText = GAMEDATA[target.textContent].themeAnswer;
+            }
             // add animation
             animateCSS(worldSelectAnswer, 'bounceIn');
         }
@@ -1638,7 +1743,8 @@ function updateGameState() {
         "indicesHinted": indicesHinted,
         "numHints": numH,
         "numChecks": numC,
-        "isSolved": solved
+        "isSolved": solved,
+        "score": scrabbleScore
     }
     // if puzzleNumber is a number
     if (!isNaN(puzzleNumber) && isSolved) {
@@ -1648,8 +1754,12 @@ function updateGameState() {
     // save gameState to localStorage
     localStorage.setItem(puzzleNumber, JSON.stringify(gameState));
 
-    // return whether all nodes are correct
-    return (values.every((val, i) => val.toLowerCase() === nodes[i].value.toString().toLowerCase()) && !isSolved);
+    // if the the grid has no empty slots and this is an aleph puzzle, return true
+    if (isNaN(puzzleNumber) && values.every((val) => val)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 document.addEventListener("keydown", (e) => {
@@ -1689,9 +1799,9 @@ document.addEventListener("keydown", (e) => {
     }
 
     let found = null;
-    if (puzzleNumber > 0) {
+    if (puzzleNumber > 0 || isNaN(puzzleNumber)) {
         found = (pressedKey.match(/[a-z]/gi) && pressedKey.length === 1)
-    } else {
+    } else if (puzzleNumber < 0) {
         if (pressedKey[0] === "F") {
             e.preventDefault();
         }
@@ -1707,7 +1817,7 @@ document.addEventListener("keydown", (e) => {
 
     updateMinimap(false);
     updateProgress();
-    if (updateGameState() && isNaN(puzzleNumber)) {
+    if (updateGameState() && isNaN(puzzleNumber) && !isSolved) {
         // remove disabled class from the check button
         let checkButton = document.getElementById("check-button");
         checkButton.classList.remove("disabled");
