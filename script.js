@@ -79,7 +79,7 @@ if (isNaN(puzzleNumber)) {
     // read valid_words.txt into array
     const fileUrl = "./valid_words.txt";
     fetch(fileUrl).then(r => r.text()).then(t => {
-        validWords = t.split(/\r\n?|\r/);
+        validWords = t.split(/\r\n?|\n/);
     }).catch(e => {
         console.error(e);
     });

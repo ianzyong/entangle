@@ -43,6 +43,7 @@ button {
 
 .aleph-body {
     background: radial-gradient(circle, rgba(21,21,21,1) 0%, rgba(0,59,69,1) 100%);
+    background-attachment: fixed;
 }
 
 #portal-text {
