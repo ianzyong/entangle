@@ -293,12 +293,18 @@ export const GAMEDATA = {
         ]
     },
     "֍": {
-        words: ["     "],
-        enumerations: ["(5)"],
-        clues: [""],
+        words: ["   ","    ","     ","      ","       ","        "],
+        enumerations: ["(3)","(4)","(5)","(6)","(7)","(8)"],
+        clues: ["","","","","",""],
         themeClue: [""],
         themeAnswer: [""],
         sharedLetters: [
+            {
+                indices: [[0,0],[1,0],[2,0],[3,0],[4,0],[5,0]]
+            },
+            {
+                indices: [[0,2],[1,3],[2,4],[3,5],[4,6],[5,7]]
+            }
         ]
     },
     "ƾ": {
@@ -320,21 +326,63 @@ export const GAMEDATA = {
         ]
     },
     "♘": {
-        words: ["     "],
-        enumerations: ["(5)"],
-        clues: [""],
+        words: ["       ","    ","     ","   ","       ","   "],
+        enumerations: ["(7)","(4)","(5)","(3)","(7)","(3)"],
+        clues: ["","","","","",""],
         themeClue: [""],
         themeAnswer: [""],
         sharedLetters: [
+            {
+                indices: [[0,0],[0,4]]
+            },
+            {
+                indices: [[0,6],[1,0]]
+            },
+            {
+                indices: [[0,3],[1,2]]
+            },
+            {
+                indices: [[1,3],[2,0],[2,4]]
+            },
+            {
+                indices: [[2,2],[3,0],[3,2],[4,0]]
+            },
+            {
+                indices: [[4,6],[5,0]]
+            },
+            {
+                indices: [[4,5],[5,1]]
+            }
         ]
     },
     "🝇": {
-        words: ["     "],
-        enumerations: ["(5)"],
-        clues: [""],
+        words: ["     ","     ","     ","     ","     ","     "],
+        enumerations: ["(5)","(5)","(5)","(5)","(5)","(5)"],
+        clues: ["","","","","",""],
         themeClue: [""],
         themeAnswer: [""],
         sharedLetters: [
+            {
+                indices: [[0,3],[1,0]]
+            },
+            {
+                indices: [[0,2],[1,1]]
+            },
+            {
+                indices: [[1,4],[2,1]]
+            },
+            {
+                indices: [[2,2],[3,0],[3,2]]
+            },
+            {
+                indices: [[3,1],[4,0]]
+            },
+            {
+                indices: [[4,3],[5,0]]
+            },
+            {
+                indices: [[4,2],[5,3]]
+            },
         ]
     },
     "㌔": {

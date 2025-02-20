@@ -941,7 +941,7 @@ document.addEventListener('click', function(event) {
             mention.style.color = "#4e4e4e";
             mention.innerText = "(Mobile users — try desktop?)"
         } else if (isNaN(puzzleNumber)) {
-            customModalText.innerText = "Well done.\r\n\r\nVery few have made it this far.\r\n\r\nHowever.\r\n\r\nIt does not end here.\r\n\r\nWithin hidden topologies...\r\n\r\nthere is new clarity.\r\n\r\nGo forth.\r\n\r\nSeek your own answers.";
+            customModalText.innerText = "Well done.\r\n\r\nVery few have made it this far.\r\n\r\nHowever.\r\n\r\nIt does not end here.\r\n\r\nWithin hidden topologies...\r\n\r\nthere is new clarity.\r\n\r\nGo forth.\r\n\r\nSeek your own truth.";
             
         }
 
