@@ -415,6 +415,7 @@ function initBoard() {
                 enumerations.appendChild(enumeration);
             }
             element.style.borderColor = getBorderColor(element);
+            element.style["outline-color"] = getBorderColor(element);
         }
 
         // add multipliers
@@ -426,7 +427,7 @@ function initBoard() {
                 multiplier.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset + 25*zoomFactor + "px";
                 multiplier.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 14*zoomFactor + "px";
             } else {
-                multiplier.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset + 27*zoomFactor + "px";
+                multiplier.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset + 30*zoomFactor + "px";
                 multiplier.style.top = g.node(nodes[i].id).y*zoomFactor + yOffset - 17*zoomFactor + "px";
             }
             multiplier.style.zIndex = 0;
