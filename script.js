@@ -579,6 +579,8 @@ function initBoard() {
 }
 
 function addPostGameObjects() {
+    // set score to saved score
+    scrabbleScore = JSON.parse(localStorage.getItem(puzzleNumber)).score;
     let checkButton = document.getElementById("check-button");
     checkButton.textContent = "Results";
     // remove disabled class from the check button
@@ -1001,16 +1003,24 @@ document.addEventListener('click', function(event) {
             mention.style.color = "#4e4e4e";
             mention.innerText = "(Mobile users — try desktop?)"
         } else if (isNaN(puzzleNumber)) {
+            let lifetimeScore = 0;
             // check to see if all keys are solved
             let alephQuips = [];
             // for each non-numeric key in GAMEDATA, add the corresponding unicode character to alephQuips
             for (let key in GAMEDATA) {
-                if (isNaN(key) && (localStorage.getItem(key) === null || !JSON.parse(localStorage.getItem(key)).isSolved)) {
-                    alephQuips.push(encodeURIComponent(key));
+                if (isNaN(key)) {
+                    if ((localStorage.getItem(key) === null || !JSON.parse(localStorage.getItem(key)).isSolved)) {
+                        alephQuips.push(encodeURIComponent(key));
+                    } else {
+                        lifetimeScore = lifetimeScore + parseInt(JSON.parse(localStorage.getItem(key)).score);
+                    }
                 }
             }
             if (alephQuips.length === 0) {
-                customModalText.innerText = "Excellent.\r\n\r\nYou've done it.\r\n\r\nThere are no more topologies to solve.\r\n\r\nYou've finally reached the end of this cryptic journey.\r\n\r\nAt this point, you should go make your own word game or something.\r\n\r\nThat would be cool.\r\n\r\nOr go rip off the New York Times.\r\n\r\nHey, just an idea.\r\n\r\nIn any case, let me know how it goes.\r\n\r\nThanks.\r\nFor everything.\r\n\r\nUntil we meet again, my friend..."
+                customModalText.innerText = "Excellent.\r\n\r\nYou've done it.\r\n\r\nThere are no more topologies to solve.\r\n\r\nYou've finally reached the end of this cryptic journey.\r\n\r\nAt this point, you should go make your own word game or something.\r\n\r\nThat would be cool.\r\n\r\nOr go rip off the New York Times.\r\n\r\nHey, just an idea.\r\n\r\nIn any case, let me know how it goes.\r\n\r\nThanks.\r\nFor everything.\r\n\r\nUntil we meet again...\r\n\r\n"
+                const mention = customModalText.appendChild(document.createElement("span"));
+                mention.style.color = "#4e4e4e";
+                mention.innerText = `\r\n\r\nLIFETIME SCORE: ${lifetimeScore}`;
             } else {
                 customModalText.innerText = "Well done.\r\n\r\nVery few have made it this far.\r\n\r\nHowever.\r\n\r\nIt does not end here.\r\n\r\nWithin hidden topologies...\r\n\r\nthere is new clarity.\r\n\r\nGo forth.\r\n\r\nSeek your own truth.";
             }
@@ -1423,14 +1433,13 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                     }
                 }
             }
+
+            // update gamestate
+            updateGameState();
             
             let resultsDelay = 50*nodeElements.length+1000;
             if (!animationPlayed) {
-
                 addPostGameObjects();
-                // update gamestate
-                updateGameState();
-
                 animateCascade(nodeElements, 'flip', 50);
                 animationPlayed = true;
             } else {
