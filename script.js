@@ -213,6 +213,9 @@ g.setGraph({});
 
 // configure layout
 g.graph().rankdir = "TB";
+if (puzzleNumber === "🜆") {
+    g.graph().rankdir = "LR";
+}
 g.graph().ranker = "network-simplex";
 
 if (deviceWidth < MOBILE_BREAKPOINT) {
@@ -624,11 +627,14 @@ function displayLevelNodes(allData, worldName) {
         keys = keys.filter(x => x !== "debug");
         // add a div for each key
         for (let key of keys) {
-            let div = document.createElement("div");
-            div.textContent = key;
-            div.classList.add("level-select-node");
-            colorLevelNode(div, allData);
-            worldSelectNodes.appendChild(div);
+            // if the key exists in GAMEDATA
+            if (key in GAMEDATA) {
+                let div = document.createElement("div");
+                div.textContent = key;
+                div.classList.add("level-select-node");
+                colorLevelNode(div, allData);
+                worldSelectNodes.appendChild(div);
+            }
         }
     } else {
         // get all positive keys from GAMEDATA
