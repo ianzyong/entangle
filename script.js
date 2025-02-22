@@ -419,9 +419,15 @@ function initBoard() {
         }
 
         // add multipliers
-        if (isNaN(puzzleNumber) && !isNaN(parseInt(nodes[i].value)) && parseInt(nodes[i].value) > 1) {
+        if (isNaN(puzzleNumber) && (!isNaN(parseInt(nodes[i].value)) && parseInt(nodes[i].value) > 1) || nodes[i].value in exponentMap) {
             let multiplier = document.createElement("div");
-            multiplier.textContent = "x" + nodes[i].value;
+            if (nodes[i].value in exponentMap) {
+                multiplier.textContent = "^" + exponentMap[nodes[i].value];
+                // set text shadow
+                multiplier.style["text-shadow"] = "0px 0px 5px " + getBorderColor(element);
+            } else {
+                multiplier.textContent = "x" + nodes[i].value;
+            }
             multiplier.style.position = "absolute";
             if (deviceWidth < MOBILE_BREAKPOINT) {
                 multiplier.style.left = g.node(nodes[i].id).x*zoomFactor + xOffset + 25*zoomFactor + "px";
@@ -1495,6 +1501,19 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
 });
 
+let exponentMap = {
+    "!": "1",
+    "@": "2",
+    "#": "3",
+    "$": "4",
+    "%": "5",
+    "^": "6",
+    "&": "7",
+    "*": "8",
+    "(": "9",
+    ")": "0"
+}
+
 function getScrabbleScore(letters, multValues) {
     let pointValues = {
         "a": 1,
@@ -1526,7 +1545,11 @@ function getScrabbleScore(letters, multValues) {
     };
     let scrabbleScore = 0;
     for (let i = 0; i < letters.length; i++) {
-        scrabbleScore += pointValues[letters[i].toLowerCase()]*multValues[i];
+        if (multValues[i] in exponentMap) {
+            scrabbleScore += pointValues[letters[i].toLowerCase()]**exponentMap[multValues[i]];
+        } else {
+            scrabbleScore += pointValues[letters[i].toLowerCase()]*multValues[i];
+        }
     }
     return scrabbleScore;
 }
