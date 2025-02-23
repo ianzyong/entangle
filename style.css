@@ -237,6 +237,11 @@ button {
     to {top: 0; opacity: 1}
 }
 
+@keyframes modal-enter-right {
+    from {right: -300px; opacity: 1}
+    to {right: 0; opacity: 1}
+}
+
 .close {
     position: absolute;
     color: #959595;
@@ -863,6 +868,10 @@ line {
     display: none;
 }
 
+#progress-pane-button {
+    display: none;
+}
+
 @media screen and (max-width: 866px) {
     * {
         touch-action: manipulation;
@@ -961,6 +970,43 @@ line {
 
     #help-modal {
         z-index: 3;
+    }
+
+    #progress-modal .modal-content {
+        top: 50%;
+        animation-name: modal-enter-right;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-out;
+    }
+
+    #progress-pane-button {
+        display: flex;
+        position: fixed;
+        right: 0rem;
+        bottom: 50px;
+        border: 1px solid #4e4e4e;
+        border-right: none;
+        border-radius: 0.5rem 0rem 0rem 0.5rem; 
+        padding-bottom: 0.1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        height: 2rem;
+        width: 2rem;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+        background-color: #151515;
+        color: #767676;
+        transition: all 0.4s ease-in-out;
+        z-index: 5;
+        user-select: none;
+    }
+
+    #progress-modal-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 1rem;
     }
 
     .modal {

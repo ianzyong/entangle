@@ -585,6 +585,9 @@ function initBoard() {
     let mainDivider = document.getElementById("main-divider");
     mainDivider.style.maxWidth = boardWidth + minPaneWidth + "px";
 
+    // update progress pane
+    updateProgress();
+    
 }
 
 function addPostGameObjects() {
@@ -868,112 +871,109 @@ function updateMinimap(sameWord) {
 }
 
 function updateProgress() {
-    if (lastSelectedWord !== null && lastClickedElement.classList.contains("letter-box")) {
-        
-        // for each word
-        for (let wordIndex = 0; wordIndex < WORDS.length; wordIndex++) {
-            // get child element of wordsPane corresponding to the current word
-            let entry = wordsPane.children[wordIndex];
-            let currentEnum = entry.children[0];
-            let currentWord = entry.children[1];
-            // get the text content from the nodes belonging to the current word
-            let currentWordText = "";
-            for (let nodeIndex of node_memberships[wordIndex]) {
-                if (nodes[nodeIndex].element.textContent) {
-                    currentWordText += nodes[nodeIndex].element.textContent;
-                } else {
-                    currentWordText += "_";
-                }
-            }
-            // if the enumeration contains a comma, add a space at the locations in the enumeration
-            if (currentEnum.textContent.includes(",")) {
-                // clear the currentWordText
-                currentWordText = "";
-                let spaceIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseInt(x));
-                let decimalIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseFloat(x));
-                let decimalEnumIndices = currentEnum.textContent.slice(1,-1).split(",").map((x,index) => x % 1 !== 0 ? index: -1).filter(index => index !== -1);
-                // cumulative sum
-                for (let i = 1; i < spaceIndices.length; i++) {
-                    spaceIndices[i] += spaceIndices[i-1];
-                }
-                // TODO: refactor...
-                if (currentEnum.textContent.includes(".")) {
-                    // ignore spaceIndices at decimalEnumIndices
-                    spaceIndices = spaceIndices.filter(x => !decimalEnumIndices.includes(spaceIndices.indexOf(x)));
-                    // decimal enumeration
-                    let potentialRebusIndices = [];
-                    let potentialDecimalIndices = [];
-                    for (let i = 1; i < decimalIndices.length; i++) {
-                        if ((decimalIndices[i] % 1 !== 0) && (decimalIndices[i-1] % 1 !== 0)) {
-                            potentialRebusIndices.push(Math.floor(decimalIndices[i-1]));
-                            potentialDecimalIndices.push(decimalIndices[i]);
-                        }   
-                    }
-                    for (let k = 0; k < node_memberships[wordIndex].length; k++) {
-                        // if this is a potential rebus index
-                        if (potentialRebusIndices.includes(k) && nodes[node_memberships[wordIndex][k]].element.textContent) {
-                            let decimalIndex = potentialDecimalIndices[potentialRebusIndices.indexOf(k)];
-                            let decimalPart = decimalIndex % 1;
-                            let denominator = parseInt(1/decimalPart);
-                            // determine if the node's text content can be evenly multiplied by the decimal index
-                            let potentialRebus = nodes[node_memberships[wordIndex][k]].element.textContent;
-                            if (potentialRebus.length % denominator === 0) {
-                                // insert a space at potentialRebus.length/denominator
-                                for (let m = 1/denominator; m < 1; m=m+1/denominator) {
-                                    currentWordText += potentialRebus.slice(0,parseInt(potentialRebus.length*m)) + " " + potentialRebus.slice(parseInt(potentialRebus.length*m));
-                                }
-                            } else {
-                                currentWordText += potentialRebus;
-                            }
-                        } else if (nodes[node_memberships[wordIndex][k]].element.textContent) {
-                            currentWordText += nodes[node_memberships[wordIndex][k]].element.textContent;
-                        } else {
-                            currentWordText += "_";
-                        }
-                        if (spaceIndices.includes(k+1)) {
-                            currentWordText += " ";
-                        }
-                    }
-                } else {
-                    // integer enumeration
-                    for (let k = 0; k < node_memberships[wordIndex].length; k++) {
-                        if (nodes[node_memberships[wordIndex][k]].element.textContent) {
-                            currentWordText += nodes[node_memberships[wordIndex][k]].element.textContent;
-                        } else {
-                            currentWordText += "_";
-                        }
-                        if (spaceIndices.includes(k+1)) {
-                            currentWordText += " ";
-                        }
-                    }
-                }
-            }
-            
-            // for puzzle -2
-            if (puzzleNumber === -2 && wordIndex != WORDS.length-1 && !(currentWordText).includes("_")) {
-                let currentClueSplit = CLUES[wordIndex].split(" ");
-                currentWordText = currentWordText + " ≈ " + currentClueSplit[currentClueSplit.length - 1];
-            }
-
-            // for aleph puzzles, display score of each word
-            if (isNaN(puzzleNumber) && !(currentWordText).includes("_")) {
-                // if word is in validWords
-                if (validWords.includes(currentWordText)) {
-                    currentWordText = currentWordText + " ⇒ " + getScrabbleScore(currentWordText,WORDS[wordIndex]);
-                } else {
-                    currentWordText = currentWordText + " ⇒ " + "Ø";
-                }
-            }
-
-            currentWord.textContent = currentWordText;
-            currentWord.style.color = color_list[(wordIndex)%color_list.length];
-            // if currentWordText is not empty, color the text
-            if (!(currentWordText).includes("_")) {
-                currentEnum.style.color = color_list[(wordIndex)%color_list.length];
+    // for each word
+    for (let wordIndex = 0; wordIndex < WORDS.length; wordIndex++) {
+        // get child element of wordsPane corresponding to the current word
+        let entry = wordsPane.children[wordIndex];
+        let currentEnum = entry.children[0];
+        let currentWord = entry.children[1];
+        // get the text content from the nodes belonging to the current word
+        let currentWordText = "";
+        for (let nodeIndex of node_memberships[wordIndex]) {
+            if (nodes[nodeIndex].element.textContent) {
+                currentWordText += nodes[nodeIndex].element.textContent;
             } else {
-                // remove color style
-                currentEnum.style.color = "";
+                currentWordText += "_";
             }
+        }
+        // if the enumeration contains a comma, add a space at the locations in the enumeration
+        if (currentEnum.textContent.includes(",")) {
+            // clear the currentWordText
+            currentWordText = "";
+            let spaceIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseInt(x));
+            let decimalIndices = currentEnum.textContent.slice(1,-1).split(",").map(x => parseFloat(x));
+            let decimalEnumIndices = currentEnum.textContent.slice(1,-1).split(",").map((x,index) => x % 1 !== 0 ? index: -1).filter(index => index !== -1);
+            // cumulative sum
+            for (let i = 1; i < spaceIndices.length; i++) {
+                spaceIndices[i] += spaceIndices[i-1];
+            }
+            // TODO: refactor...
+            if (currentEnum.textContent.includes(".")) {
+                // ignore spaceIndices at decimalEnumIndices
+                spaceIndices = spaceIndices.filter(x => !decimalEnumIndices.includes(spaceIndices.indexOf(x)));
+                // decimal enumeration
+                let potentialRebusIndices = [];
+                let potentialDecimalIndices = [];
+                for (let i = 1; i < decimalIndices.length; i++) {
+                    if ((decimalIndices[i] % 1 !== 0) && (decimalIndices[i-1] % 1 !== 0)) {
+                        potentialRebusIndices.push(Math.floor(decimalIndices[i-1]));
+                        potentialDecimalIndices.push(decimalIndices[i]);
+                    }   
+                }
+                for (let k = 0; k < node_memberships[wordIndex].length; k++) {
+                    // if this is a potential rebus index
+                    if (potentialRebusIndices.includes(k) && nodes[node_memberships[wordIndex][k]].element.textContent) {
+                        let decimalIndex = potentialDecimalIndices[potentialRebusIndices.indexOf(k)];
+                        let decimalPart = decimalIndex % 1;
+                        let denominator = parseInt(1/decimalPart);
+                        // determine if the node's text content can be evenly multiplied by the decimal index
+                        let potentialRebus = nodes[node_memberships[wordIndex][k]].element.textContent;
+                        if (potentialRebus.length % denominator === 0) {
+                            // insert a space at potentialRebus.length/denominator
+                            for (let m = 1/denominator; m < 1; m=m+1/denominator) {
+                                currentWordText += potentialRebus.slice(0,parseInt(potentialRebus.length*m)) + " " + potentialRebus.slice(parseInt(potentialRebus.length*m));
+                            }
+                        } else {
+                            currentWordText += potentialRebus;
+                        }
+                    } else if (nodes[node_memberships[wordIndex][k]].element.textContent) {
+                        currentWordText += nodes[node_memberships[wordIndex][k]].element.textContent;
+                    } else {
+                        currentWordText += "_";
+                    }
+                    if (spaceIndices.includes(k+1)) {
+                        currentWordText += " ";
+                    }
+                }
+            } else {
+                // integer enumeration
+                for (let k = 0; k < node_memberships[wordIndex].length; k++) {
+                    if (nodes[node_memberships[wordIndex][k]].element.textContent) {
+                        currentWordText += nodes[node_memberships[wordIndex][k]].element.textContent;
+                    } else {
+                        currentWordText += "_";
+                    }
+                    if (spaceIndices.includes(k+1)) {
+                        currentWordText += " ";
+                    }
+                }
+            }
+        }
+        
+        // for puzzle -2
+        if (puzzleNumber === -2 && wordIndex != WORDS.length-1 && !(currentWordText).includes("_")) {
+            let currentClueSplit = CLUES[wordIndex].split(" ");
+            currentWordText = currentWordText + " ≈ " + currentClueSplit[currentClueSplit.length - 1];
+        }
+
+        // for aleph puzzles, display score of each word
+        if (isNaN(puzzleNumber) && !(currentWordText).includes("_")) {
+            // if word is in validWords
+            if (validWords.includes(currentWordText)) {
+                currentWordText = currentWordText + " ⇒ " + getScrabbleScore(currentWordText,WORDS[wordIndex]);
+            } else {
+                currentWordText = currentWordText + " ⇒ " + "Ø";
+            }
+        }
+
+        currentWord.textContent = currentWordText;
+        currentWord.style.color = color_list[(wordIndex)%color_list.length];
+        // if currentWordText is not empty, color the text
+        if (!(currentWordText).includes("_")) {
+            currentEnum.style.color = color_list[(wordIndex)%color_list.length];
+        } else {
+            // remove color style
+            currentEnum.style.color = "";
         }
     }
 }
@@ -982,6 +982,7 @@ var helpModal = document.getElementById("help-modal");
 var levelSelectModal = document.getElementById("level-select-modal");
 var resultsModal = document.getElementById("results-modal");
 var resetModal = document.getElementById("reset-modal");
+var progressModal = document.getElementById("progress-modal");
 
 document.addEventListener('click', function(event) {
     if ((event.target.lang == "en" || event.target.id == "mini-map" || (event.target.classList.contains("keyboard-button") && event.target.parentElement.parentElement.id === "keyboard-cont") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
@@ -993,6 +994,7 @@ document.addEventListener('click', function(event) {
         levelSelectModal.style.display = "none";
         resultsModal.style.display = "none";
         resetModal.style.display = "none";
+        progressModal.style.display = "none";
     }
 
     if (event.target.id === "help-button" || event.target.id === "help-button-m") {
@@ -1087,6 +1089,25 @@ document.addEventListener('click', function(event) {
     if (event.target.id === "normal" || event.target.id === "hard" || event.target.id === "aleph") {
         const allData = { ...localStorage };
         displayLevelNodes(allData,event.target.id);
+    }
+
+    if (event.target.id === "progress-pane-button") {
+        if (progressModal.style.display === "block") {
+            progressModal.style.display = "none";
+        } else {
+            progressModal.style.display = "block";
+            // clone children of word-pane and add to modal
+            let progressModalContent = document.getElementById("progress-modal-content");
+            while (progressModalContent.firstChild) {
+                progressModalContent.removeChild(progressModalContent.firstChild);
+            }
+            for (let i = 0; i < wordsPane.children.length; i++) {
+                let entry = wordsPane.children[i].cloneNode(true);
+                // remove width attribute
+                entry.style.width = "auto";
+                progressModalContent.appendChild(entry);
+            }
+        }
     }
 
     if (event.target.id === "copy-results") {
