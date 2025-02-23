@@ -80,6 +80,7 @@ if (isNaN(puzzleNumber)) {
     const fileUrl = "./valid_words.txt";
     fetch(fileUrl).then(r => r.text()).then(t => {
         validWords = t.split(/\r\n?|\n/);
+        updateProgress();
     }).catch(e => {
         console.error(e);
     });
@@ -584,10 +585,11 @@ function initBoard() {
 
     let mainDivider = document.getElementById("main-divider");
     mainDivider.style.maxWidth = boardWidth + minPaneWidth + "px";
-
-    // update progress pane
-    updateProgress();
     
+    if (!isNaN(puzzleNumber)) {
+        updateProgress();
+    }
+
 }
 
 function addPostGameObjects() {
@@ -1959,4 +1961,4 @@ document.addEventListener("keydown", (e) => {
     }
 })
 
-initBoard()
+initBoard();
