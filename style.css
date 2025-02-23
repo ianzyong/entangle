@@ -969,7 +969,11 @@ line {
         top: 0.5rem;
     }
 
-    #help-modal {
+    .modal {
+        z-index: 5;
+    }
+
+    #progress-modal {
         z-index: 3;
     }
 
@@ -991,15 +995,15 @@ line {
         padding-bottom: 0.1rem;
         font-size: 1.5rem;
         font-weight: 700;
-        height: 2rem;
-        width: 2rem;
+        height: 2.2rem;
+        width: 2.5rem;
         justify-content: center;
         align-items: center;
         vertical-align: middle;
         background-color: #151515;
         color: #767676;
         transition: all 0.4s ease-in-out;
-        z-index: 5;
+        z-index: 4;
         user-select: none;
     }
 
@@ -1008,10 +1012,6 @@ line {
         flex-direction: column;
         justify-content: center;
         margin-bottom: 1rem;
-    }
-
-    .modal {
-        z-index: 3;
     }
 
     #mini-map {

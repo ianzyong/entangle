@@ -50,6 +50,7 @@ if (puzzleNumber < 1) {
 }
 
 let validWords = null;
+let modalContentHeight = 0;
 
 if (isNaN(puzzleNumber)) {
     // add class to body
@@ -341,6 +342,17 @@ function initBoard() {
             xOffset = (deviceWidth-((maxX+50)*zoomFactor))/2;
             boardHeight = maxY*zoomFactor+100;
         }
+        // set the top-margin and bottom-margin of the board such that there is no extra space
+        let controlPaneHeight = document.getElementById("control-pane").offsetHeight;
+        let puzzleInfoHeight = document.getElementById("puzzle-info-mobile").offsetHeight;
+        let selectorHeight = document.getElementById("selector-m").offsetHeight;
+        let boardMargin = (window.innerHeight + selectorHeight/2 - controlPaneHeight - puzzleInfoHeight - boardHeight)/2;
+        if (boardMargin < 0) {
+            boardMargin = 0;
+        }
+        board.style["margin-top"] = boardMargin + "px";
+        board.style["margin-bottom"] = boardMargin + "px";
+        yOffset = yOffset + boardMargin;
     }
 
     // if the device width is less than the board width
@@ -587,8 +599,12 @@ function initBoard() {
     mainDivider.style.maxWidth = boardWidth + minPaneWidth + "px";
     
     if (!isNaN(puzzleNumber)) {
-        updateProgress();
+       updateProgress();
     }
+
+    // set top margin of the progress modal
+    let progressModalWindow = document.getElementById("progress-modal-window");
+    progressModalWindow.style["margin-top"] = -(WORDS.length*32)/2 + "px";
 
 }
 
@@ -988,7 +1004,7 @@ var progressModal = document.getElementById("progress-modal");
 
 document.addEventListener('click', function(event) {
     if ((event.target.lang == "en" || event.target.id == "mini-map" || (event.target.classList.contains("keyboard-button") && event.target.parentElement.parentElement.id === "keyboard-cont") || event.target.id == "keyboard-cont" || event.target.parentElement.id == "keyboard-cont")) {
-        return
+        return;
     }
 
     if (event.target.classList.contains("close") || (event.target.classList.contains("modal") && !(event.target.parentElement.classList.contains("modal")))) {
@@ -1121,12 +1137,14 @@ document.addEventListener('click', function(event) {
             let splitResultsText = resText.replace(".", ".\n");
             // convert score number to unicode symbol based on code point
             let symbol = "🪢";
-            try {
-                symbol = String.fromCodePoint(0x1F330 + parseInt(resText.split(" ").filter(x => !isNaN(x))));
-                // for (let k = 0; k < 100; k++) {
-                //     console.log(String.fromCodePoint(0x1F330 + k));
-                // }
-            } catch (e) {
+            let sc = parseInt(resText.split(" ").filter(x => !isNaN(x)));
+            if (sc < 1212) {
+                try {
+                    symbol = String.fromCodePoint(0x1F330 + sc);
+                } catch (e) {
+                    symbol = "🪢";
+                }
+            } else {
                 symbol = "🪢";
             }
             copyText =
