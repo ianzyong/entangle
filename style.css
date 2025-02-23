@@ -951,8 +951,8 @@ line {
         background-color: #151515F0;
         z-index: 1;
         padding-top: 1rem;
-        padding-bottom: 10rem;
         border-top: solid 0.5px #3e3e3e;
+        border-bottom: solid 0.5px #3e3e3e;
     }
 
     #words-pane {

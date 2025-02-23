@@ -1484,6 +1484,42 @@ export const GAMEDATA = {
                 indices: [[6,5],[7,3]]
             }
         ]
+    },
+    19: {
+        words: ["RULE","EAR","TALE","ALE","APPROVE","RIGHT","RIDGE","PLUM"],
+        enumerations: ["(4)","(3)","(4)","(3)","(7)","(5)","(5)","(4)"],
+        clues: ["Reign... from ruins?","Musical gift... from stand?","Yarn... from postpone?","Pub offering... from psycho talk?","Rubber-stamp, say","Correct... from clever?","High landform... from something that might connect two of them?","Shade of purple... from perfectly vertical?"],
+        themeClue: ["\x22Okay beginners to bet, lose everything on spades\x22"],
+        themeAnswer: ["BLESS"],
+        sharedLetters: [
+            {
+                indices: [[0,3],[3,2]]
+            },
+            {
+                indices: [[1,1],[3,0]]
+            },
+            {
+                indices: [[2,2],[6,1]]
+            },
+            {
+                indices: [[4,1],[4,2],[7,0]]
+            },
+            {
+                indices: [[0,1],[7,2]]
+            },
+            {
+                indices: [[4,3],[6,0]]
+            },
+            {
+                indices: [[5,1],[6,1]]
+            },
+            {
+                indices: [[5,4],[2,0]]
+            },
+            {
+                indices: [[4,6],[6,4]]
+            }
+        ]
     }
 }
 
