@@ -978,6 +978,7 @@ line {
     }
 
     #progress-modal .modal-content {
+        font-family: Turret Road, 'Terminal', 'Courier New', Courier, monospace;
         top: 50%;
         animation-name: modal-enter-right;
         animation-duration: 0.5s;

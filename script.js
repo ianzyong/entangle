@@ -40,6 +40,9 @@ if (puzzleNumber < 1) {
     let tl = document.getElementById("title")
     tl.style["text-shadow"] = "9px 9px rgb(200, 200, 200)";
     tl.style["animation"] = "color-change 20s ease-in-out infinite";
+    let tlm = document.getElementById("title-m")
+    tlm.style["text-shadow"] = "9px 9px rgb(200, 200, 200)";
+    tlm.style["animation"] = "color-change 20s ease-in-out infinite";
     let hb = document.getElementById("hint-button");
     // grey out button
     hb.classList.add("disabled");
@@ -47,6 +50,9 @@ if (puzzleNumber < 1) {
     let helpButton = document.getElementById("help-button");
     helpButton.style["box-shadow"] = "9px 9px rgb(200, 200, 200)";
     helpButton.style["animation"] = "bs-color-change 20s ease-in-out infinite";
+    let helpButtonM = document.getElementById("help-button-m");
+    helpButtonM.style["box-shadow"] = "9px 9px rgb(200, 200, 200)";
+    helpButtonM.style["animation"] = "bs-color-change 20s ease-in-out infinite";
 }
 
 let validWords = null;
@@ -1923,7 +1929,7 @@ document.addEventListener("keydown", (e) => {
     let found = null;
     if (puzzleNumber > 0 || isNaN(puzzleNumber)) {
         found = (pressedKey.match(/[a-z]/gi) && pressedKey.length === 1)
-    } else if (puzzleNumber < 0) {
+    } else if (puzzleNumber <= 0) {
         if (pressedKey[0] === "F") {
             e.preventDefault();
         }
