@@ -1444,7 +1444,7 @@ export const GAMEDATA = {
         words: ["THEME","BEEF","DEED","DEFACE","DEFLATE","CEDE","CABBAGE","BADGE"],
         enumerations: ["(5)","(4)","(4)","(6)","(7)","(4)","(7)","(5)"],
         clues: ["Feature of most crosswords","Bone to pick","It's done","Vandalize","Knock down a peg","Give up","Kimchi vegetable","Scout's honor"],
-        themeClue: ["\x22Tune hallucinating model with today's terminal\x22"],
+        themeClue: ["\x22Tune hallucinating model with Sammy's terminal\x22"],
         themeAnswer: ["MELODY"],
         sharedLetters: [
             {
@@ -1489,7 +1489,7 @@ export const GAMEDATA = {
         words: ["RULE","EAR","TALE","ALE","APPROVE","RIGHT","RIDGE","PLUM"],
         enumerations: ["(4)","(3)","(4)","(3)","(7)","(5)","(5)","(4)"],
         clues: ["Reign... from ruins?","Musical gift... from stand?","Yarn... from postpone?","Pub offering... from psycho talk?","Rubber-stamp, say","Correct... from clever?","High landform... from something that might connect two of them?","Shade of purple... from perfectly vertical?"],
-        themeClue: ["\x22Okay beginners to bet, lose everything on spades\x22"],
+        themeClue: ["\x22Beginners to bet, lose everything on spades, and celebrate\x22"],
         themeAnswer: ["BLESS"],
         sharedLetters: [
             {

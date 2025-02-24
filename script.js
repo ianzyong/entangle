@@ -50,7 +50,6 @@ if (puzzleNumber < 1) {
 }
 
 let validWords = null;
-let modalContentHeight = 0;
 
 if (isNaN(puzzleNumber)) {
     // add class to body
@@ -157,7 +156,6 @@ function Node(id, value, containsFirstLetter, containsRepeat, nodeIndicesOfParen
     this.value = value;
     this.containsFirstLetter = containsFirstLetter;
     this.containsRepeat = containsRepeat;
-    // parent_word_index: node_indices
     this.nodeIndicesOfParentWords = nodeIndicesOfParentWords;
     this.adjNodeIndices = adjNodeIndices;
 }
@@ -244,8 +242,6 @@ for (let i = 0; i < nodes.length; i++) {
         }
     }
 }
-
-
 
 dagre.layout(g);
 
@@ -354,9 +350,6 @@ function initBoard() {
         board.style["margin-bottom"] = boardMargin + "px";
         yOffset = yOffset + boardMargin;
     }
-
-    // if the device width is less than the board width
-    
 
     for (let i = 0; i < nodes.length; i++) {
         let element = document.createElement("div");
@@ -474,8 +467,6 @@ function initBoard() {
             element.classList.add("unfillable-box");
         }
 
-        //element.style.borderColor = color_list[(element.textContent.charCodeAt(0) - 97)%color_list.length];
-
         nodes[i].element = element;
     }
 
@@ -519,9 +510,9 @@ function initBoard() {
         if (!((edge.v === "undefined") || (edge.w === "undefined"))) {
             let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
             line.setAttribute("x1", (g.node(edge.v).x)*zoomFactor + xOffset + 20*zoomFactor);
-            line.setAttribute("y1", (g.node(edge.v).y)*zoomFactor  + yOffset + 20*zoomFactor);
-            line.setAttribute("x2", (g.node(edge.w).x)*zoomFactor  + xOffset + 20*zoomFactor);
-            line.setAttribute("y2", (g.node(edge.w).y)*zoomFactor  + yOffset + 20*zoomFactor);
+            line.setAttribute("y1", (g.node(edge.v).y)*zoomFactor + yOffset + 20*zoomFactor);
+            line.setAttribute("x2", (g.node(edge.w).x)*zoomFactor + xOffset + 20*zoomFactor);
+            line.setAttribute("y2", (g.node(edge.w).y)*zoomFactor + yOffset + 20*zoomFactor);
             line.setAttribute("stroke", "#2e2e2e");
             line.setAttribute("stroke-width", "1px");
             line.terminals = [nodes[edge.v].id, nodes[edge.w].id];
@@ -569,7 +560,6 @@ function initBoard() {
         }
     }
 
-    //let maxLetters = Math.max(...WORDS.map(x => x.length));
     let blockWidth = 55;
     let minPaneWidth = maxLetters * blockWidth;
     // get offsetwidth of the puzzle name
@@ -1191,17 +1181,6 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
         }
     }
 
-    // if (event.target.classList.contains("accordion")) {
-    //     event.target.classList.toggle("active");
-    //     let panel = event.target.nextElementSibling;
-    //     if (panel.style.maxHeight) {
-    //         panel.style.maxHeight = null;
-    //     } else {
-    //         panel.style.maxHeight = 500 + "px";
-    //     }
-    //     return
-    // }
-
     last_position = null;
 
     // if the prev div is clicked
@@ -1233,9 +1212,6 @@ https://ianzyong.github.io/entangle/?puzzle=${puzzleNumber}`;
     if (lastClickedElement && lastClickedNode && lastClickedElement.classList.contains("letter-box") ) {
         // remove selected-box class and remove highlighting from last word
         lastClickedElement.classList.remove("selected-box");
-        // for (let nodeIndex of lastClickedElement.node.nodeIndicesOfParentWords[lastSelectedWord]) {
-        //     nodes[nodeIndex].element.classList.remove("highlighted-box");
-        // }
         toggleHighlight(lastClickedElement.node, lastSelectedWord);
     }
     // if the clicked element is a letter-box
@@ -1354,10 +1330,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             for (let i = 0; i < nodes.length; i++) {
                 if (nodes[i].element.textContent) {
                     if (nodes[i].element.textContent.toLowerCase() != nodes[i].value.toString().toLowerCase()) {
-                        // nodes[i].element.textContent = "";
                         nodes[i].element.style.color = "#f87a7a";
-
-                        //nodes[i].element.classList.remove("filled-box");
                         if (!(nodes[i].containsFirstLetter[0])) {
                             nodes[i].element.style.removeProperty("border-color")
                         }
@@ -1367,7 +1340,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
                         allCorrect = false;
                     } 
                     else {
-                        //elementsToHint.push(nodes[i].element);
                         indicesToHint.push(i);
                     }
                 } else {
@@ -1511,9 +1483,6 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
             checkButton.classList.add("disabled");
             return;
         } else {
-            // for (let i = 0; i < elementsToHint.length; i++) {
-            //     elementsToHint[i].classList.add("hinted-box");
-            // }
             for (let i = 0; i < indicesToHint.length; i++) {
                 isHinted[indicesToHint[i]] = true;
                 nodes[indicesToHint[i]].element.classList.add("hinted-box");
@@ -1960,7 +1929,6 @@ document.addEventListener("keydown", (e) => {
         }
         found = (pressedKey != "Shift")
     }
-
     
     if (!found || found.length > 1) {
         return
