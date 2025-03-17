@@ -1520,6 +1520,45 @@ export const GAMEDATA = {
                 indices: [[4,6],[6,4]]
             }
         ]
+    },
+    20: {
+        words: ["DAMAGE","SEWAGE","MANAGE","WAGE","PLUMAGE","BANDAGE","BLEEDING","USAGE"],
+        enumerations: ["(6)","(6)","(6)","(4)","(7)","(7)","(8)","(5)"],
+        clues: ["Harm... or a beaver's era?","Waste... or a quilter's era?","Get by... or 18 and up?","Pay... or a victorious era?","Peacock's pride... or a purplish era?","Dress... or a musical group's era?","Running","Consumption... or an American era?"],
+        themeClue: ["\x22Every ten days, for example?\x22"],
+        themeAnswer: ["PERIOD"],
+        sharedLetters: [
+            {
+                indices: [[0,1],[0,3]]
+            },
+            {
+                indices: [[0,0],[5,3]]
+            },
+            {
+                indices: [[1,0],[7,1]]
+            },
+            {
+                indices: [[1,2],[3,0]]
+            },
+            {
+                indices: [[2,0],[4,3]]
+            },
+            {
+                indices: [[2,1],[4,4]]
+            },
+            {
+                indices: [[4,2],[7,0]]
+            },
+            {
+                indices: [[6,2],[6,3],[3,3]]
+            },
+            {
+                indices: [[6,7],[5,5]]
+            },
+            {
+                indices: [[6,0],[5,0]]
+            }
+        ]
     }
 }
 

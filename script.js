@@ -853,10 +853,6 @@ function updateMinimap(sameWord) {
             } else {
                 element.style.top = "0px";
             }
-            // if the text content of the box exceeds the width, set the font size so that it fits
-            if (element.textContent.length > 2) {
-                element.style.fontSize = 2/element.textContent.length + "rem";
-            }
             // set box width to fit each word on a single line
             if (50*longestEnum > deviceWidth) {
                 element.style.width = "2rem";
@@ -867,6 +863,11 @@ function updateMinimap(sameWord) {
                 element.style.width = "2rem";
                 element.style.height = "2rem";
                 element.style.fontSize = "1.5rem";
+            }
+            // if the text content of the box exceeds the width, set the font size so that it fits
+            if (element.textContent.length > 2) {
+                console.log(element.textContent.length);
+                element.style.fontSize = (2/element.textContent.length) + "rem";
             }
             element.classList.add("mini-box");
             miniMap.appendChild(element);
