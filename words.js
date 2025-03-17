@@ -1524,7 +1524,7 @@ export const GAMEDATA = {
     20: {
         words: ["DAMAGE","SEWAGE","MANAGE","WAGE","PLUMAGE","BANDAGE","BLEEDING","USAGE"],
         enumerations: ["(6)","(6)","(6)","(4)","(7)","(7)","(8)","(5)"],
-        clues: ["Harm... or a beaver's era?","Waste... or a quilter's era?","Get by... or 18 and up?","Pay... or a victorious era?","Peacock's pride... or a purplish era?","Dress... or a musical group's era?","Running","Consumption... or an American era?"],
+        clues: ["Harm... or one for a beaver?","Waste... or one for a quilter?","Get by... or 18 and up?","Pay... or a victorious one?","Peacock's pride... or a purplish one?","Dress... or one for a musical group?","Running","Consumption... or an American one?"],
         themeClue: ["\x22Every ten days, for example?\x22"],
         themeAnswer: ["PERIOD"],
         sharedLetters: [
